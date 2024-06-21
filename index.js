@@ -3,6 +3,7 @@ const matter = require('gray-matter');
 const github = require('@actions/github');
 
 export async function run() {
+   console.log("test")
    try {
     const host = core.getInput("host");
     const file = core.getInput("file");

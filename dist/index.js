@@ -36260,6 +36260,7 @@ const matter = __nccwpck_require__(1774);
 const github = __nccwpck_require__(9210);
 
 async function run() {
+   console.log("test")
    try {
     const host = core.getInput("host");
     const file = core.getInput("file");
