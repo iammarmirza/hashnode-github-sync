@@ -31081,18 +31081,20 @@ var __webpack_exports__ = {};
 const core = __nccwpck_require__(3547);
 const github = __nccwpck_require__(9210);
 
-try {
-  // `who-to-greet` input defined in action metadata file
-  const nameToGreet = core.getInput('who-to-greet');
-  console.log(`Hello ${nameToGreet}!`);
-  const time = (new Date()).toTimeString();
-  core.setOutput("time", nameToGreet);
-  // Get the JSON webhook payload for the event that triggered the workflow
-  
-} catch (error) {
-  core.setFailed(error.message);
+function run () {
+   try {
+      // `who-to-greet` input defined in action metadata file
+      const nameToGreet = core.getInput('who-to-greet');
+      console.log(`Hello ${nameToGreet}!`);
+      const time = (new Date()).toTimeString();
+      core.setOutput("time", nameToGreet);
+      // Get the JSON webhook payload for the event that triggered the workflow
+      
+    } catch (error) {
+      core.setFailed(error.message);
+    }
 }
-
+run()
 })();
 
 module.exports = __webpack_exports__;
