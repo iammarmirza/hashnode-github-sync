@@ -15,7 +15,7 @@ outputs:
   
   hashnode_token:
     description: "Giving out Hashnode Token"
-    
+
 runs:
   using: 'node20'
   main: 'dist/index.js'
