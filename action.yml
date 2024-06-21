@@ -1,28 +1,13 @@
-name: 'Print'
-description: 'Print the file data'
+name: 'Hello World'
+description: 'Greet someone and record the time'
 inputs:
-  host:
-    description: "url of the blog you want to publish on"
-
-  file:
-    description: "Path to the files uploaded"
+  who-to-greet:  # id of input
+    description: 'Who to greet'
     required: true
-
-  hashnode_key:
-    description: "secret key by hashnode"
-    required: true
+    default: 'World'
 outputs:
-  result_json:
-    description: "Publish result as a JSON string"
-
-  host__name:
-    description: "Url of blog"
-
-  secret__key:
-    description: "hashnode secret key"
-
-  file__name:
-    description: "file name"
+  time: # id of output
+    description: 'The time we greeted you'
 runs:
   using: 'node20'
   main: 'dist/index.js'
