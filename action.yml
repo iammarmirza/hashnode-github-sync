@@ -1,13 +1,21 @@
-name: 'Hello World'
-description: 'Greet someone and record the time'
+name: 'Print'
+description: 'Print the file'
 inputs:
-  who-to-greet:  # id of input
-    description: 'Who to greet'
+  file:  
+    description: 'file to print'
     required: true
-    default: 'World'
+
+  hashnode_token: 
+    description: 'Taking Hashnode Key'
+    required: true
+
 outputs:
-  time: # id of output
-    description: 'The time we greeted you'
+  file_name: 
+    description: 'File Name'
+  
+  hashnode_token:
+    description: "Giving out Hashnode Token"
+    
 runs:
   using: 'node20'
   main: 'dist/index.js'

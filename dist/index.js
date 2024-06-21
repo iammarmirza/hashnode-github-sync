@@ -31083,13 +31083,15 @@ const github = __nccwpck_require__(9210);
 
 function run () {
    try {
-      // `who-to-greet` input defined in action metadata file
-      const nameToGreet = core.getInput('who-to-greet');
-      console.log(`Hello ${nameToGreet}!`);
-      const time = (new Date()).toTimeString();
-      core.setOutput("time", nameToGreet);
-      // Get the JSON webhook payload for the event that triggered the workflow
-      
+      const file = core.getInput("file")
+      const hashnode_token = core.getInput("hashnode_token")
+
+      console.log("file", file)
+      console.log("hashnode", hashnode_token)
+
+      core.setOutput("file_name", file)
+      core.setOutput("hashnode_token", hashnode_token)
+
     } catch (error) {
       core.setFailed(error.message);
     }
