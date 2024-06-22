@@ -7,7 +7,7 @@ runs:
   main: 'dist/index.js'
 
 inputs:
-  github-token:
+  github_token:
     description: 'Github Token'
     required: true
                
