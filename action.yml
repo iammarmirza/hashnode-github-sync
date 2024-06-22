@@ -9,7 +9,6 @@ runs:
 inputs:
   file:  
     description: 'Blog to publish'
-    required: true
     default: "*.md"
 
   hashnode_token: 
