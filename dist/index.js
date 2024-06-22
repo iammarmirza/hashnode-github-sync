@@ -36263,7 +36263,8 @@ const matter = __nccwpck_require__(1774)
 async function run () {
    try {
       const hashnode_token = core.getInput("hashnode_token")
-      const octokit = github.getOctokit()
+      const github_token = core.getInput("github_token")
+      const octokit = github.getOctokit(github_token)
       
       const commits = await octokit.git.getCommits({
         owner: context.repo.owner,

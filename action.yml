@@ -7,6 +7,10 @@ runs:
   main: 'dist/index.js'
 
 inputs:
+  github-token:
+    description: 'Github Token'
+    required: true
+               
   hashnode_token: 
     description: 'Hashnode Secret Token'
     required: true
