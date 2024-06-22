@@ -39008,7 +39008,7 @@ const matter = __nccwpck_require__(1774)
 
 const parseFile = async (fileName) => {
     if(fileName === '') return
-    const content = await Promise.all(lib_default().readFile(fileName, "utf-8"))
+    const content = await lib_default().readFile(fileName, "utf-8")
     const parsedArticle = matter(content, { language: "yaml" }) 
     return parsedArticle
 }
@@ -39028,10 +39028,10 @@ async function run () {
       const deleted_files = core.getInput("deleted_files")
 
       const added_files_arr = added_files.split(' ').filter(file => file.endsWith('.md'))
-      added_files_arr.map(added_file => {
-        const parsedArticle = parseFile(added_file)
-        console.log(parsedArticle)
-      })
+      for (const added_file of added_files_arr) {
+        const parsedArticle = await parseFile(added_file);
+        console.log(parsedArticle);
+      }
       
     } catch (error) {
       core.setFailed(error.message);
