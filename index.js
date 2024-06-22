@@ -1,14 +1,19 @@
+import fs from 'fs-extra'
 const core = require('@actions/core');
 const github = require('@actions/github');
+const matter = require('gray-matter')
 
-try {
-  // `who-to-greet` input defined in action metadata file
-  const nameToGreet = core.getInput('who-to-greet');
-  console.log(`Hello ${nameToGreet}!`);
-  const time = (new Date()).toTimeString();
-  core.setOutput("time", nameToGreet);
-  // Get the JSON webhook payload for the event that triggered the workflow
-  
-} catch (error) {
-  core.setFailed(error.message);
+export async function run () {
+   try {
+      const hashnode_token = core.getInput("hashnode_token")
+      const github_token = core.getInput("github_token")
+      const octokit = github.getOctokit(github_token)
+
+      // const payload = JSON.stringify(github.context.payload, null, 2)
+      // console.log(payload)
+
+    } catch (error) {
+      core.setFailed(error.message);
+    }
 }
+run()
