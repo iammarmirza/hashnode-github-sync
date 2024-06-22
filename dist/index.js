@@ -36290,7 +36290,7 @@ const getPublicationId = (host) => {
             Authorization: `${process.env.HASHNODE_KEY}`
         },
         body: JSON.stringify({
-            getPublicationIdQuery,
+            query: getPublicationIdQuery,
             variables: {
                 host
             }
