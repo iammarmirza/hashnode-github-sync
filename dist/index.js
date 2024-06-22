@@ -36251,28 +36251,44 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be in strict mode.
 (() => {
 "use strict";
+// ESM COMPAT FLAG
 __nccwpck_require__.r(__webpack_exports__);
-/* harmony export */ __nccwpck_require__.d(__webpack_exports__, {
-/* harmony export */   "run": () => (/* binding */ run)
-/* harmony export */ });
+
+// EXPORTS
+__nccwpck_require__.d(__webpack_exports__, {
+  "run": () => (/* binding */ run)
+});
+
+;// CONCATENATED MODULE: ./src/utils/parseFile.js
+
+const matter = __nccwpck_require__(1774)
+
+const parseFile = async (fileName) => {
+    if(fileName === '') return
+    const content = await fs.readFile(fileName, "utf-8")
+    const parsedArticle = matter(content, { language: "yaml" }) 
+    return parsedArticle
+}
+;// CONCATENATED MODULE: ./src/index.js
 
 const core = __nccwpck_require__(3547);
 const github = __nccwpck_require__(9210);
-const matter = __nccwpck_require__(1774)
 
 async function run () {
    try {
       const github_token = core.getInput("github_token")
       const hashnode_token = core.getInput("hashnode_token")
-      core.setOutput("hashnode_token", hashnode_token)
+      core.setSecret(hashnode_token)
 
       const added_files = core.getInput("added_files")
       const modified_files = core.getInput("modified_files")
       const deleted_files = core.getInput("deleted_files")
 
-      const added_files_arr = added_files.split(' ')
+      const added_files_arr = added_files.split(' ').filter(file => file.endsWith('.md'))
       console.log(added_files_arr)
-
+      console.log(added_files)
+      console.log(typeof added_files)
+      
     } catch (error) {
       core.setFailed(error.message);
     }
