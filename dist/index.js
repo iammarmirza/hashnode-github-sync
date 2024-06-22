@@ -36297,8 +36297,7 @@ const getPublicationId = async (host) => {
     })
     
     const data = await response.json()
-    const publicationId = data.publication.id
-    return publicationId
+    return data
 }
 ;// CONCATENATED MODULE: ./src/utils/parseFile.js
 
