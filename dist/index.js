@@ -36266,13 +36266,13 @@ async function run () {
       const github_token = core.getInput("github_token")
       const octokit = github.getOctokit(github_token)
       
-      const commits = await octokit.git.getCommits({
-        owner: context.repo.owner,
-        repo: context.repo.repo,
-        sha: context.sha
-      })
+      // const commits = await octokit.git.getCommits({
+      //   owner: context.repo.owner,
+      //   repo: context.repo.repo,
+      //   sha: context.sha
+      // })
 
-      console.log(commits)
+      console.log(octokit)
 
     } catch (error) {
       core.setFailed(error.message);
