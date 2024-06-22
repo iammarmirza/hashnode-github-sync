@@ -39075,7 +39075,7 @@ const callGraphqlAPI = async ({query, variables, token}) => {
 ;// CONCATENATED MODULE: ./src/utils/getInputToPublishPost.js
 const getInputToPublishPost = async (parsedArticle, publicationId) => {
   const input = {
-    title: parsedArticle.data.title || null,
+    title: parsedArticle.data.title || '',
     subtitle: parsedArticle.data.subtitle || null,
     publicationId: publicationId,
     contentMarkdown: parsedArticle.content || "",
