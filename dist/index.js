@@ -36297,8 +36297,8 @@ const getPublicationId = async (host) => {
     })
     
     const data = await response.json()
-
-    return data
+    const publicationId = data.publication.id
+    return publicationId
 }
 ;// CONCATENATED MODULE: ./src/utils/parseFile.js
 
@@ -36345,7 +36345,7 @@ async function run () {
       const modified_files = core.getInput("modified_files")
       const deleted_files = core.getInput("deleted_files")
 
-      const publicationId = await getPublicationId(host)
+      const publicationId = getPublicationId(host)
       console.log(publicationId)
       // const added_files_arr = added_files.split(' ').filter(file => file.endsWith('.md'))
       // const publishPromises = added_files_arr.map(added_file => publishArticle(added_file, hashnode_token, host))
