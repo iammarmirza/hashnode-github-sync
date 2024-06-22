@@ -7,10 +7,6 @@ runs:
   main: 'dist/index.js'
 
 inputs:
-  file:  
-    description: 'Blog to publish'
-    default: "*.md"
-
   hashnode_token: 
     description: 'Hashnode Secret Token'
     required: true
