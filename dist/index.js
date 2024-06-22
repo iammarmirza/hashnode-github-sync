@@ -39100,8 +39100,7 @@ const getInputToPublishPost = async (parsedArticle, publicationId) => {
     },
     seriesId: null,
     settings: {
-      enableTableOfContent:
-        parsedArticle.data.settings.enableTableOfContent || false,
+      enableTableOfContent: false,
     },
   };
 
