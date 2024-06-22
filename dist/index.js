@@ -39074,43 +39074,42 @@ const callGraphqlAPI = async ({query, variables, token}) => {
 }
 ;// CONCATENATED MODULE: ./src/utils/getInputToPublishPost.js
 const getInputToPublishPost = async (parsedArticle, publicationId) => {
+  const input = {
+    title: parsedArticle.data.title || undefined,
+    subtitle: parsedArticle.data.subtitle || undefined,
+    publicationId: publicationId,
+    contentMarkdown: parsedArticle.content || "",
+    publishedAt: parsedArticle.publishedAt || undefined,
+    coverImageOptions: {
+      coverImageURL: null,
+    },
+    slug: parsedArticle.data.slug || undefined,
+    originalArticleURL: parsedArticle.data.originalArticleURL || undefined,
+    tags: [
+      {
+        id: null,
+        slug: null,
+        name: null,
+      },
+    ],
+    disableComments: parsedArticle.data.disableComments || false,
+    metaTags: {
+      title: parsedArticle.data.metaTags.title || undefined,
+      description: parsedArticle.data.metaTags.description || undefined,
+      image: parsedArticle.data.metaTags.image || undefined,
+    },
+    seriesId: parsedArticle.data.seriesId || undefined,
+    settings: {
+      enableTableOfContent:
+        parsedArticle.data.settings.enableTableOfContent || false,
+    },
+  };
 
-    const input = {
-          "title": parsedArticle.data.title || undefined,
-          "subtitle": parsedArticle.data.subtitle || undefined,
-          "publicationId": publicationId,
-          "contentMarkdown": parsedArticle.content || '',
-          "publishedAt": parsedArticle.publishedAt || undefined,
-          "coverImageOptions": {
-            "coverImageURL": null
-          },
-          "slug": parsedArticle.data.slug || undefined,
-          "originalArticleURL": parsedArticle.data.originalArticleURL || undefined,
-          "tags": [
-            {
-              "id": null,
-              "slug": null,
-              "name": null
-            }
-          ],
-          "disableComments": parsedArticle.data.disableComments || false,
-          "metaTags": {
-            "title": parsedArticle.data.metaTags.title || undefined,
-            "description": parsedArticle.data.metaTags.description || undefined,
-            "image": parsedArticle.data.metaTags.image || undefined
-          },
-          "seriesId": parsedArticle.data.seriesId || undefined,
-          "settings": {
-            "enableTableOfContent": parsedArticle.data.settings.enableTableOfContent || false
-          }
-        }
+  return input;
+};
 
-        return input
-}
+const validateInput = (parsedArticle) => {};
 
-const validateInput = (parsedArticle) => {
-
-}
 ;// CONCATENATED MODULE: ./src/utils/publishArticle.js
 
 
