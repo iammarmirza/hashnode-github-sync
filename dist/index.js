@@ -36343,8 +36343,7 @@ async function run () {
       const modified_files = core.getInput("modified_files")
       const deleted_files = core.getInput("deleted_files")
 
-      const publicationId = getPublicationId(host)
-      await Promise.all(publicationId)
+      const publicationId = await getPublicationId(host)
       console.log(publicationId)
       // const added_files_arr = added_files.split(' ').filter(file => file.endsWith('.md'))
       // const publishPromises = added_files_arr.map(added_file => publishArticle(added_file, hashnode_token, host))
