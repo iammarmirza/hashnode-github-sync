@@ -39014,7 +39014,6 @@ async function run () {
       console.log("parsed file", parsedFile)
 
       core.setOutput("file_name", file)
-      core.setOutput("hashnode_token", hashnode_token)
 
     } catch (error) {
       core.setFailed(error.message);

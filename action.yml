@@ -1,21 +1,21 @@
-name: 'Print'
-description: 'Print the file'
-inputs:
-  file:  
-    description: 'file to print'
-    required: true
-
-  hashnode_token: 
-    description: 'Taking Hashnode Key'
-    required: true
-
-outputs:
-  file_name: 
-    description: 'File Name'
-  
-  hashnode_token:
-    description: "Giving out Hashnode Token"
+name: 'Publish on Hashnode'
+description: 'Publish the blogs to Hashnode'
+author: 'Ammar Mirza'
 
 runs:
   using: 'node20'
   main: 'dist/index.js'
+
+inputs:
+  file:  
+    description: 'Blog to publish'
+    required: true
+    default: "*.md"
+
+  hashnode_token: 
+    description: 'Hashnode Secret Token'
+    required: true
+
+outputs:
+  file_name: 
+    description: 'Path of the files'
