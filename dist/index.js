@@ -39094,11 +39094,11 @@ const getInputToPublishPost = async (parsedArticle, publicationId) => {
     ],
     disableComments: parsedArticle.data.disableComments || false,
     metaTags: {
-      title: parsedArticle.data.metaTags.title || null,
-      description: parsedArticle.data.metaTags.description || null,
-      image: parsedArticle.data.metaTags.image || null,
+      title: null,
+      description: null,
+      image: null,
     },
-    seriesId: parsedArticle.data.seriesId || null,
+    seriesId: null,
     settings: {
       enableTableOfContent:
         parsedArticle.data.settings.enableTableOfContent || false,
