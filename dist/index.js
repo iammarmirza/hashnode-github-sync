@@ -36260,7 +36260,7 @@ __nccwpck_require__.d(__webpack_exports__, {
 });
 
 ;// CONCATENATED MODULE: ./src/utils/constants.js
-const HASHNODE_ENDPOINT = 'gql.hashnode.com'
+const HASHNODE_ENDPOINT = 'https://gql.hashnode.com'
 
 const constants_QUERY = {
     publish: `mutation PublishPost($input: PublishPostInput!) {
