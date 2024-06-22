@@ -36270,7 +36270,7 @@ async function run () {
       const modified_files = core.getInput("modified_files")
       const deleted_files = core.getInput("deleted_files")
 
-      const added_files_arr = added_files.split(' ')
+      const added_files_arr = added_files.join(',')
       console.log(added_files)
 
     } catch (error) {
