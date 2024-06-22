@@ -10,6 +10,10 @@ inputs:
   github_token:
     description: 'Github Token'
     required: true
+
+  hashnode_host:
+    description: 'Publication host where blogs will be published'
+    required: true
                
   hashnode_token: 
     description: 'Hashnode Secret Token'
@@ -23,7 +27,7 @@ inputs:
 
   deleted_files:
     description: 'The files which have been deleted'
-    
+
 outputs:
   file_name: 
     description: 'Path of the files'

@@ -39007,12 +39007,17 @@ var lib_default = /*#__PURE__*/__nccwpck_require__.n(lib);
 const matter = __nccwpck_require__(1774)
 
 const parseFile = async (fileName) => {
-    if(fileName === '') return
     const content = await lib_default().readFile(fileName, "utf-8")
     const parsedArticle = matter(content, { language: "yaml" }) 
     return parsedArticle
 }
+;// CONCATENATED MODULE: ./src/utils/publishBlog.js
+const publishBlog = (parsedArticle) => {
+  console.log(parsedArticle)
+};
+
 ;// CONCATENATED MODULE: ./src/index.js
+
 
 const core = __nccwpck_require__(3547);
 const github = __nccwpck_require__(9210);
@@ -39030,7 +39035,7 @@ async function run () {
       const added_files_arr = added_files.split(' ').filter(file => file.endsWith('.md'))
       for (const added_file of added_files_arr) {
         const parsedArticle = await parseFile(added_file);
-        console.log(parsedArticle);
+        publishBlog(parsedArticle)
       }
       
     } catch (error) {
