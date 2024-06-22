@@ -36296,7 +36296,7 @@ const getPublicationId = (host) => {
             }
         })
     })
-    return data
+    return data.data
 }
 ;// CONCATENATED MODULE: ./src/utils/parseFile.js
 
