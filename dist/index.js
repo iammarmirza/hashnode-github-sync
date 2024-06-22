@@ -39008,8 +39008,8 @@ const matter = __nccwpck_require__(1774)
 
 const parseFile = async (fileName) => {
     if(fileName === '') return
-    const content = await lib_default().readFile(fileName, "utf-8")
-    const parsedArticle = matter(await content, { language: "yaml" }) 
+    const content = await Promise.all(lib_default().readFile(fileName, "utf-8"))
+    const parsedArticle = matter(content, { language: "yaml" }) 
     return parsedArticle
 }
 ;// CONCATENATED MODULE: ./src/index.js
