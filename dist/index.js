@@ -39075,16 +39075,16 @@ const callGraphqlAPI = async ({query, variables, token}) => {
 ;// CONCATENATED MODULE: ./src/utils/getInputToPublishPost.js
 const getInputToPublishPost = async (parsedArticle, publicationId) => {
   const input = {
-    title: parsedArticle.data.title || undefined,
-    subtitle: parsedArticle.data.subtitle || undefined,
+    title: parsedArticle.data.title || null,
+    subtitle: parsedArticle.data.subtitle || null,
     publicationId: publicationId,
     contentMarkdown: parsedArticle.content || "",
-    publishedAt: parsedArticle.publishedAt || undefined,
+    publishedAt: parsedArticle.publishedAt || null,
     coverImageOptions: {
       coverImageURL: null,
     },
-    slug: parsedArticle.data.slug || undefined,
-    originalArticleURL: parsedArticle.data.originalArticleURL || undefined,
+    slug: parsedArticle.data.slug || null,
+    originalArticleURL: parsedArticle.data.originalArticleURL || null,
     tags: [
       {
         id: null,
@@ -39094,11 +39094,11 @@ const getInputToPublishPost = async (parsedArticle, publicationId) => {
     ],
     disableComments: parsedArticle.data.disableComments || false,
     metaTags: {
-      title: parsedArticle.data.metaTags.title || undefined,
-      description: parsedArticle.data.metaTags.description || undefined,
-      image: parsedArticle.data.metaTags.image || undefined,
+      title: parsedArticle.data.metaTags.title || null,
+      description: parsedArticle.data.metaTags.description || null,
+      image: parsedArticle.data.metaTags.image || null,
     },
-    seriesId: parsedArticle.data.seriesId || undefined,
+    seriesId: parsedArticle.data.seriesId || null,
     settings: {
       enableTableOfContent:
         parsedArticle.data.settings.enableTableOfContent || false,
