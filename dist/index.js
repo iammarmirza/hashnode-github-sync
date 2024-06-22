@@ -36277,13 +36277,12 @@ const constants_QUERY = {
 
 const getPublicationIdQuery = `query findPublication ($host: String!) {
   publication(host: $host) {
-    id,
-    title
+    id
   }
 }`
 
-const getPublicationId = (host) => {
-    const data = fetch(HASHNODE_ENDPOINT, {
+const getPublicationId = async (host) => {
+    const response = await fetch(HASHNODE_ENDPOINT, {
         method: 'POST',
         headers: {
             'Content-type': 'application/json',
@@ -36296,7 +36295,10 @@ const getPublicationId = (host) => {
             }
         })
     })
-    return data.data
+    
+    const data = await response.json()
+
+    return data
 }
 ;// CONCATENATED MODULE: ./src/utils/parseFile.js
 
