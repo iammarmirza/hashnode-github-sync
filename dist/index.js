@@ -39082,7 +39082,7 @@ const getInputToPublishPost = async (parsedArticle, publicationId) => {
           "contentMarkdown": parsedArticle.content || '',
           "publishedAt": parsedArticle.publishedAt || undefined,
           "coverImageOptions": {
-            "coverImageURL": parsedArticle.data.coverImageOptions.coverImageURL || undefined
+            "coverImageURL": null
           },
           "slug": parsedArticle.data.slug || undefined,
           "originalArticleURL": parsedArticle.data.originalArticleURL || undefined,
