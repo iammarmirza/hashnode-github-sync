@@ -39041,7 +39041,7 @@ const getPublicationId = async (host) => {
 }
 ;// CONCATENATED MODULE: ./src/utils/modifyArticle.js
 const modifyArticle = async (file, hashnode_token) => {
-    console.log(file)
+    console.log(typeof file)
 }
 // EXTERNAL MODULE: ./node_modules/fs-extra/lib/index.js
 var lib = __nccwpck_require__(2539);
