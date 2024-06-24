@@ -39084,6 +39084,7 @@ const getPostId = async (publicationId, slug) => {
     })
 
     const data = await response.json()
+    console.log(JSON.stringify(null, data, 2))
     return data
 }
 ;// CONCATENATED MODULE: ./src/utils/getInputToModifyPost.js
@@ -39146,16 +39147,16 @@ const modifyArticle = async (file, hashnode_token, publicationId) => {
     const postId = await getPostId(publicationId, slug)
     const input = await getInputToModifyPost(parsedArticle, slug, postId)
 
-    const response = await callGraphqlAPI({
-        query: QUERY.modify,
-        variables: {
-            input
-        },
-        token: hashnode_token
-      })
+    // const response = await callGraphqlAPI({
+    //     query: QUERY.modify,
+    //     variables: {
+    //         input
+    //     },
+    //     token: hashnode_token
+    //   })
 
-    console.log(response)
-    return response
+    // console.log(response)
+    // return response
 }
 ;// CONCATENATED MODULE: ./src/utils/getInputToPublishPost.js
 const getInputToPublishPost = async (parsedArticle, publicationId, slug) => {
