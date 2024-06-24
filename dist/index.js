@@ -39002,7 +39002,7 @@ __nccwpck_require__.d(__webpack_exports__, {
 ;// CONCATENATED MODULE: ./src/utils/constants.js
 const HASHNODE_ENDPOINT = "https://gql.hashnode.com";
 
-const QUERY = {
+const constants_QUERY = {
   publish: `mutation PublishPost($input: PublishPostInput!) {
     publishPost(input: $input) {
       post {
@@ -39011,6 +39011,18 @@ const QUERY = {
       }
     }
   }`,
+  modify: `mutation ModifyPost ($input: UpdatePostInput!) {
+  updatePost (input: $input) {
+    post {
+      id
+      title
+      slug
+      content {
+        markdown
+      }
+    }
+  }
+}`
 };
 
 const PUBLICATION_ID_QUERY = `query findPublication ($host: String!) {
@@ -39075,9 +39087,14 @@ const getPostId = async (publicationId, slug) => {
     return data
 }
 ;// CONCATENATED MODULE: ./src/utils/getInputToModifyPost.js
-const getInputToModifyPost = async (parsedArticle, slug) => {
+const getInputToModifyPost = async (parsedArticle, slug, id) => {
   const input = {
-
+    id,
+    title: parsedArticle.data.title,
+    slug: slug,
+    content: {
+        markdown: parsedArticle.content
+    }
   }
     return input;
   };
@@ -39098,19 +39115,6 @@ const parseFile = async (fileName) => {
     const parsedArticle = matter(content, { language: "yaml" }) 
     return parsedArticle
 }
-;// CONCATENATED MODULE: ./src/utils/modifyArticle.js
-
-
-
-
-
-const modifyArticle = async (file, hashnode_token, publicationId) => {
-    const slug = makeSlug(file)
-    const parsedArticle = await parseFile(file)
-    const postId = await getPostId(publicationId, slug)
-    console.log(await postId.post)
-    const input = await getInputToModifyPost(parsedArticle, slug)
-}
 ;// CONCATENATED MODULE: ./src/api/callGraphqlAPI.js
 
 
@@ -39129,6 +39133,30 @@ const callGraphqlAPI = async ({query, variables, token}) => {
 
     const data = await response.json()
     return data
+}
+;// CONCATENATED MODULE: ./src/utils/modifyArticle.js
+
+
+
+
+
+
+const modifyArticle = async (file, hashnode_token, publicationId) => {
+    const slug = makeSlug(file)
+    const parsedArticle = await parseFile(file)
+    const postId = await getPostId(publicationId, slug)
+    const input = await getInputToModifyPost(parsedArticle, slug, postId)
+
+    const response = await callGraphqlAPI({
+        query: QUERY.modify,
+        variables: {
+            input
+        },
+        token: hashnode_token
+      })
+
+    console.log(response)
+    return response
 }
 ;// CONCATENATED MODULE: ./src/utils/getInputToPublishPost.js
 const getInputToPublishPost = async (parsedArticle, publicationId, slug) => {
@@ -39164,7 +39192,7 @@ const publishArticle = async (file, hashnode_token, publicationId) => {
   const parsedArticle = await parseFile(file)
   const input = await getInputToPublishPost(parsedArticle, publicationId, slug)
   const response = await callGraphqlAPI({
-    query: QUERY.publish,
+    query: constants_QUERY.publish,
     variables: {
         input
     },
