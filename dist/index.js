@@ -39067,7 +39067,7 @@ const callGraphqlAPI = async ({query, variables, token}) => {
         })
     })
 
-    console.log(variables)
+    console.log(variables.input)
     const data = await response.json()
 
     console.log(data)
