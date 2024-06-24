@@ -39082,7 +39082,7 @@ const getInputToModifyPost = async (parsedArticle, slug) => {
     return input;
   };
 ;// CONCATENATED MODULE: ./src/utils/makeSlug.js
-const makeSlug_makeSlug = (file) => {
+const makeSlug = (file) => {
     const slug = file.replace('.md', '')
     return slug
 }
@@ -39105,7 +39105,7 @@ const parseFile = async (fileName) => {
 
 
 const modifyArticle = async (file, hashnode_token, publicationId) => {
-    const slug = makeSlug_makeSlug(file)
+    const slug = makeSlug(file)
     const parsedArticle = await parseFile(file)
     const postId = await getPostId(publicationId, slug)
     const input = await getInputToModifyPost(parsedArticle, slug)
@@ -39152,6 +39152,7 @@ const getInputToPublishPost = async (parsedArticle, publicationId, slug) => {
 const validateInput = (parsedArticle) => {};
 
 ;// CONCATENATED MODULE: ./src/utils/publishArticle.js
+
 
 
 
