@@ -39037,6 +39037,7 @@ const getPublicationId = async (host) => {
     })
     
     const data = await response.json()
+    console.log(data)
     return data
 }
 // EXTERNAL MODULE: ./node_modules/fs-extra/lib/index.js
@@ -39076,7 +39077,7 @@ const callGraphqlAPI = async ({query, variables, token}) => {
 ;// CONCATENATED MODULE: ./src/utils/getInputToPublishPost.js
 const getInputToPublishPost = async (parsedArticle, publicationId) => {
   const input = {
-    title: 'Blog 1',
+    title: parsedArticle.data.title || '',
     subtitle: parsedArticle.data.subtitle || null,
     publicationId: publicationId,
     contentMarkdown: parsedArticle.content,
