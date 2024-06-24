@@ -39002,7 +39002,7 @@ __nccwpck_require__.d(__webpack_exports__, {
 ;// CONCATENATED MODULE: ./src/utils/constants.js
 const HASHNODE_ENDPOINT = "https://gql.hashnode.com";
 
-const constants_QUERY = {
+const QUERY = {
   publish: `mutation PublishPost($input: PublishPostInput!) {
     publishPost(input: $input) {
       post {
@@ -39141,6 +39141,7 @@ const callGraphqlAPI = async ({query, variables, token}) => {
 
 
 
+
 const modifyArticle = async (file, hashnode_token, publicationId) => {
     const slug = makeSlug(file)
     const parsedArticle = await parseFile(file)
@@ -39192,7 +39193,7 @@ const publishArticle = async (file, hashnode_token, publicationId) => {
   const parsedArticle = await parseFile(file)
   const input = await getInputToPublishPost(parsedArticle, publicationId, slug)
   const response = await callGraphqlAPI({
-    query: constants_QUERY.publish,
+    query: QUERY.publish,
     variables: {
         input
     },
