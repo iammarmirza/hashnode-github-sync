@@ -39175,6 +39175,7 @@ const getInputToPublishPost = async (parsedArticle, publicationId, slug) => {
     seriesId: null,
     settings: {
       enableTableOfContent: false,
+      isNewsletterActivated: false
     },
   };
 
