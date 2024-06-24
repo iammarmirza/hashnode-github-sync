@@ -39092,6 +39092,7 @@ const getInputToModifyPost = async (parsedArticle, slug, id) => {
     id,
     title: parsedArticle.data.title,
     slug: slug,
+    contentMarkdown: parsedArticle.content
   }
     return input;
   };
