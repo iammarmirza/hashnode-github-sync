@@ -39087,14 +39087,12 @@ const getPostId = async (publicationId, slug) => {
     return data
 }
 ;// CONCATENATED MODULE: ./src/utils/getInputToModifyPost.js
-const getInputToModifyPost = async (parsedArticle, slug, id) => {
+const getInputToModifyPost = async (parsedArticle, slug, postId) => {
+  const id = postId.post.id
   const input = {
     id,
     title: parsedArticle.data.title,
     slug: slug,
-    content: {
-        markdown: parsedArticle.content
-    }
   }
     return input;
   };
