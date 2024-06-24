@@ -39081,24 +39081,9 @@ const getInputToPublishPost = async (parsedArticle, publicationId) => {
     publicationId: publicationId.data.publication.id,
     contentMarkdown: parsedArticle.content,
     publishedAt: parsedArticle.publishedAt || null,
-    coverImageOptions: {
-      coverImageURL: null,
-    },
     slug: parsedArticle.data.slug || null,
     originalArticleURL: parsedArticle.data.originalArticleURL || null,
-    tags: [
-      {
-        id: null,
-        slug: null,
-        name: null,
-      },
-    ],
     disableComments: parsedArticle.data.disableComments || false,
-    metaTags: {
-      title: null,
-      description: null,
-      image: null,
-    },
     seriesId: null,
     settings: {
       enableTableOfContent: false,
