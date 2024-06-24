@@ -39145,7 +39145,7 @@ const modifyArticle = async (file, hashnode_token, publicationId) => {
     const parsedArticle = await parseFile(file)
     const postId = await getPostId(publicationId, slug)
     const input = await getInputToModifyPost(parsedArticle, slug, postId)
-    console.log(await postId)
+    console.log(postId)
 
     const response = await callGraphqlAPI({
         query: QUERY.modify,
