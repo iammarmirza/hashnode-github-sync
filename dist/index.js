@@ -39017,19 +39017,24 @@ const QUERY = {
       id
       title
       slug
-      content {
-        markdown
-      }
     }
   }
-}`
+}`,
+  delete: `mutation RemovePost($input: RemovePostInput!) {
+  removePost(input: $input) {
+    post {
+      id
+      slug
+    }
+  }
+}`,
 };
 
 const PUBLICATION_ID_QUERY = `query findPublication ($host: String!) {
   publication(host: $host) {
     id
   }
-}`
+}`;
 
 const POST_ID_QUERY = `query Publication($id: ObjectId, $slug: String!) {
   publication(id: $id) {
@@ -39038,7 +39043,7 @@ const POST_ID_QUERY = `query Publication($id: ObjectId, $slug: String!) {
       id
     }
   }
-}`
+}`;
 
 ;// CONCATENATED MODULE: ./src/api/getPublicationId.js
 
@@ -39089,7 +39094,7 @@ const getPostId = async (publicationId, slug) => {
 ;// CONCATENATED MODULE: ./src/utils/getInputToModifyPost.js
 const getInputToModifyPost = async (parsedArticle, slug, id) => {
   const input = {
-    id: id,
+    id,
     title: parsedArticle.data.title,
     slug: slug,
     contentMarkdown: parsedArticle.content
@@ -39145,7 +39150,6 @@ const modifyArticle = async (file, hashnode_token, publicationId) => {
     const parsedArticle = await parseFile(file)
     const postId = await getPostId(publicationId, slug)
     const input = await getInputToModifyPost(parsedArticle, slug, postId)
-    console.log(postId)
 
     const response = await callGraphqlAPI({
         query: QUERY.modify,
@@ -39155,7 +39159,6 @@ const modifyArticle = async (file, hashnode_token, publicationId) => {
         token: hashnode_token
       })
 
-    console.log(response)
     return response
 }
 ;// CONCATENATED MODULE: ./src/utils/getInputToPublishPost.js
