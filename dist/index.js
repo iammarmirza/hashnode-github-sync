@@ -39072,7 +39072,7 @@ const getPostId = async (publicationId, slug) => {
     })
 
     const data = await response.json()
-    console.log(data)
+    console.log(data.post)
     return data
 }
 ;// CONCATENATED MODULE: ./src/utils/getInputToModifyPost.js
