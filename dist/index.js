@@ -39108,7 +39108,7 @@ const modifyArticle = async (file, hashnode_token, publicationId) => {
     const slug = makeSlug(file)
     const parsedArticle = await parseFile(file)
     const postId = await getPostId(publicationId, slug)
-    console.log(postId)
+    console.log(await postId.post)
     const input = await getInputToModifyPost(parsedArticle, slug)
 }
 ;// CONCATENATED MODULE: ./src/api/callGraphqlAPI.js
