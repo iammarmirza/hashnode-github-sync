@@ -39037,7 +39037,6 @@ const getPublicationId = async (host) => {
     })
     
     const data = await response.json()
-    console.log(data)
     return data
 }
 // EXTERNAL MODULE: ./node_modules/fs-extra/lib/index.js
@@ -39079,7 +39078,7 @@ const getInputToPublishPost = async (parsedArticle, publicationId) => {
   const input = {
     title: parsedArticle.data.title || '',
     subtitle: parsedArticle.data.subtitle || null,
-    publicationId: publicationId,
+    publicationId: publicationId.data.publication.id,
     contentMarkdown: parsedArticle.content,
     publishedAt: parsedArticle.publishedAt || null,
     coverImageOptions: {
@@ -39148,7 +39147,7 @@ async function run () {
       const modified_files = core.getInput("modified_files")
       const deleted_files = core.getInput("deleted_files")
 
-      const publicationId = await getPublicationId(host)
+      const _pubIdData = await getPublicationId(host)
       
       const added_files_arr = added_files.split(' ').filter(file => file.endsWith('.md'))
       const publishPromises = added_files_arr.map(added_file => publishArticle(added_file, hashnode_token, publicationId))
