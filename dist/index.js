@@ -39060,7 +39060,7 @@ const getPublicationId = async (host) => {
     })
     
     const data = await response.json()
-    return data
+    return data.data.publication.id
 }
 ;// CONCATENATED MODULE: ./src/api/getPostID.js
 
@@ -39163,7 +39163,7 @@ const getInputToPublishPost = async (parsedArticle, publicationId, slug) => {
   const input = {
     title: parsedArticle.data.title || '',
     subtitle: parsedArticle.data.subtitle || null,
-    publicationId: publicationId.data.publication.id,
+    publicationId: publicationId,
     contentMarkdown: parsedArticle.content,
     publishedAt: parsedArticle.publishedAt || null,
     slug: slug,
