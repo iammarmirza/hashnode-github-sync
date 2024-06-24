@@ -39084,19 +39084,8 @@ const getPostId = async (publicationId, slug) => {
     })
 
     const data = await response.json()
-    console.log(JSON.stringify(null, data, 2))
     return data
 }
-;// CONCATENATED MODULE: ./src/utils/getInputToModifyPost.js
-const getInputToModifyPost = async (parsedArticle, slug, postId) => {
-  const id = await postId.post.id
-  const input = {
-    id,
-    title: parsedArticle.data.title,
-    slug: slug,
-  }
-    return input;
-  };
 ;// CONCATENATED MODULE: ./src/utils/makeSlug.js
 const makeSlug = (file) => {
     const slug = file.replace('.md', '')
@@ -39145,7 +39134,8 @@ const modifyArticle = async (file, hashnode_token, publicationId) => {
     const slug = makeSlug(file)
     const parsedArticle = await parseFile(file)
     const postId = await getPostId(publicationId, slug)
-    const input = await getInputToModifyPost(parsedArticle, slug, postId)
+    console.log(JSON.stringify(postId, null, 2))
+    // const input = await getInputToModifyPost(parsedArticle, slug, postId)
 
     // const response = await callGraphqlAPI({
     //     query: QUERY.modify,
