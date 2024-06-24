@@ -39118,7 +39118,7 @@ const validateInput = (parsedArticle) => {};
 
 const publishArticle = async (file, hashnode_token, publicationId) => {
   const parsedArticle = await parseFile(file)
-  const input = getInputToPublishPost(parsedArticle, publicationId)
+  const input = await getInputToPublishPost(parsedArticle, publicationId)
   const response = await callGraphqlAPI({
     query: QUERY.publish,
     variables: {
