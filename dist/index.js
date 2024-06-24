@@ -39039,6 +39039,10 @@ const getPublicationId = async (host) => {
     const data = await response.json()
     return data
 }
+;// CONCATENATED MODULE: ./src/utils/modifyArticle.js
+const modifyArticle = async (file, hashnode_token) => {
+    console.log(file)
+}
 // EXTERNAL MODULE: ./node_modules/fs-extra/lib/index.js
 var lib = __nccwpck_require__(2539);
 var lib_default = /*#__PURE__*/__nccwpck_require__.n(lib);
@@ -39067,9 +39071,7 @@ const callGraphqlAPI = async ({query, variables, token}) => {
         })
     })
 
-    console.log(variables)
     const data = await response.json()
-
     console.log(data)
     return data
 }
@@ -39118,6 +39120,7 @@ const publishArticle = async (file, hashnode_token, publicationId) => {
 
 
 
+
 const core = __nccwpck_require__(3547);
 const github = __nccwpck_require__(9210);
 
@@ -39136,9 +39139,12 @@ async function run () {
       
       const added_files_arr = added_files.split(' ').filter(file => file.endsWith('.md'))
       const publishPromises = added_files_arr.map(added_file => publishArticle(added_file, hashnode_token, publicationId))
-
       await Promise.all(publishPromises)
-      
+
+      const modified_files_arr = modified_files.split(' ').filter(file => file.endsWith('.md'))
+      const modifyPromises = modified_files_arr.map(modified_file => modifyArticle(modified_file, hashnode_token))
+      await Promise.all(modifyPromises)
+
     } catch (error) {
       core.setFailed(error.message);
     }
