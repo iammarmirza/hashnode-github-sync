@@ -39067,6 +39067,11 @@ const getPublicationId = async (host) => {
     const data = await response.json()
     return data.data.publication.id
 }
+;// CONCATENATED MODULE: ./src/utils/makeSlug.js
+const makeSlug = (file) => {
+    const slug = file.replace('.md', '')
+    return slug
+}
 ;// CONCATENATED MODULE: ./src/api/getPostID.js
 
 
@@ -39091,6 +39096,37 @@ const getPostId = async (publicationId, slug) => {
     const data = await response.json()
     return data.data.publication.post.id
 }
+;// CONCATENATED MODULE: ./src/utils/getInputToDeletePost.js
+const getInputToDeletePost = async (id, slug) => {
+    const input = {
+        id,
+        slug
+    }
+
+    return input
+}
+;// CONCATENATED MODULE: ./src/utils/deleteArticle.js
+
+
+
+
+
+const deleteArticle = async (file, hashnode_token, publicationId) => {
+    const slug = makeSlug(file)
+    const postId = await getPostId(publicationId, slug)
+    const input = await getInputToDeletePost(postId, slug)
+
+    const response = await callGraphqlAPI({
+        query: QUERY["delete"],
+        variables: {
+            input
+        },
+        token: hashnode_token
+      })
+
+    console.log(response)
+    return response
+}
 ;// CONCATENATED MODULE: ./src/utils/getInputToModifyPost.js
 const getInputToModifyPost = async (parsedArticle, slug, id) => {
   const input = {
@@ -39101,11 +39137,6 @@ const getInputToModifyPost = async (parsedArticle, slug, id) => {
   }
     return input;
   };
-;// CONCATENATED MODULE: ./src/utils/makeSlug.js
-const makeSlug = (file) => {
-    const slug = file.replace('.md', '')
-    return slug
-}
 // EXTERNAL MODULE: ./node_modules/fs-extra/lib/index.js
 var lib = __nccwpck_require__(2539);
 var lib_default = /*#__PURE__*/__nccwpck_require__.n(lib);
@@ -39121,7 +39152,7 @@ const parseFile = async (fileName) => {
 ;// CONCATENATED MODULE: ./src/api/callGraphqlAPI.js
 
 
-const callGraphqlAPI = async ({query, variables, token}) => {
+const callGraphqlAPI_callGraphqlAPI = async ({query, variables, token}) => {
     const response = await fetch(HASHNODE_ENDPOINT, {
         method: 'POST',
         headers: {
@@ -39151,7 +39182,7 @@ const modifyArticle = async (file, hashnode_token, publicationId) => {
     const postId = await getPostId(publicationId, slug)
     const input = await getInputToModifyPost(parsedArticle, slug, postId)
 
-    const response = await callGraphqlAPI({
+    const response = await callGraphqlAPI_callGraphqlAPI({
         query: QUERY.modify,
         variables: {
             input
@@ -39195,7 +39226,7 @@ const publishArticle = async (file, hashnode_token, publicationId) => {
   const slug = makeSlug(file)
   const parsedArticle = await parseFile(file)
   const input = await getInputToPublishPost(parsedArticle, publicationId, slug)
-  const response = await callGraphqlAPI({
+  const response = await callGraphqlAPI_callGraphqlAPI({
     query: QUERY.publish,
     variables: {
         input
@@ -39206,6 +39237,7 @@ const publishArticle = async (file, hashnode_token, publicationId) => {
 };
 
 ;// CONCATENATED MODULE: ./src/index.js
+
 
 
 
@@ -39233,6 +39265,10 @@ async function run () {
       const modified_files_arr = modified_files.split(' ').filter(file => file.endsWith('.md'))
       const modifyPromises = modified_files_arr.map(modified_file => modifyArticle(modified_file, hashnode_token, publicationId))
       await Promise.all(modifyPromises)
+
+      const deleted_files_arr = deleted_files.split(' ').filter(file => file.endsWith('.md'))
+      const deletePromises = deleted_files_arr.map(deleted_file => deleteArticle(deleted_file, hashnode_token, publicationId))
+      await Promise.all(deletePromises)
 
     } catch (error) {
       core.setFailed(error.message);
