@@ -39097,10 +39097,9 @@ const getPostId = async (publicationId, slug) => {
     return data.data.publication.post.id
 }
 ;// CONCATENATED MODULE: ./src/utils/getInputToDeletePost.js
-const getInputToDeletePost = async (id, slug) => {
+const getInputToDeletePost = async (id) => {
     const input = {
-        id,
-        slug
+        id
     }
 
     return input
@@ -39134,7 +39133,7 @@ const callGraphqlAPI = async ({query, variables, token}) => {
 const deleteArticle = async (file, hashnode_token, publicationId) => {
     const slug = makeSlug(file)
     const postId = await getPostId(publicationId, slug)
-    const input = await getInputToDeletePost(postId, slug)
+    const input = await getInputToDeletePost(postId)
 
     const response = await callGraphqlAPI({
         query: QUERY["delete"],
