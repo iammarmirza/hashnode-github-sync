@@ -39105,7 +39105,27 @@ const getInputToDeletePost = async (id, slug) => {
 
     return input
 }
+;// CONCATENATED MODULE: ./src/api/callGraphqlAPI.js
+
+
+const callGraphqlAPI = async ({query, variables, token}) => {
+    const response = await fetch(HASHNODE_ENDPOINT, {
+        method: 'POST',
+        headers: {
+            'Content-type': 'application/json',
+            Authorization: token
+        },
+        body: JSON.stringify({
+            query,
+            variables,
+        })
+    })
+
+    const data = await response.json()
+    return data
+}
 ;// CONCATENATED MODULE: ./src/utils/deleteArticle.js
+
 
 
 
@@ -39149,25 +39169,6 @@ const parseFile = async (fileName) => {
     const parsedArticle = matter(content, { language: "yaml" }) 
     return parsedArticle
 }
-;// CONCATENATED MODULE: ./src/api/callGraphqlAPI.js
-
-
-const callGraphqlAPI_callGraphqlAPI = async ({query, variables, token}) => {
-    const response = await fetch(HASHNODE_ENDPOINT, {
-        method: 'POST',
-        headers: {
-            'Content-type': 'application/json',
-            Authorization: token
-        },
-        body: JSON.stringify({
-            query,
-            variables,
-        })
-    })
-
-    const data = await response.json()
-    return data
-}
 ;// CONCATENATED MODULE: ./src/utils/modifyArticle.js
 
 
@@ -39182,7 +39183,7 @@ const modifyArticle = async (file, hashnode_token, publicationId) => {
     const postId = await getPostId(publicationId, slug)
     const input = await getInputToModifyPost(parsedArticle, slug, postId)
 
-    const response = await callGraphqlAPI_callGraphqlAPI({
+    const response = await callGraphqlAPI({
         query: QUERY.modify,
         variables: {
             input
@@ -39226,7 +39227,7 @@ const publishArticle = async (file, hashnode_token, publicationId) => {
   const slug = makeSlug(file)
   const parsedArticle = await parseFile(file)
   const input = await getInputToPublishPost(parsedArticle, publicationId, slug)
-  const response = await callGraphqlAPI_callGraphqlAPI({
+  const response = await callGraphqlAPI({
     query: QUERY.publish,
     variables: {
         input
