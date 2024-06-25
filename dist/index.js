@@ -39072,8 +39072,9 @@ const getPublicationId = async (host) => {
 
 
 const getPostId = async (publicationId, slug) => {
-    const id = publicationId.data.publication.id
     console.log(publicationId)
+    const id = publicationId.data.publication.id
+    
     const response = await fetch(HASHNODE_ENDPOINT, {
         method: 'POST',
         headers: {
