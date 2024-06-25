@@ -39072,8 +39072,6 @@ const getPublicationId = async (host) => {
 
 
 const getPostId = async (publicationId, slug) => {
-    console.log(publicationId)
-    const id = publicationId.data.publication.id
     
     const response = await fetch(HASHNODE_ENDPOINT, {
         method: 'POST',
@@ -39084,7 +39082,7 @@ const getPostId = async (publicationId, slug) => {
         body: JSON.stringify({
             query: POST_ID_QUERY,
             variables: {
-                id,
+                id: publicationId,
                 slug
             }
         })
