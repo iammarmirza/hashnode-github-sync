@@ -7,9 +7,6 @@ runs:
   main: 'dist/index.js'
 
 inputs:
-  github_token:
-    description: 'Github Token'
-    required: true
 
   hashnode_host:
     description: 'Publication host where blogs will be published'
