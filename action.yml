@@ -8,6 +8,9 @@ runs:
 
 inputs:
 
+  hashnode_event:
+    description: 'The event responsible for triggering action'
+
   hashnode_host:
     description: 'Publication host where blogs will be published'
     required: true
@@ -26,5 +29,5 @@ inputs:
     description: 'The files which have been deleted'
 
 outputs:
-  file_name: 
-    description: 'Path of the files'
+  hashnode_event: 
+    description: 'Event responsible for trigger'

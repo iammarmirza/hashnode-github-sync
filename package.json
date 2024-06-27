@@ -15,5 +15,8 @@
     "fs-extra": "^11.2.0",
     "gray-matter": "^4.0.3",
     "octokit": "^4.0.2"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4"
   }
 }
