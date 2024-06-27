@@ -39245,13 +39245,11 @@ const publishArticle = async (file, hashnode_token, publicationId) => {
 
 
 
-
 const core = __nccwpck_require__(3547);
 const github = __nccwpck_require__(9210);
 
 async function run () {
    try {
-      const github_token = core.getInput("github_token")
       const hashnode_token = core.getInput("hashnode_token")
       const host = core.getInput("hashnode_host")
       core.setSecret(hashnode_token)
