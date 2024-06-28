@@ -39230,10 +39230,10 @@ const publishSync = async (publicationId, postSlug) => {
 
 
 
-const hashnodeSync = async (hashnode_event) => {
-    const eventType = hashnode_event.data.eventType
-    const postId = hashnode_event.data.post.id
-    const publicationId = hashnode_event.data.publication.id
+const hashnodeSync = async (parsedEvent) => {
+    const eventType = parsedEvent.eventType
+    const postId = parsedEvent.post.id
+    const publicationId = parsedEvent.publication.id
     const postSlug = await getPostSlug(postId)
 
     switch (eventType) {

@@ -3,10 +3,10 @@ import { deleteSync } from "./deleteSync";
 import { modifySync } from "./modifySync";
 import { publishSync } from "./publishSync"
 
-export const hashnodeSync = async (hashnode_event) => {
-    const eventType = hashnode_event.data.eventType
-    const postId = hashnode_event.data.post.id
-    const publicationId = hashnode_event.data.publication.id
+export const hashnodeSync = async (parsedEvent) => {
+    const eventType = parsedEvent.eventType
+    const postId = parsedEvent.post.id
+    const publicationId = parsedEvent.publication.id
     const postSlug = await getPostSlug(postId)
 
     switch (eventType) {
