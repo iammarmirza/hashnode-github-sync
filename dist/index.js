@@ -39358,6 +39358,8 @@ async function run() {
 
     const publicationId = await getPublicationId(host);
     console.log(typeof hashnode_event)
+    console.log(hashnode_event)
+    console.log(JSON.parse(hashnode_event))
     const eventType = hashnode_event?.data?.eventType
 
     if (eventType) {
