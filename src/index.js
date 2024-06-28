@@ -17,7 +17,7 @@ export async function run() {
     core.setSecret(hashnode_token);
 
     const publicationId = await getPublicationId(host);
-
+    console.log(hashnode_event)
     if (hashnode_event) hashnodeSync(hashnode_event)
     
     else {
