@@ -4,7 +4,6 @@ import { hashnodeSync } from "./utils/hashnodeSync";
 import { modifyArticle } from "./utils/modifyArticle";
 import { publishArticle } from "./utils/publishArticle";
 const core = require("@actions/core");
-const github = require("@actions/github");
 
 export async function run() {
   try {
