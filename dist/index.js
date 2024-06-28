@@ -39357,8 +39357,9 @@ async function run() {
     core.setSecret(hashnode_token);
 
     const publicationId = await getPublicationId(host);
+    const parsedEvent = JSON.parse(hashnode_event)
 
-    if (JSON.parse(hashnode_event)) hashnodeSync(hashnode_event)
+    if (parsedEvent) hashnodeSync(parsedEvent)
     
     else {
       const added_files_arr = added_files
