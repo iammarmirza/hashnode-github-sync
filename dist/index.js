@@ -39358,7 +39358,9 @@ async function run() {
 
     const publicationId = await getPublicationId(host);
     console.log(hashnode_event.data)
-    if (hashnode_event !== null) hashnodeSync(hashnode_event)
+    if (hashnode_event) {
+      hashnodeSync(hashnode_event)
+    }
     
     else {
       const added_files_arr = added_files
