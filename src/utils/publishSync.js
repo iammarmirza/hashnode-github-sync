@@ -1,4 +1,4 @@
-import { createFile } from "fs-extra"
+import { createFile } from "./createFile"
 import { getPostData } from "../api/getPostData"
 
 export const publishSync = async (publicationId, postSlug) => {
