@@ -39199,7 +39199,7 @@ const modifySync = () => {
 
 
 const getPostData = async (publicationId, postSlug) => {
-    const response = await callGraphqlAPI({
+    const data = await callGraphqlAPI({
         query: POST_DATA_QUERY,
         variables: {
             id: publicationId,
@@ -39208,7 +39208,7 @@ const getPostData = async (publicationId, postSlug) => {
         token: `${process.env.HASHNODE_TOKEN}`
     })
 
-    return await response.json()
+    return data
 }
 // EXTERNAL MODULE: ./node_modules/fs-extra/lib/index.js
 var lib = __nccwpck_require__(2539);
