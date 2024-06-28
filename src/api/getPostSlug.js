@@ -10,5 +10,6 @@ export const getPostSlug = async (id) => {
         token: `${process.env.HASHNODE_TOKEN}`
     })
 
+    console.log(response)
     return response.data.post.id
 }
