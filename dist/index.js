@@ -39185,7 +39185,7 @@ const getPostSlug = async (id) => {
     })
 
     console.log(response)
-    return response.data.post.id
+    return response.data.post.slug
 }
 ;// CONCATENATED MODULE: ./src/utils/deleteSync.js
 const deleteSync = () => {
