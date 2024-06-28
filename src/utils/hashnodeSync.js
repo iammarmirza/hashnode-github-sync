@@ -8,6 +8,7 @@ export const hashnodeSync = async (parsedEvent) => {
     const postId = parsedEvent.post.id
     const publicationId = parsedEvent.publication.id
     const postSlug = await getPostSlug(postId)
+    console.log('postSlug', postSlug)
 
     switch (eventType) {
         case 'post_published':
