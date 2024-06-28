@@ -39210,19 +39210,17 @@ const getPostData = async (publicationId, postSlug) => {
 
     return data
 }
-// EXTERNAL MODULE: ./node_modules/fs-extra/lib/index.js
-var lib = __nccwpck_require__(2539);
-var lib_default = /*#__PURE__*/__nccwpck_require__.n(lib);
 ;// CONCATENATED MODULE: ./src/utils/publishSync.js
 
 
 
 const publishSync = async (publicationId, postSlug) => {
     const data = await getPostData(publicationId, postSlug)
-    const fileName = `${postSlug}.md`
-    lib_default().outputFile(fileName, 'Post Published!', (err) => {
-        if(err) console.log(err)
-    })
+    console.log(data)
+    // const fileName = `${postSlug}.md`
+    // fs.outputFile(fileName, 'Post Published!', (err) => {
+    //     if(err) console.log(err)
+    // })
 }
 ;// CONCATENATED MODULE: ./src/utils/hashnodeSync.js
 
@@ -39260,6 +39258,9 @@ const getInputToModifyPost = async (parsedArticle, slug, id) => {
   }
     return input;
   };
+// EXTERNAL MODULE: ./node_modules/fs-extra/lib/index.js
+var lib = __nccwpck_require__(2539);
+var lib_default = /*#__PURE__*/__nccwpck_require__.n(lib);
 ;// CONCATENATED MODULE: ./src/utils/parseFile.js
 
 const matter = __nccwpck_require__(1774)
