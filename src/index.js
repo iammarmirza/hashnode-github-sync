@@ -17,14 +17,8 @@ export async function run() {
     core.setSecret(hashnode_token);
 
     const publicationId = await getPublicationId(host);
-    console.log(typeof hashnode_event)
-    console.log(hashnode_event)
-    console.log(JSON.parse(hashnode_event))
-    const eventType = hashnode_event?.data?.eventType
 
-    if (eventType) {
-      hashnodeSync(hashnode_event)
-    }
+    if (JSON.parse(hashnode_event)) hashnodeSync(hashnode_event)
     
     else {
       const added_files_arr = added_files
