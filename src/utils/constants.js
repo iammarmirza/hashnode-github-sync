@@ -42,3 +42,25 @@ export const POST_ID_QUERY = `query Publication($id: ObjectId, $slug: String!) {
     }
   }
 }`;
+
+export const POST_SLUG_QUERY = `query PostSlug ($id: ID!) {
+  post(id: $id) {
+    slug
+  }
+}`
+
+export const POST_DATA_QUERY = `query PostData ($id: ObjectId, $slug: String!) {
+  publication(id: $id) {
+    post(slug: $slug) {
+      id
+      slug
+      title
+      subtitle
+      publishedAt
+      content {
+        markdown
+      }
+      sourcedFromGithub
+    }
+  }
+}`

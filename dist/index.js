@@ -39045,6 +39045,27 @@ const POST_ID_QUERY = `query Publication($id: ObjectId, $slug: String!) {
   }
 }`;
 
+const POST_SLUG_QUERY = `query PostSlug ($id: ID!) {
+  post(id: $id) {
+    slug
+  }
+}`
+
+const POST_DATA_QUERY = `query PostData ($id: ObjectId, $slug: String!) {
+  publication(id: $id) {
+    post(slug: $slug) {
+      id
+      slug
+      title
+      subtitle
+      publishedAt
+      content {
+        markdown
+      }
+      sourcedFromGithub
+    }
+  }
+}`
 ;// CONCATENATED MODULE: ./src/api/getPublicationId.js
 
 
@@ -39150,6 +39171,85 @@ const deleteArticle = async (file, hashnode_token, publicationId) => {
     console.log(response)
     return response
 }
+;// CONCATENATED MODULE: ./src/api/getPostSlug.js
+
+
+
+const getPostSlug = async (id) => {
+    const response = await callGraphqlAPI({
+        query: POST_SLUG_QUERY,
+        variables: {
+            id
+        },
+        token: `${process.env.HASHNODE_TOKEN}`
+    })
+
+    return response.data.post.id
+}
+;// CONCATENATED MODULE: ./src/utils/deleteSync.js
+const deleteSync = () => {
+    
+}
+;// CONCATENATED MODULE: ./src/utils/modifySync.js
+const modifySync = () => {
+    
+}
+;// CONCATENATED MODULE: ./src/api/getPostData.js
+
+
+
+const getPostData = async (publicationId, postSlug) => {
+    const response = await callGraphqlAPI({
+        query: POST_DATA_QUERY,
+        variables: {
+            id: publicationId,
+            slug: postSlug
+        },
+        token: `${process.env.HASHNODE_TOKEN}`
+    })
+
+    return await response.json()
+}
+// EXTERNAL MODULE: ./node_modules/fs-extra/lib/index.js
+var lib = __nccwpck_require__(2539);
+var lib_default = /*#__PURE__*/__nccwpck_require__.n(lib);
+;// CONCATENATED MODULE: ./src/utils/publishSync.js
+
+
+
+const publishSync = async (publicationId, postSlug) => {
+    const data = await getPostData(publicationId, postSlug)
+    const fileName = `${postSlug}.md`
+    lib_default().outputFile(fileName, 'Post Published!', (err) => {
+        if(err) console.log(err)
+    })
+}
+;// CONCATENATED MODULE: ./src/utils/hashnodeSync.js
+
+
+
+
+
+const hashnodeSync = async (hashnode_event) => {
+    const eventType = hashnode_event.data.eventType
+    const postId = hashnode_event.data.post.id
+    const publicationId = hashnode_event.data.publication.id
+    const postSlug = await getPostSlug(postId)
+
+    switch (eventType) {
+        case 'post_published':
+            publishSync(publicationId, postSlug)
+            break;
+
+        case 'post_updated':
+            modifySync(hashnode_event)
+            break;
+        
+        case 'post_deleted':
+            deleteSync(hashnode_event)
+            break;
+    }
+}
 ;// CONCATENATED MODULE: ./src/utils/getInputToModifyPost.js
 const getInputToModifyPost = async (parsedArticle, slug, id) => {
   const input = {
@@ -39160,9 +39260,6 @@ const getInputToModifyPost = async (parsedArticle, slug, id) => {
   }
     return input;
   };
-// EXTERNAL MODULE: ./node_modules/fs-extra/lib/index.js
-var lib = __nccwpck_require__(2539);
-var lib_default = /*#__PURE__*/__nccwpck_require__.n(lib);
 ;// CONCATENATED MODULE: ./src/utils/parseFile.js
 
 const matter = __nccwpck_require__(1774)
@@ -39245,41 +39342,55 @@ const publishArticle = async (file, hashnode_token, publicationId) => {
 
 
 
+
 const core = __nccwpck_require__(3547);
 const github = __nccwpck_require__(9210);
 
-async function run () {
-   try {
-      const hashnode_event = core.getInput("hashnode_event")
-      const hashnode_token = core.getInput("hashnode_token")
-      const host = core.getInput("hashnode_host")
-      core.setSecret(hashnode_token)
+async function run() {
+  try {
+    const hashnode_event = core.getInput("hashnode_event");
+    const hashnode_token = core.getInput("hashnode_token");
+    const host = core.getInput("hashnode_host");
+    const added_files = core.getInput("added_files");
+    const modified_files = core.getInput("modified_files");
+    const deleted_files = core.getInput("deleted_files");
+    core.setSecret(hashnode_token);
 
-      console.log(hashnode_event)
+    const publicationId = await getPublicationId(host);
 
-      const added_files = core.getInput("added_files")
-      const modified_files = core.getInput("modified_files")
-      const deleted_files = core.getInput("deleted_files")
+    if (hashnode_event) hashnodeSync(hashnode_event)
+    
+    else {
+      const added_files_arr = added_files
+        .split(" ")
+        .filter((file) => file.endsWith(".md"));
+      const publishPromises = added_files_arr.map((added_file) =>
+        publishArticle(added_file, hashnode_token, publicationId)
+      );
+      await Promise.all(publishPromises);
 
-      const publicationId = await getPublicationId(host)
-      
-      const added_files_arr = added_files.split(' ').filter(file => file.endsWith('.md'))
-      const publishPromises = added_files_arr.map(added_file => publishArticle(added_file, hashnode_token, publicationId))
-      await Promise.all(publishPromises)
+      const modified_files_arr = modified_files
+        .split(" ")
+        .filter((file) => file.endsWith(".md"));
+      const modifyPromises = modified_files_arr.map((modified_file) =>
+        modifyArticle(modified_file, hashnode_token, publicationId)
+      );
+      await Promise.all(modifyPromises);
 
-      const modified_files_arr = modified_files.split(' ').filter(file => file.endsWith('.md'))
-      const modifyPromises = modified_files_arr.map(modified_file => modifyArticle(modified_file, hashnode_token, publicationId))
-      await Promise.all(modifyPromises)
-
-      const deleted_files_arr = deleted_files.split(' ').filter(file => file.endsWith('.md'))
-      const deletePromises = deleted_files_arr.map(deleted_file => deleteArticle(deleted_file, hashnode_token, publicationId))
-      await Promise.all(deletePromises)
-
-    } catch (error) {
-      core.setFailed(error.message);
+      const deleted_files_arr = deleted_files
+        .split(" ")
+        .filter((file) => file.endsWith(".md"));
+      const deletePromises = deleted_files_arr.map((deleted_file) =>
+        deleteArticle(deleted_file, hashnode_token, publicationId)
+      );
+      await Promise.all(deletePromises);
     }
+  } catch (error) {
+    core.setFailed(error.message);
+  }
 }
-run()
+run();
+
 })();
 
 module.exports = __webpack_exports__;
