@@ -1,9 +1,10 @@
-import fs from "fs-extra";
+import { Octokit } from "@octokit/rest";
+
 const github = require("@actions/github");
 
-const octokit = github.getOctokit({
-  auth: process.env.GITHUB_ACCESS_TOKEN,
-});
+const octokit = new Octokit({
+    auth: `${process.env.GITHUB_TOKEN}`
+})
 
 export const createFile = async () => {
   try {
