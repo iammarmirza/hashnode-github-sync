@@ -4,7 +4,7 @@ const { Base64 } = require("js-base64")
 const github = require("@actions/github");
 
 const octokit = new Octokit({
-  auth: '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',
+  auth: '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',
 });
 
 export const createFile = async () => {
