@@ -43089,7 +43089,7 @@ const { Base64 } = __nccwpck_require__(9139)
 const github = __nccwpck_require__(9210);
 
 const octokit = new dist_src_Octokit({
-  auth: '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',
+  auth: process.env.GITHUB_TOKEN,
 });
 
 const createFile = async () => {
