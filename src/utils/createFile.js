@@ -15,14 +15,15 @@ export const createFile = async () => {
       owner: "iammarmirza",
       repo: "github-actions-test",
       path: "OUTPUT.md",
+      branch: "main",
       message: "feat: Added OUTPUT.md programatically",
       content: contentEncoded,
       committer: {
-        name: `Octokit Bot`,
+        name: `Ammar Mirza`,
         email: "itsammarmirza@gmail.com",
       },
       author: {
-        name: "Octokit Bot",
+        name: "Ammar Mirza",
         email: "itsammarmirza@gmail.com",
       },
     });

@@ -39474,7 +39474,6 @@ const deleteArticle = async (file, hashnode_token, publicationId) => {
         token: hashnode_token
       })
 
-    console.log(response)
     return response
 }
 ;// CONCATENATED MODULE: ./src/api/getPostSlug.js
@@ -43101,14 +43100,15 @@ const createFile = async () => {
       owner: "iammarmirza",
       repo: "github-actions-test",
       path: "OUTPUT.md",
+      branch: "main",
       message: "feat: Added OUTPUT.md programatically",
       content: contentEncoded,
       committer: {
-        name: `Octokit Bot`,
+        name: `Ammar Mirza`,
         email: "itsammarmirza@gmail.com",
       },
       author: {
-        name: "Octokit Bot",
+        name: "Ammar Mirza",
         email: "itsammarmirza@gmail.com",
       },
     });
@@ -43141,7 +43141,6 @@ const getPostData = async (publicationId, postSlug) => {
 
 const publishSync = async (publicationId, postSlug) => {
     const data = await getPostData(publicationId, postSlug)
-    console.log(data)
     createFile()
 }
 ;// CONCATENATED MODULE: ./src/utils/hashnodeSync.js

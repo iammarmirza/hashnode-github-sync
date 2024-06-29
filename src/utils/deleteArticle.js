@@ -17,6 +17,5 @@ export const deleteArticle = async (file, hashnode_token, publicationId) => {
         token: hashnode_token
       })
 
-    console.log(response)
     return response
 }
