@@ -3,7 +3,7 @@ import { deleteSync } from "./deleteSync";
 import { modifySync } from "./modifySync";
 import { publishSync } from "./publishSync"
 
-export const hashnodeSync = async (parsedEvent) => {
+export const hashnodeToGithubSync = async (parsedEvent) => {
     const eventType = parsedEvent.eventType
     const postId = parsedEvent.post.id
     const publicationId = parsedEvent.publication.id

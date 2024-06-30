@@ -36750,7 +36750,7 @@ var _version = _interopRequireDefault(__nccwpck_require__(961));
 
 var _validate = _interopRequireDefault(__nccwpck_require__(5887));
 
-var _stringify = _interopRequireDefault(__nccwpck_require__(4941));
+var _stringify = _interopRequireDefault(__nccwpck_require__(6682));
 
 var _parse = _interopRequireDefault(__nccwpck_require__(7610));
 
@@ -36931,7 +36931,7 @@ exports["default"] = _default;
 
 /***/ }),
 
-/***/ 4941:
+/***/ 6682:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -36990,7 +36990,7 @@ exports["default"] = void 0;
 
 var _rng = _interopRequireDefault(__nccwpck_require__(6781));
 
-var _stringify = _interopRequireDefault(__nccwpck_require__(4941));
+var _stringify = _interopRequireDefault(__nccwpck_require__(6682));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -37126,7 +37126,7 @@ Object.defineProperty(exports, "__esModule", ({
 exports["default"] = _default;
 exports.URL = exports.DNS = void 0;
 
-var _stringify = _interopRequireDefault(__nccwpck_require__(4941));
+var _stringify = _interopRequireDefault(__nccwpck_require__(6682));
 
 var _parse = _interopRequireDefault(__nccwpck_require__(7610));
 
@@ -37212,7 +37212,7 @@ exports["default"] = void 0;
 
 var _rng = _interopRequireDefault(__nccwpck_require__(6781));
 
-var _stringify = _interopRequireDefault(__nccwpck_require__(4941));
+var _stringify = _interopRequireDefault(__nccwpck_require__(6682));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -38186,7 +38186,7 @@ const WritableStream = (__nccwpck_require__(4492).Writable)
 const { inherits } = __nccwpck_require__(7261)
 const Dicer = __nccwpck_require__(7725)
 
-const MultipartParser = __nccwpck_require__(6682)
+const MultipartParser = __nccwpck_require__(9666)
 const UrlencodedParser = __nccwpck_require__(5261)
 const parseParams = __nccwpck_require__(1004)
 
@@ -38269,7 +38269,7 @@ module.exports.Dicer = Dicer
 
 /***/ }),
 
-/***/ 6682:
+/***/ 9666:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
@@ -39305,6 +39305,20 @@ __nccwpck_require__.d(__webpack_exports__, {
   "run": () => (/* binding */ run)
 });
 
+;// CONCATENATED MODULE: ./src/utils/getInput.js
+const getInput_core = __nccwpck_require__(3547);
+
+const getInput = () => {
+    const hashnode_event = getInput_core.getInput("hashnode_event");
+    const hashnode_token = getInput_core.getInput("hashnode_token");
+    const host = getInput_core.getInput("hashnode_host");
+    const added_files = getInput_core.getInput("added_files");
+    const modified_files = getInput_core.getInput("modified_files");
+    const deleted_files = getInput_core.getInput("deleted_files");
+    getInput_core.setSecret(hashnode_token);
+
+    return { hashnode_event, hashnode_token, host, added_files, modified_files, deleted_files }
+}
 ;// CONCATENATED MODULE: ./src/utils/constants.js
 const HASHNODE_ENDPOINT = "https://gql.hashnode.com";
 
@@ -39398,11 +39412,86 @@ const getPublicationId = async (host) => {
         
     }
 }
+;// CONCATENATED MODULE: ./src/api/callGraphqlAPI.js
+
+
+const callGraphqlAPI = async ({query, variables, token}) => {
+    const response = await fetch(HASHNODE_ENDPOINT, {
+        method: 'POST',
+        headers: {
+            'Content-type': 'application/json',
+            Authorization: token
+        },
+        body: JSON.stringify({
+            query,
+            variables,
+        })
+    })
+
+    const data = await response.json()
+    return data
+}
+;// CONCATENATED MODULE: ./src/utils/getInputToPublishPost.js
+const getInputToPublishPost = async (parsedArticle, publicationId, slug) => {
+  const input = {
+    title: parsedArticle.data.title || '',
+    subtitle: parsedArticle.data.subtitle || null,
+    publicationId: publicationId,
+    contentMarkdown: parsedArticle.content,
+    publishedAt: parsedArticle.publishedAt || null,
+    slug: slug,
+    originalArticleURL: parsedArticle.data.originalArticleURL || null,
+    disableComments: parsedArticle.data.disableComments || false,
+    seriesId: null,
+    settings: {
+      enableTableOfContent: false,
+      isNewsletterActivated: false
+    },
+  };
+
+  return input;
+};
+
+const validateInput = (parsedArticle) => {};
+
+// EXTERNAL MODULE: ./node_modules/fs-extra/lib/index.js
+var lib = __nccwpck_require__(2539);
+var lib_default = /*#__PURE__*/__nccwpck_require__.n(lib);
+;// CONCATENATED MODULE: ./src/utils/parseFile.js
+
+const matter = __nccwpck_require__(1774)
+
+const parseFile = async (fileName) => {
+    const content = await lib_default().readFile(fileName, "utf-8")
+    const parsedArticle = matter(content, { language: "yaml" }) 
+    return parsedArticle
+}
 ;// CONCATENATED MODULE: ./src/utils/makeSlug.js
 const makeSlug = (file) => {
     const slug = file.replace('.md', '')
     return slug
 }
+;// CONCATENATED MODULE: ./src/utils/publishArticle.js
+
+
+
+
+
+
+const publishArticle = async (file, hashnode_token, publicationId) => {
+  const slug = makeSlug(file)
+  const parsedArticle = await parseFile(file)
+  const input = await getInputToPublishPost(parsedArticle, publicationId, slug)
+  const response = await callGraphqlAPI({
+    query: QUERY.publish,
+    variables: {
+        input
+    },
+    token: hashnode_token
+  })
+  return response
+};
+
 ;// CONCATENATED MODULE: ./src/api/getPostID.js
 
 
@@ -39435,25 +39524,6 @@ const getInputToDeletePost = async (id) => {
 
     return input
 }
-;// CONCATENATED MODULE: ./src/api/callGraphqlAPI.js
-
-
-const callGraphqlAPI = async ({query, variables, token}) => {
-    const response = await fetch(HASHNODE_ENDPOINT, {
-        method: 'POST',
-        headers: {
-            'Content-type': 'application/json',
-            Authorization: token
-        },
-        body: JSON.stringify({
-            query,
-            variables,
-        })
-    })
-
-    const data = await response.json()
-    return data
-}
 ;// CONCATENATED MODULE: ./src/utils/deleteArticle.js
 
 
@@ -39475,6 +39545,75 @@ const deleteArticle = async (file, hashnode_token, publicationId) => {
       })
 
     return response
+}
+;// CONCATENATED MODULE: ./src/utils/getInputToModifyPost.js
+const getInputToModifyPost = async (parsedArticle, slug, id) => {
+  const input = {
+    id,
+    title: parsedArticle.data.title,
+    slug: slug,
+    contentMarkdown: parsedArticle.content
+  }
+    return input;
+  };
+;// CONCATENATED MODULE: ./src/utils/modifyArticle.js
+
+
+
+
+
+
+
+const modifyArticle = async (file, hashnode_token, publicationId) => {
+    const slug = makeSlug(file)
+    const parsedArticle = await parseFile(file)
+    const postId = await getPostId(publicationId, slug)
+    const input = await getInputToModifyPost(parsedArticle, slug, postId)
+
+    const response = await callGraphqlAPI({
+        query: QUERY.modify,
+        variables: {
+            input
+        },
+        token: hashnode_token
+      })
+
+    return response
+}
+;// CONCATENATED MODULE: ./src/utils/githubToHashnodeSync.js
+
+
+
+
+
+
+const githubToHashnodeSync = async () => {
+    const { host, hashnode_token, added_files, modified_files, deleted_files } = getInput()
+    const publicationId = await getPublicationId(host);
+
+    const added_files_arr = added_files
+        .split(" ")
+        .filter((file) => file.endsWith(".md"));
+      const publishPromises = added_files_arr.map((added_file) =>
+        publishArticle(added_file, hashnode_token, publicationId)
+      );
+      await Promise.all(publishPromises);
+
+      const modified_files_arr = modified_files
+        .split(" ")
+        .filter((file) => file.endsWith(".md"));
+      const modifyPromises = modified_files_arr.map((modified_file) =>
+        modifyArticle(modified_file, hashnode_token, publicationId)
+      );
+      await Promise.all(modifyPromises);
+
+      const deleted_files_arr = deleted_files
+        .split(" ")
+        .filter((file) => file.endsWith(".md"));
+      const deletePromises = deleted_files_arr.map((deleted_file) =>
+        deleteArticle(deleted_file, hashnode_token, publicationId)
+      );
+      await Promise.all(deletePromises);
 }
 ;// CONCATENATED MODULE: ./src/api/getPostSlug.js
 
@@ -43142,13 +43281,13 @@ const publishSync = async (publicationId, postSlug) => {
     const data = await getPostData(publicationId, postSlug)
     createFile()
 }
-;// CONCATENATED MODULE: ./src/utils/hashnodeSync.js
+;// CONCATENATED MODULE: ./src/utils/hashnodeToGithubSync.js
 
 
 
 
 
-const hashnodeSync = async (parsedEvent) => {
+const hashnodeToGithubSync = async (parsedEvent) => {
     const eventType = parsedEvent.eventType
     const postId = parsedEvent.post.id
     const publicationId = parsedEvent.publication.id
@@ -43169,144 +43308,19 @@ const hashnodeSync = async (parsedEvent) => {
             break;
     }
 }
-;// CONCATENATED MODULE: ./src/utils/getInputToModifyPost.js
-const getInputToModifyPost = async (parsedArticle, slug, id) => {
-  const input = {
-    id,
-    title: parsedArticle.data.title,
-    slug: slug,
-    contentMarkdown: parsedArticle.content
-  }
-    return input;
-  };
-// EXTERNAL MODULE: ./node_modules/fs-extra/lib/index.js
-var lib = __nccwpck_require__(2539);
-var lib_default = /*#__PURE__*/__nccwpck_require__.n(lib);
-;// CONCATENATED MODULE: ./src/utils/parseFile.js
-
-const matter = __nccwpck_require__(1774)
-
-const parseFile = async (fileName) => {
-    const content = await lib_default().readFile(fileName, "utf-8")
-    const parsedArticle = matter(content, { language: "yaml" }) 
-    return parsedArticle
-}
-;// CONCATENATED MODULE: ./src/utils/modifyArticle.js
-
-
-
-
-
-
-
-const modifyArticle = async (file, hashnode_token, publicationId) => {
-    const slug = makeSlug(file)
-    const parsedArticle = await parseFile(file)
-    const postId = await getPostId(publicationId, slug)
-    const input = await getInputToModifyPost(parsedArticle, slug, postId)
-
-    const response = await callGraphqlAPI({
-        query: QUERY.modify,
-        variables: {
-            input
-        },
-        token: hashnode_token
-      })
-
-    return response
-}
-;// CONCATENATED MODULE: ./src/utils/getInputToPublishPost.js
-const getInputToPublishPost = async (parsedArticle, publicationId, slug) => {
-  const input = {
-    title: parsedArticle.data.title || '',
-    subtitle: parsedArticle.data.subtitle || null,
-    publicationId: publicationId,
-    contentMarkdown: parsedArticle.content,
-    publishedAt: parsedArticle.publishedAt || null,
-    slug: slug,
-    originalArticleURL: parsedArticle.data.originalArticleURL || null,
-    disableComments: parsedArticle.data.disableComments || false,
-    seriesId: null,
-    settings: {
-      enableTableOfContent: false,
-      isNewsletterActivated: false
-    },
-  };
-
-  return input;
-};
-
-const validateInput = (parsedArticle) => {};
-
-;// CONCATENATED MODULE: ./src/utils/publishArticle.js
-
-
-
-
-
-
-const publishArticle = async (file, hashnode_token, publicationId) => {
-  const slug = makeSlug(file)
-  const parsedArticle = await parseFile(file)
-  const input = await getInputToPublishPost(parsedArticle, publicationId, slug)
-  const response = await callGraphqlAPI({
-    query: QUERY.publish,
-    variables: {
-        input
-    },
-    token: hashnode_token
-  })
-  return response
-};
-
 ;// CONCATENATED MODULE: ./src/index.js
 
 
 
 
-
-const core = __nccwpck_require__(3547);
-
 async function run() {
   try {
-    const hashnode_event = core.getInput("hashnode_event");
-    const hashnode_token = core.getInput("hashnode_token");
-    const host = core.getInput("hashnode_host");
-    const added_files = core.getInput("added_files");
-    const modified_files = core.getInput("modified_files");
-    const deleted_files = core.getInput("deleted_files");
-    core.setSecret(hashnode_token);
-
-    const publicationId = await getPublicationId(host);
+    const {hashnode_event} = getInput()
     const parsedEvent = JSON.parse(hashnode_event)
 
-    if (parsedEvent) hashnodeSync(parsedEvent)
-    
-    else {
-      const added_files_arr = added_files
-        .split(" ")
-        .filter((file) => file.endsWith(".md"));
-      const publishPromises = added_files_arr.map((added_file) =>
-        publishArticle(added_file, hashnode_token, publicationId)
-      );
-      await Promise.all(publishPromises);
+    if (parsedEvent) hashnodeToGithubSync(parsedEvent)
+    else githubToHashnodeSync() 
 
-      const modified_files_arr = modified_files
-        .split(" ")
-        .filter((file) => file.endsWith(".md"));
-      const modifyPromises = modified_files_arr.map((modified_file) =>
-        modifyArticle(modified_file, hashnode_token, publicationId)
-      );
-      await Promise.all(modifyPromises);
-
-      const deleted_files_arr = deleted_files
-        .split(" ")
-        .filter((file) => file.endsWith(".md"));
-      const deletePromises = deleted_files_arr.map((deleted_file) =>
-        deleteArticle(deleted_file, hashnode_token, publicationId)
-      );
-      await Promise.all(deletePromises);
-    }
   } catch (error) {
     core.setFailed(error.message);
   }
