@@ -8,6 +8,10 @@ runs:
 
 inputs:
 
+  github_personal_access_token:
+    description: 'The personal access token required to do changes in the repo'
+    required: true
+    
   hashnode_event:
     description: 'The event responsible for triggering action'
 

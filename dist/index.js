@@ -39315,7 +39315,9 @@ const getInput = () => {
     const added_files = getInput_core.getInput("added_files");
     const modified_files = getInput_core.getInput("modified_files");
     const deleted_files = getInput_core.getInput("deleted_files");
+    const github_personal_access_token = getInput_core.getInput("github_personal_access_token")
     getInput_core.setSecret(hashnode_token);
+    getInput_core.setSecret(github_personal_access_token)
 
     return { hashnode_event, hashnode_token, host, added_files, modified_files, deleted_files }
 }
@@ -43222,11 +43224,10 @@ const dist_src_Octokit = Octokit.plugin(requestLog, legacyRestEndpointMethods, p
 ;// CONCATENATED MODULE: ./src/hashnode-to-github/createFile.js
 
 const { Base64 } = __nccwpck_require__(9139)
-
 const github = __nccwpck_require__(9210);
 
 const octokit = new dist_src_Octokit({
-  auth: process.env.GITHUB_TOKEN,
+  auth: process.env.GITHUB_PERSONAL_ACCESS_TOKEN,
 });
 
 const createFile = async () => {
