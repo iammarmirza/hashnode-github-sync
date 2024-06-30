@@ -3,7 +3,7 @@ const { Base64 } = require("js-base64")
 const github = require("@actions/github");
 
 const octokit = new Octokit({
-  auth: process.env.GITHUB_PERSONAL_ACCESS_TOKEN,
+  auth: process.env.PERSONAL_ACCESS_TOKEN,
 });
 
 export const createFile = async () => {
