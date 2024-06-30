@@ -1,8 +1,8 @@
-import { callGraphqlAPI } from "../api/callGraphqlAPI";
-import { QUERY } from "./constants";
+import { callGraphqlAPI } from "../shared/callGraphqlAPI";
+import { QUERY } from "../shared/constants";
 import { getInputToPublishPost } from "./getInputToPublishPost";
-import { parseFile } from "./parseFile";
-import { makeSlug } from "./makeSlug";
+import { parseFile } from "../shared/parseFile";
+import { makeSlug } from "../shared/makeSlug";
 
 export const publishArticle = async (file, hashnode_token, publicationId) => {
   const slug = makeSlug(file)

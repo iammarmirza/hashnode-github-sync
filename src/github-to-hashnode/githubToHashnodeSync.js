@@ -1,8 +1,8 @@
-import { getPublicationId } from "../api/getPublicationId";
+import { getPublicationId } from "../shared/getPublicationId";
+import { getInput } from "../shared/getInput";
 import { publishArticle } from "./publishArticle";
-import { deleteArticle } from "./deleteArticle";
 import { modifyArticle } from "./modifyArticle";
-import { getInput } from "./getInput";
+import { deleteArticle } from "./deleteArticle";
 
 export const githubToHashnodeSync = async () => {
     const { host, hashnode_token, added_files, modified_files, deleted_files } = getInput()

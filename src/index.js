@@ -1,6 +1,6 @@
-import { getInput } from "./utils/getInput";
-import { githubToHashnodeSync } from "./utils/githubToHashnodeSync";
-import { hashnodeToGithubSync } from "./utils/hashnodeToGithubSync";
+import { getInput } from "./shared/getInput";
+import { githubToHashnodeSync } from "./github-to-hashnode/githubToHashnodeSync";
+import { hashnodeToGithubSync } from "./hashnode-to-github/hashnodeToGithubSync";
 
 export async function run() {
   try {

@@ -39305,7 +39305,7 @@ __nccwpck_require__.d(__webpack_exports__, {
   "run": () => (/* binding */ run)
 });
 
-;// CONCATENATED MODULE: ./src/utils/getInput.js
+;// CONCATENATED MODULE: ./src/shared/getInput.js
 const getInput_core = __nccwpck_require__(3547);
 
 const getInput = () => {
@@ -39319,7 +39319,7 @@ const getInput = () => {
 
     return { hashnode_event, hashnode_token, host, added_files, modified_files, deleted_files }
 }
-;// CONCATENATED MODULE: ./src/utils/constants.js
+;// CONCATENATED MODULE: ./src/shared/constants.js
 const HASHNODE_ENDPOINT = "https://gql.hashnode.com";
 
 const QUERY = {
@@ -39386,8 +39386,7 @@ const POST_DATA_QUERY = `query PostData ($id: ObjectId, $slug: String!) {
     }
   }
 }`
-;// CONCATENATED MODULE: ./src/api/getPublicationId.js
-
+;// CONCATENATED MODULE: ./src/shared/getPublicationId.js
 
 
 const getPublicationId = async (host) => {
@@ -39412,7 +39411,7 @@ const getPublicationId = async (host) => {
         
     }
 }
-;// CONCATENATED MODULE: ./src/api/callGraphqlAPI.js
+;// CONCATENATED MODULE: ./src/shared/callGraphqlAPI.js
 
 
 const callGraphqlAPI = async ({query, variables, token}) => {
@@ -39431,7 +39430,7 @@ const callGraphqlAPI = async ({query, variables, token}) => {
     const data = await response.json()
     return data
 }
-;// CONCATENATED MODULE: ./src/utils/getInputToPublishPost.js
+;// CONCATENATED MODULE: ./src/github-to-hashnode/getInputToPublishPost.js
 const getInputToPublishPost = async (parsedArticle, publicationId, slug) => {
   const input = {
     title: parsedArticle.data.title || '',
@@ -39457,7 +39456,7 @@ const validateInput = (parsedArticle) => {};
 // EXTERNAL MODULE: ./node_modules/fs-extra/lib/index.js
 var lib = __nccwpck_require__(2539);
 var lib_default = /*#__PURE__*/__nccwpck_require__.n(lib);
-;// CONCATENATED MODULE: ./src/utils/parseFile.js
+;// CONCATENATED MODULE: ./src/shared/parseFile.js
 
 const matter = __nccwpck_require__(1774)
 
@@ -39466,12 +39465,12 @@ const parseFile = async (fileName) => {
     const parsedArticle = matter(content, { language: "yaml" }) 
     return parsedArticle
 }
-;// CONCATENATED MODULE: ./src/utils/makeSlug.js
+;// CONCATENATED MODULE: ./src/shared/makeSlug.js
 const makeSlug = (file) => {
     const slug = file.replace('.md', '')
     return slug
 }
-;// CONCATENATED MODULE: ./src/utils/publishArticle.js
+;// CONCATENATED MODULE: ./src/github-to-hashnode/publishArticle.js
 
 
 
@@ -39492,7 +39491,7 @@ const publishArticle = async (file, hashnode_token, publicationId) => {
   return response
 };
 
-;// CONCATENATED MODULE: ./src/api/getPostID.js
+;// CONCATENATED MODULE: ./src/hashnode-to-github/getPostID.js
 
 
 
@@ -39516,37 +39515,7 @@ const getPostId = async (publicationId, slug) => {
     const data = await response.json()
     return data.data.publication.post.id
 }
-;// CONCATENATED MODULE: ./src/utils/getInputToDeletePost.js
-const getInputToDeletePost = async (id) => {
-    const input = {
-        id
-    }
-
-    return input
-}
-;// CONCATENATED MODULE: ./src/utils/deleteArticle.js
-
-
-
-
-
-
-const deleteArticle = async (file, hashnode_token, publicationId) => {
-    const slug = makeSlug(file)
-    const postId = await getPostId(publicationId, slug)
-    const input = await getInputToDeletePost(postId)
-
-    const response = await callGraphqlAPI({
-        query: QUERY["delete"],
-        variables: {
-            input
-        },
-        token: hashnode_token
-      })
-
-    return response
-}
-;// CONCATENATED MODULE: ./src/utils/getInputToModifyPost.js
+;// CONCATENATED MODULE: ./src/github-to-hashnode/getInputToModifyPost.js
 const getInputToModifyPost = async (parsedArticle, slug, id) => {
   const input = {
     id,
@@ -39556,7 +39525,7 @@ const getInputToModifyPost = async (parsedArticle, slug, id) => {
   }
     return input;
   };
-;// CONCATENATED MODULE: ./src/utils/modifyArticle.js
+;// CONCATENATED MODULE: ./src/github-to-hashnode/modifyArticle.js
 
 
 
@@ -39580,7 +39549,37 @@ const modifyArticle = async (file, hashnode_token, publicationId) => {
 
     return response
 }
-;// CONCATENATED MODULE: ./src/utils/githubToHashnodeSync.js
+;// CONCATENATED MODULE: ./src/github-to-hashnode/getInputToDeletePost.js
+const getInputToDeletePost = async (id) => {
+    const input = {
+        id
+    }
+
+    return input
+}
+;// CONCATENATED MODULE: ./src/github-to-hashnode/deleteArticle.js
+
+
+
+
+
+
+const deleteArticle = async (file, hashnode_token, publicationId) => {
+    const slug = makeSlug(file)
+    const postId = await getPostId(publicationId, slug)
+    const input = await getInputToDeletePost(postId)
+
+    const response = await callGraphqlAPI({
+        query: QUERY["delete"],
+        variables: {
+            input
+        },
+        token: hashnode_token
+      })
+
+    return response
+}
+;// CONCATENATED MODULE: ./src/github-to-hashnode/githubToHashnodeSync.js
 
 
 
@@ -39615,7 +39614,7 @@ const githubToHashnodeSync = async () => {
       );
       await Promise.all(deletePromises);
 }
-;// CONCATENATED MODULE: ./src/api/getPostSlug.js
+;// CONCATENATED MODULE: ./src/hashnode-to-github/getPostSlug.js
 
 
 
@@ -39630,11 +39629,11 @@ const getPostSlug = async (id) => {
 
     return response.data.post.slug
 }
-;// CONCATENATED MODULE: ./src/utils/deleteSync.js
+;// CONCATENATED MODULE: ./src/hashnode-to-github/deleteSync.js
 const deleteSync = () => {
     
 }
-;// CONCATENATED MODULE: ./src/utils/modifySync.js
+;// CONCATENATED MODULE: ./src/hashnode-to-github/modifySync.js
 const modifySync = () => {
     
 }
@@ -43220,7 +43219,7 @@ const dist_src_Octokit = Octokit.plugin(requestLog, legacyRestEndpointMethods, p
 );
 
 
-;// CONCATENATED MODULE: ./src/utils/createFile.js
+;// CONCATENATED MODULE: ./src/hashnode-to-github/createFile.js
 
 const { Base64 } = __nccwpck_require__(9139)
 
@@ -43257,7 +43256,7 @@ const createFile = async () => {
   }
 };
 
-;// CONCATENATED MODULE: ./src/api/getPostData.js
+;// CONCATENATED MODULE: ./src/hashnode-to-github/getPostData.js
 
 
 
@@ -43271,9 +43270,9 @@ const getPostData = async (publicationId, postSlug) => {
         token: `${process.env.HASHNODE_TOKEN}`
     })
 
-    return data
+    return data 
 }
-;// CONCATENATED MODULE: ./src/utils/publishSync.js
+;// CONCATENATED MODULE: ./src/hashnode-to-github/publishSync.js
 
 
 
@@ -43281,7 +43280,7 @@ const publishSync = async (publicationId, postSlug) => {
     const data = await getPostData(publicationId, postSlug)
     createFile()
 }
-;// CONCATENATED MODULE: ./src/utils/hashnodeToGithubSync.js
+;// CONCATENATED MODULE: ./src/hashnode-to-github/hashnodeToGithubSync.js
 
 
 
