@@ -8,11 +8,11 @@ const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
 });
 
-export const createFile = async (data) => {
-  const post = await data.data.publication.post
+export const createFile = async (postData) => {
+  const post = postData.data.publication.post
   try {
     const fileName = `${post.slug}.md`
-    const metaTags = mapGqlToMarkdownInput(data)
+    const metaTags = mapGqlToMarkdownInput(postData)
     const fileContent = matter.stringify(post.content.markdown, metaTags)
     const contentEncoded = Base64.encode(fileContent)
     const { data } = await octokit.repos.createOrUpdateFileContents({
