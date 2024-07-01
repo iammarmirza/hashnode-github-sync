@@ -1,4 +1,5 @@
 import { Octokit } from "@octokit/rest";
+const matter = require('gray-matter');
 const { Base64 } = require("js-base64")
 const github = require("@actions/github");
 
@@ -6,10 +7,12 @@ const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
 });
 
-export const createFile = async () => {
+export const createFile = async (post) => {
   try {
-    const text = 'Test'
-    const contentEncoded = Base64.encode(text)
+    const fileName = `${post.slug}.md`
+    console.log(matter.stringify(post.content.markdown, post))
+    const fileContent = post.content.markdown
+    const contentEncoded = Base64.encode()
     const { data } = await octokit.repos.createOrUpdateFileContents({
       owner: "iammarmirza",
       repo: "github-actions-test",

@@ -43221,6 +43221,7 @@ const dist_src_Octokit = Octokit.plugin(requestLog, legacyRestEndpointMethods, p
 
 ;// CONCATENATED MODULE: ./src/hashnode-to-github/createFile.js
 
+const createFile_matter = __nccwpck_require__(1774);
 const { Base64 } = __nccwpck_require__(9139)
 const github = __nccwpck_require__(9210);
 
@@ -43228,10 +43229,12 @@ const octokit = new dist_src_Octokit({
   auth: process.env.GITHUB_TOKEN,
 });
 
-const createFile = async () => {
+const createFile = async (post) => {
   try {
-    const text = 'Test'
-    const contentEncoded = Base64.encode(text)
+    const fileName = `${post.slug}.md`
+    console.log(createFile_matter.stringify(post.content.markdown, post))
+    const fileContent = post.content.markdown
+    const contentEncoded = Base64.encode()
     const { data } = await octokit.repos.createOrUpdateFileContents({
       owner: "iammarmirza",
       repo: "github-actions-test",
@@ -43277,7 +43280,9 @@ const getPostData = async (publicationId, postSlug) => {
 
 const publishSync = async (publicationId, postSlug) => {
     const data = await getPostData(publicationId, postSlug)
-    createFile()
+    const post = await data.publication.post
+    if(!post) return
+    createFile(post)
 }
 ;// CONCATENATED MODULE: ./src/hashnode-to-github/hashnodeToGithubSync.js
 
