@@ -7,7 +7,8 @@ const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
 });
 
-export const createFile = async (post) => {
+export const createFile = async (data) => {
+  console.log(data)
   try {
     const fileName = `${post.slug}.md`
     console.log(matter.stringify(post.content.markdown, post))

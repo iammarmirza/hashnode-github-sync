@@ -43229,7 +43229,8 @@ const octokit = new dist_src_Octokit({
   auth: process.env.GITHUB_TOKEN,
 });
 
-const createFile = async (post) => {
+const createFile = async (data) => {
+  console.log(data)
   try {
     const fileName = `${post.slug}.md`
     console.log(createFile_matter.stringify(post.content.markdown, post))
@@ -43272,7 +43273,7 @@ const getPostData = async (publicationId, postSlug) => {
         token: `${process.env.HASHNODE_TOKEN}`
     })
 
-    return data 
+    return data
 }
 ;// CONCATENATED MODULE: ./src/hashnode-to-github/publishSync.js
 
@@ -43280,9 +43281,9 @@ const getPostData = async (publicationId, postSlug) => {
 
 const publishSync = async (publicationId, postSlug) => {
     const data = await getPostData(publicationId, postSlug)
-    const post = await data.publication.post
-    if(!post) return
-    createFile(post)
+    // const post = await data.publication.post
+    // if(!post) return
+    createFile(data)
 }
 ;// CONCATENATED MODULE: ./src/hashnode-to-github/hashnodeToGithubSync.js
 

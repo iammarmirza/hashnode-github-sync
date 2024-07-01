@@ -11,5 +11,5 @@ export const getPostData = async (publicationId, postSlug) => {
         token: `${process.env.HASHNODE_TOKEN}`
     })
 
-    return data 
+    return data
 }
