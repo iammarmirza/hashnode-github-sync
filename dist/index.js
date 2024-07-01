@@ -43230,7 +43230,7 @@ const octokit = new dist_src_Octokit({
 });
 
 const createFile = async (data) => {
-  console.log(data)
+  const post = data.publication.post
   try {
     const fileName = `${post.slug}.md`
     console.log(createFile_matter.stringify(post.content.markdown, post))
