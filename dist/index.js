@@ -43310,8 +43310,8 @@ const octokit = new dist_src_Octokit({
 });
 
 const createFile = async (postData) => {
-  const post = await postData.data.publication.post
   try {
+    const post = postData.data.publication.post
     const fileName = `${post.slug}.md`
     const metaTags = mapGqlToMarkdownInput(postData)
     const fileContent = createFile_matter.stringify(post.content.markdown, metaTags)
@@ -43362,7 +43362,7 @@ const getPostData = async (publicationId, postSlug) => {
 const publishSync = async (publicationId, postSlug) => {
     const data = await getPostData(publicationId, postSlug)
     if(!data.data.publication.post) return
-    createFile(data)
+    createFile(await data)
 }
 ;// CONCATENATED MODULE: ./src/hashnode-to-github/hashnodeToGithubSync.js
 
