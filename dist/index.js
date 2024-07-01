@@ -39371,18 +39371,50 @@ const POST_SLUG_QUERY = `query PostSlug ($id: ID!) {
   }
 }`
 
-const POST_DATA_QUERY = `query PostData ($id: ObjectId, $slug: String!) {
+const POST_DATA_QUERY = `query PostData($id: ObjectId, $slug: String!) {
   publication(id: $id) {
+    id
     post(slug: $slug) {
       id
       slug
       title
       subtitle
-      publishedAt
       content {
         markdown
       }
-      sourcedFromGithub
+      publishedAt
+      url
+      preferences {
+        disableComments
+        isDelisted
+        stickCoverToBottom
+      }
+      series {
+        id
+      }
+      coverImage {
+        url
+        attribution
+        photographer
+        isAttributionHidden
+      }
+      features {
+        tableOfContents {
+          isEnabled
+        }
+      }
+      tags {
+        id
+        name
+        slug
+      }
+      seo {
+        title
+        description
+      }
+      ogMetaData {
+		image
+      }
     }
   }
 }`
