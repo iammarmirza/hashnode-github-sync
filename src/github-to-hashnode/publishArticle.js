@@ -1,13 +1,13 @@
 import { callGraphqlAPI } from "../shared/callGraphqlAPI";
 import { QUERY } from "../shared/constants";
-import { getInputToPublishPost } from "./getInputToPublishPost";
+import { mapMarkdownToGqlInput } from "./mapMarkdownToGqlInput";
 import { parseFile } from "../shared/parseFile";
 import { makeSlug } from "../shared/makeSlug";
 
 export const publishArticle = async (file, hashnode_token, publicationId) => {
   const slug = makeSlug(file)
   const parsedArticle = await parseFile(file)
-  const input = await getInputToPublishPost(parsedArticle, publicationId, slug)
+  const input = await mapMarkdownToGqlInput(parsedArticle, publicationId, slug)
   const response = await callGraphqlAPI({
     query: QUERY.publish,
     variables: {

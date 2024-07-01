@@ -3,7 +3,6 @@ import { getPostData } from "./getPostData"
 
 export const publishSync = async (publicationId, postSlug) => {
     const data = await getPostData(publicationId, postSlug)
-    const post = await data.data.publication.post
-    if(!post) return
-    createFile(post)
+    if(!data.data.publication.post) return
+    createFile(data)
 }

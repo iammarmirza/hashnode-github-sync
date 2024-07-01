@@ -39430,28 +39430,42 @@ const callGraphqlAPI = async ({query, variables, token}) => {
     const data = await response.json()
     return data
 }
-;// CONCATENATED MODULE: ./src/github-to-hashnode/getInputToPublishPost.js
-const getInputToPublishPost = async (parsedArticle, publicationId, slug) => {
+;// CONCATENATED MODULE: ./src/github-to-hashnode/mapMarkdownToGqlInput.js
+const mapMarkdownToGqlInput = async (
+  parsedArticle,
+  publicationId,
+  slug
+) => {
+  validateInput(parsedArticle);
   const input = {
-    title: parsedArticle.data.title || '',
-    subtitle: parsedArticle.data.subtitle || null,
+    title: parsedArticle.data.title,
+    subtitle: parsedArticle.data.subtitle || undefined,
     publicationId: publicationId,
     contentMarkdown: parsedArticle.content,
-    publishedAt: parsedArticle.publishedAt || null,
+    publishedAt: parsedArticle.publishedAt || undefined,
+    coverImageOptions: parsedArticle.coverImageOptions || undefined,
     slug: slug,
-    originalArticleURL: parsedArticle.data.originalArticleURL || null,
-    disableComments: parsedArticle.data.disableComments || false,
-    seriesId: null,
-    settings: {
-      enableTableOfContent: false,
-      isNewsletterActivated: false
-    },
+    originalArticleURL: parsedArticle.data.originalArticleURL || undefined,
+    tags: parsedArticle.data.tags || undefined,
+    disableComments: parsedArticle.data.disableComments || undefined,
+    metaTags: parsedArticle.data.metaTags || undefined,
+    publishAs: parsedArticle.data.publishAs || undefined,
+    seriesId: parsedArticle.seriesId || undefined,
+    settings: parsedArticle.data.settings || undefined,
+    coAuthors: parsedArticle.data.coAuthors || undefined
   };
 
   return input;
 };
 
-const validateInput = (parsedArticle) => {};
+const validateInput = (parsedArticle) => {
+  if (
+    !parsedArticle.data.title ||
+    !parsedArticle.content
+  ) {
+    throw new Error("Required Fields are not provided to Publish Post");
+  }
+};
 
 // EXTERNAL MODULE: ./node_modules/fs-extra/lib/index.js
 var lib = __nccwpck_require__(2539);
@@ -39480,7 +39494,7 @@ const makeSlug = (file) => {
 const publishArticle = async (file, hashnode_token, publicationId) => {
   const slug = makeSlug(file)
   const parsedArticle = await parseFile(file)
-  const input = await getInputToPublishPost(parsedArticle, publicationId, slug)
+  const input = await mapMarkdownToGqlInput(parsedArticle, publicationId, slug)
   const response = await callGraphqlAPI({
     query: QUERY.publish,
     variables: {
@@ -43219,7 +43233,41 @@ const dist_src_Octokit = Octokit.plugin(requestLog, legacyRestEndpointMethods, p
 );
 
 
+;// CONCATENATED MODULE: ./src/hashnode-to-github/mapGqlToMarkdownInput.js
+const mapGqlToMarkdownInput = (data) => {
+    const input = {
+        title: data.publication.post.title,
+        subtitle: data.publication.post.subtitle || undefined,
+        publicationId: data.publication.id,
+        publishedAt: data.publication.post.publishedAt || undefined,
+        coverImageOptions: {
+            coverImageURL: data.publication.post.coverImage.url || undefined,
+            isCoverAttributionHidden: data.publication.post.coverImage.isAttributionHidden,
+            coverImageAttribution: data.publication.post.coverImage.attribution || undefined,
+            coverImagePhotographer: data.publication.post.coverImage.photographer || undefined,
+            stickCoverToBottom: data.publication.post.preferences.stickCoverToBottom
+        },
+        slug: data.publication.post.slug || undefined,
+        originalArticleURL: data.publication.post.url || undefined,
+        tags: data.publication.post.tags || undefined,
+        disableComments: data.publication.post.preferences.disableComments,
+        metaTags: {
+            title: data.publication.post.seo.title || undefined,
+            description: data.publication.post.seo.description || undefined,
+            image: data.publication.post.ogMetaData.image || undefined
+        },
+        seriesId: data.publication.post.series.id || undefined,
+        settings: {
+            delisted: data.publication.post.preferences.isDelisted,
+            enableTableOfContent: data.publication.post.features.tableOfContents.isEnabled
+        },
+        coAuthors: parsedArticle.data.coAuthors || undefined
+      };
+
+    return input
+}
 ;// CONCATENATED MODULE: ./src/hashnode-to-github/createFile.js
+
 
 const createFile_matter = __nccwpck_require__(1774);
 const { Base64 } = __nccwpck_require__(9139)
@@ -43229,10 +43277,12 @@ const octokit = new dist_src_Octokit({
   auth: process.env.GITHUB_TOKEN,
 });
 
-const createFile = async (post) => {
+const createFile = async (data) => {
+  const post = data.data.publication.post
   try {
     const fileName = `${post.slug}.md`
-    const fileContent = createFile_matter.stringify(post.content.markdown, post)
+    const metaTags = mapGqlToMarkdownInput(data)
+    const fileContent = createFile_matter.stringify(post.content.markdown, metaTags)
     const contentEncoded = Base64.encode(fileContent)
     const { data } = await octokit.repos.createOrUpdateFileContents({
       owner: "iammarmirza",
@@ -43279,9 +43329,8 @@ const getPostData = async (publicationId, postSlug) => {
 
 const publishSync = async (publicationId, postSlug) => {
     const data = await getPostData(publicationId, postSlug)
-    const post = await data.data.publication.post
-    if(!post) return
-    createFile(post)
+    if(!data.data.publication.post) return
+    createFile(data)
 }
 ;// CONCATENATED MODULE: ./src/hashnode-to-github/hashnodeToGithubSync.js
 

@@ -1,4 +1,5 @@
 import { Octokit } from "@octokit/rest";
+import { mapGqlToMarkdownInput } from "./mapGqlToMarkdownInput";
 const matter = require('gray-matter');
 const { Base64 } = require("js-base64")
 const github = require("@actions/github");
@@ -7,10 +8,12 @@ const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
 });
 
-export const createFile = async (post) => {
+export const createFile = async (data) => {
+  const post = data.data.publication.post
   try {
     const fileName = `${post.slug}.md`
-    const fileContent = matter.stringify(post.content.markdown, post)
+    const metaTags = mapGqlToMarkdownInput(data)
+    const fileContent = matter.stringify(post.content.markdown, metaTags)
     const contentEncoded = Base64.encode(fileContent)
     const { data } = await octokit.repos.createOrUpdateFileContents({
       owner: "iammarmirza",
