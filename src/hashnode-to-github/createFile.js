@@ -8,7 +8,7 @@ const octokit = new Octokit({
 });
 
 export const createFile = async (data) => {
-  const post = data.publication.post
+  const post = data.data.publication.post
   try {
     const fileName = `${post.slug}.md`
     console.log(matter.stringify(post.content.markdown, post))
