@@ -43278,7 +43278,7 @@ const octokit = new dist_src_Octokit({
 });
 
 const createFile = async (data) => {
-  const post = data.data.publication.post
+  const post = await data.data.publication.post
   try {
     const fileName = `${post.slug}.md`
     const metaTags = mapGqlToMarkdownInput(data)
