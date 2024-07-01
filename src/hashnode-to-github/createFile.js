@@ -7,19 +7,17 @@ const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
 });
 
-export const createFile = async (data) => {
-  const post = data.data.publication.post
+export const createFile = async (post) => {
   try {
     const fileName = `${post.slug}.md`
-    console.log(matter.stringify(post.content.markdown, post))
-    const fileContent = post.content.markdown
-    const contentEncoded = Base64.encode()
+    const fileContent = matter.stringify(post.content.markdown, post)
+    const contentEncoded = Base64.encode(fileContent)
     const { data } = await octokit.repos.createOrUpdateFileContents({
       owner: "iammarmirza",
       repo: "github-actions-test",
-      path: "OUTPUT.md",
+      path: fileName,
       branch: "main",
-      message: "feat: Added OUTPUT.md programatically",
+      message: "feat: Added Blog programatically",
       content: contentEncoded,
       committer: {
         name: `Ammar Mirza`,
