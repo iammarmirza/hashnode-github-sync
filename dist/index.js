@@ -43277,20 +43277,14 @@ const mapGqlToMarkdownInput = (data) => {
         publicationId: data.publication.id,
         publishedAt: data.publication.post.publishedAt || undefined,
         coverImageOptions: data.publication.post.coverImage ? {
-            coverImageURL: data.publication.post.coverImage.url || undefined,
+            coverImageURL: data.publication.post.coverImage.url,
             isCoverAttributionHidden: data.publication.post.coverImage.isAttributionHidden,
-            coverImageAttribution: data.publication.post.coverImage.attribution || undefined,
-            coverImagePhotographer: data.publication.post.coverImage.photographer || undefined,
             stickCoverToBottom: data.publication.post.preferences.stickCoverToBottom
         } : undefined,
         slug: data.publication.post.slug || undefined,
         tags: data.publication.post.tags || undefined,
         disableComments: data.publication.post.preferences.disableComments,
-        metaTags: {
-            title: data.publication.post.seo.title || undefined,
-            description: data.publication.post.seo.description || undefined,
-            image: data.publication.post.ogMetaData.image || undefined
-        },
+        metaTags: {},
         seriesId: data.publication.post.series ? data.publication.post.series.id : undefined,
         settings: {
             delisted: data.publication.post.preferences.isDelisted,
@@ -43304,6 +43298,12 @@ const mapGqlToMarkdownInput = (data) => {
           .filter(([key, value]) => value !== undefined)
       );
 
+      if(data.publication.post.seo.title) filteredInput.metaTags.title = data.publication.post.seo.title
+      if(data.publication.post.seo.description) filteredInput.metaTags.description =  data.publication.post.seo.description
+      if(data.publication.post.ogMetaData.image) filteredInput.metaTags.image = data.publication.post.ogMetaData.image
+
+      if(data.publication.post.coverImage.attribution) filteredInput.coverImageOptions.coverImageAttribution = data.publication.post.coverImage.attribution
+      if(data.publication.post.coverImage.photographer) filteredInput.coverImageOptions.coverImagePhotographer = data.publication.post.coverImage.photographer
     return filteredInput
 }
 ;// CONCATENATED MODULE: ./src/hashnode-to-github/createFile.js
