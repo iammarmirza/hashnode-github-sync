@@ -12,7 +12,6 @@ export const mapGqlToMarkdownInput = (data) => {
             stickCoverToBottom: data.publication.post.preferences.stickCoverToBottom
         },
         slug: data.publication.post.slug || undefined,
-        originalArticleURL: data.publication.post.url || undefined,
         tags: data.publication.post.tags || undefined,
         disableComments: data.publication.post.preferences.disableComments,
         metaTags: {
