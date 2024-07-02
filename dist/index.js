@@ -39490,6 +39490,14 @@ const mapMarkdownToGqlInput = async (
     coAuthors: parsedArticle.data.coAuthors || undefined
   };
 
+  const filteredInput = Object.fromEntries(
+    Object.entries(input)
+      .filter(([key, value]) => value !== undefined)
+  );
+
+  console.log(filteredInput)
+
+
   return input;
 };
 
