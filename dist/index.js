@@ -39489,16 +39489,9 @@ const mapMarkdownToGqlInput = async (
     settings: parsedArticle.data.settings || undefined,
     coAuthors: parsedArticle.data.coAuthors || undefined
   };
-
-  const filteredInput = Object.fromEntries(
-    Object.entries(input)
-      .filter(([key, value]) => value !== undefined)
-  );
-
-  console.log('filteredInput', filteredInput)
-
-
-  return {};
+  
+  
+  return input;
 };
 
 const validateInput = (parsedArticle) => {
@@ -43305,6 +43298,13 @@ const mapGqlToMarkdownInput = (data) => {
         },
         coAuthors: data.publication.post.coAuthors || undefined
       };
+
+      const filteredInput = Object.fromEntries(
+        Object.entries(input)
+          .filter(([key, value]) => value !== undefined)
+      );
+    
+      console.log('filteredInput', filteredInput)
 
     return input
 }

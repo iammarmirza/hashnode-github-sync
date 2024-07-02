@@ -27,5 +27,12 @@ export const mapGqlToMarkdownInput = (data) => {
         coAuthors: data.publication.post.coAuthors || undefined
       };
 
+      const filteredInput = Object.fromEntries(
+        Object.entries(input)
+          .filter(([key, value]) => value !== undefined)
+      );
+    
+      console.log('filteredInput', filteredInput)
+
     return input
 }
