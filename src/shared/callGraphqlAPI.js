@@ -14,5 +14,5 @@ export const callGraphqlAPI = async ({query, variables, token}) => {
     })
 
     const data = await response.json()
-    return data
+    return data.data
 }

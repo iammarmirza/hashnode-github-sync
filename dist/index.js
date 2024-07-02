@@ -39460,7 +39460,7 @@ const callGraphqlAPI = async ({query, variables, token}) => {
     })
 
     const data = await response.json()
-    return data
+    return data.data
 }
 ;// CONCATENATED MODULE: ./src/github-to-hashnode/mapMarkdownToGqlInput.js
 const mapMarkdownToGqlInput = async (
@@ -43313,7 +43313,7 @@ const octokit = new dist_src_Octokit({
 const createFile = async (postData) => {
   try {
     console.log('Level 2', postData)
-    const post = postData.data.publication.post
+    const post = postData.publication.post
     const fileName = `${post.slug}.md`
     const metaTags = mapGqlToMarkdownInput(postData)
     const fileContent = createFile_matter.stringify(post.content.markdown, metaTags)
@@ -43364,7 +43364,7 @@ const getPostData = async (publicationId, postSlug) => {
 const publishSync = async (publicationId, postSlug) => {
     const data = await getPostData(publicationId, postSlug)
     console.log('Level 1', data)
-    if(!data.data.publication.post) return
+    if(!data.publication.post) return
     createFile(data)
 }
 ;// CONCATENATED MODULE: ./src/hashnode-to-github/hashnodeToGithubSync.js
