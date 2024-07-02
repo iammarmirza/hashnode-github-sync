@@ -19,7 +19,7 @@ export const mapGqlToMarkdownInput = (data) => {
             description: data.publication.post.seo.description || undefined,
             image: data.publication.post.ogMetaData.image || undefined
         },
-        seriesId: data.publication.post.series.id || undefined,
+        seriesId: data.publication.post.series ? data.publication.post.series.id : undefined,
         settings: {
             delisted: data.publication.post.preferences.isDelisted,
             enableTableOfContent: data.publication.post.features.tableOfContents.isEnabled
