@@ -27,10 +27,10 @@ export const mapMarkdownToGqlInput = async (
       .filter(([key, value]) => value !== undefined)
   );
 
-  console.log(filteredInput)
+  console.log('filteredInput', filteredInput)
 
 
-  return input;
+  return {};
 };
 
 const validateInput = (parsedArticle) => {
