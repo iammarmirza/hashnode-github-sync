@@ -39415,6 +39415,9 @@ const POST_DATA_QUERY = `query PostData($id: ObjectId, $slug: String!) {
       ogMetaData {
 		image
       }
+    coAuthors {
+      id
+    }
     }
   }
 }`
@@ -43292,7 +43295,7 @@ const mapGqlToMarkdownInput = (data) => {
             delisted: data.publication.post.preferences.isDelisted,
             enableTableOfContent: data.publication.post.features.tableOfContents.isEnabled
         },
-        coAuthors: parsedArticle.data.coAuthors || undefined
+        coAuthors: data.publication.post.coAuthors || undefined
       };
 
     return input

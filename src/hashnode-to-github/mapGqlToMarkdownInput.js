@@ -24,7 +24,7 @@ export const mapGqlToMarkdownInput = (data) => {
             delisted: data.publication.post.preferences.isDelisted,
             enableTableOfContent: data.publication.post.features.tableOfContents.isEnabled
         },
-        coAuthors: parsedArticle.data.coAuthors || undefined
+        coAuthors: data.publication.post.coAuthors || undefined
       };
 
     return input

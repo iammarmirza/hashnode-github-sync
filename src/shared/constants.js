@@ -93,6 +93,9 @@ export const POST_DATA_QUERY = `query PostData($id: ObjectId, $slug: String!) {
       ogMetaData {
 		image
       }
+    coAuthors {
+      id
+    }
     }
   }
 }`
