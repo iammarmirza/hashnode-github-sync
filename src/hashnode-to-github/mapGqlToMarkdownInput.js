@@ -30,7 +30,7 @@ export const mapGqlToMarkdownInput = (data) => {
       if(data.publication.post.seo.description) filteredInput.metaTags.description =  data.publication.post.seo.description
       if(data.publication.post.ogMetaData.image) filteredInput.metaTags.image = data.publication.post.ogMetaData.image
 
-      if(data.publication.post.coverImage.attribution) filteredInput.coverImageOptions.coverImageAttribution = data.publication.post.coverImage.attribution
-      if(data.publication.post.coverImage.photographer) filteredInput.coverImageOptions.coverImagePhotographer = data.publication.post.coverImage.photographer
+      if(data.publication.post.coverImage?.attribution) filteredInput.coverImageOptions.coverImageAttribution = data.publication.post.coverImage.attribution
+      if(data.publication.post.coverImage?.photographer) filteredInput.coverImageOptions.coverImagePhotographer = data.publication.post.coverImage.photographer
     return filteredInput
 }
