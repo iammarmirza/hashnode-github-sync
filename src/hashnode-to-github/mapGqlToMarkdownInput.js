@@ -4,7 +4,7 @@ export const mapGqlToMarkdownInput = (data) => {
         subtitle: data.publication.post.subtitle || undefined,
         publicationId: data.publication.id,
         publishedAt: data.publication.post.publishedAt || undefined,
-        coverImageOptions: data.publication.post.coverImage.url ? {
+        coverImageOptions: data.publication.post.coverImage ? {
             coverImageURL: data.publication.post.coverImage.url || undefined,
             isCoverAttributionHidden: data.publication.post.coverImage.isAttributionHidden,
             coverImageAttribution: data.publication.post.coverImage.attribution || undefined,
