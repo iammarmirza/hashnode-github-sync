@@ -43267,6 +43267,7 @@ const dist_src_Octokit = Octokit.plugin(requestLog, legacyRestEndpointMethods, p
 
 ;// CONCATENATED MODULE: ./src/hashnode-to-github/mapGqlToMarkdownInput.js
 const mapGqlToMarkdownInput = (data) => {
+    console.log('Level 3', data)
     const input = {
         title: data.publication.post.title,
         subtitle: data.publication.post.subtitle || undefined,
@@ -43311,6 +43312,7 @@ const octokit = new dist_src_Octokit({
 
 const createFile = async (postData) => {
   try {
+    console.log('Level 2', postData)
     const post = postData.data.publication.post
     const fileName = `${post.slug}.md`
     const metaTags = mapGqlToMarkdownInput(postData)

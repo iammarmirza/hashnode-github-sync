@@ -1,4 +1,5 @@
 export const mapGqlToMarkdownInput = (data) => {
+    console.log('Level 3', data)
     const input = {
         title: data.publication.post.title,
         subtitle: data.publication.post.subtitle || undefined,
