@@ -43272,13 +43272,13 @@ const mapGqlToMarkdownInput = (data) => {
         subtitle: data.publication.post.subtitle || undefined,
         publicationId: data.publication.id,
         publishedAt: data.publication.post.publishedAt || undefined,
-        coverImageOptions: {
+        coverImageOptions: data.publication.post.coverImage.url ? {
             coverImageURL: data.publication.post.coverImage.url || undefined,
             isCoverAttributionHidden: data.publication.post.coverImage.isAttributionHidden,
             coverImageAttribution: data.publication.post.coverImage.attribution || undefined,
             coverImagePhotographer: data.publication.post.coverImage.photographer || undefined,
             stickCoverToBottom: data.publication.post.preferences.stickCoverToBottom
-        },
+        } : undefined,
         slug: data.publication.post.slug || undefined,
         tags: data.publication.post.tags || undefined,
         disableComments: data.publication.post.preferences.disableComments,
