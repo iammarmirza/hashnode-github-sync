@@ -31,8 +31,6 @@ export const mapGqlToMarkdownInput = (data) => {
         Object.entries(input)
           .filter(([key, value]) => value !== undefined)
       );
-    
-      console.log('filteredInput', filteredInput)
 
-    return input
+    return filteredInput
 }

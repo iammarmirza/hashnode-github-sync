@@ -43303,10 +43303,8 @@ const mapGqlToMarkdownInput = (data) => {
         Object.entries(input)
           .filter(([key, value]) => value !== undefined)
       );
-    
-      console.log('filteredInput', filteredInput)
 
-    return input
+    return filteredInput
 }
 ;// CONCATENATED MODULE: ./src/hashnode-to-github/createFile.js
 
