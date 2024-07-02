@@ -39665,7 +39665,7 @@ const githubToHashnodeSync = async () => {
 
 
 const getPostSlug = async (id) => {
-    const response = await callGraphqlAPI({
+    const data = await callGraphqlAPI({
         query: POST_SLUG_QUERY,
         variables: {
             id
@@ -39673,7 +39673,7 @@ const getPostSlug = async (id) => {
         token: `${process.env.HASHNODE_TOKEN}`
     })
 
-    return response.data.post.slug
+    return data.post.slug
 }
 ;// CONCATENATED MODULE: ./src/hashnode-to-github/deleteSync.js
 const deleteSync = () => {
@@ -43267,7 +43267,6 @@ const dist_src_Octokit = Octokit.plugin(requestLog, legacyRestEndpointMethods, p
 
 ;// CONCATENATED MODULE: ./src/hashnode-to-github/mapGqlToMarkdownInput.js
 const mapGqlToMarkdownInput = (data) => {
-    console.log('Level 3', data)
     const input = {
         title: data.publication.post.title,
         subtitle: data.publication.post.subtitle || undefined,
@@ -43312,7 +43311,6 @@ const octokit = new dist_src_Octokit({
 
 const createFile = async (postData) => {
   try {
-    console.log('Level 2', postData)
     const post = postData.publication.post
     const fileName = `${post.slug}.md`
     const metaTags = mapGqlToMarkdownInput(postData)
@@ -43363,7 +43361,6 @@ const getPostData = async (publicationId, postSlug) => {
 
 const publishSync = async (publicationId, postSlug) => {
     const data = await getPostData(publicationId, postSlug)
-    console.log('Level 1', data)
     if(!data.publication.post) return
     createFile(data)
 }
