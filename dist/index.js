@@ -43310,8 +43310,13 @@ var github = __nccwpck_require__(9210);
 const octokit = new dist_src_Octokit({
     auth: `${process.env.GITHUB_TOKEN}`,
 });
+const put_ob_01 = {
+    owner: "iammarmirza", repo: "github-actions-test", file_path: "hashnode-test-blog.md"
+};
 const createFile = async (postData) => {
     try {
+        const sha = await octokit.request('GET /repos/{owner}/{repo}/contents/{file_path}', put_ob_01);
+        console.log(sha);
         const post = postData.publication.post;
         const fileName = `${post.slug}.md`;
         const frontMatter = mapGqlToMarkdownInput(postData);
