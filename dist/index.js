@@ -39364,18 +39364,32 @@ const githubToHashnodeSync = async () => {
     const added_files_arr = added_files
         .split(" ")
         .filter((file) => file.endsWith(".md"));
-    const publishPromises = added_files_arr.map((file) => publishArticle({ file, hashnode_token, publicationId }));
+    const publishPromises = added_files_arr.map((added_file) => {
+        const file = getFilteredFile(added_file);
+        publishArticle({ file, hashnode_token, publicationId });
+    });
     await Promise.all(publishPromises);
     const modified_files_arr = modified_files
         .split(" ")
         .filter((file) => file.endsWith(".md"));
-    const modifyPromises = modified_files_arr.map((file) => modifyArticle({ file, hashnode_token, publicationId }));
+    const modifyPromises = modified_files_arr.map((modified_file) => {
+        const file = getFilteredFile(modified_file);
+        modifyArticle({ file, hashnode_token, publicationId });
+    });
     await Promise.all(modifyPromises);
     const deleted_files_arr = deleted_files
         .split(" ")
         .filter((file) => file.endsWith(".md"));
-    const deletePromises = deleted_files_arr.map((file) => deleteArticle({ file, hashnode_token, publicationId }));
+    const deletePromises = deleted_files_arr.map((deleted_file) => {
+        const file = getFilteredFile(deleted_file);
+        deleteArticle({ file, hashnode_token, publicationId });
+    });
     await Promise.all(deletePromises);
+};
+const getFilteredFile = (file) => {
+    if (file.includes("/"))
+        return file.split("/").pop();
+    return file;
 };
 
 ;// CONCATENATED MODULE: ./src/hashnode-to-github/getPostSlug.ts
@@ -43405,11 +43419,6 @@ const hashnodeToGithubSync = async (parsedEvent) => {
 async function run() {
     try {
         const { hashnode_event, added_files, modified_files, deleted_files } = getInput();
-        console.log({
-            added_files,
-            modified_files,
-            deleted_files
-        });
         const parsedEvent = JSON.parse(hashnode_event);
         if (parsedEvent)
             hashnodeToGithubSync(parsedEvent);
