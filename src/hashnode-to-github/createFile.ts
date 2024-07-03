@@ -8,14 +8,14 @@ const octokit = new Octokit({
   auth: `${process.env.GITHUB_TOKEN}`,
 });
 
-const put_ob_01 = {
-  owner: context.repo.owner, repo: context.repo.repo, file_path: "hashnode-teslg.md"
-};
-
 export const createFile = async (postData: any) => {
   try {
-    const sha = await octokit.request('GET /repos/{owner}/{repo}/contents/{file_path}', put_ob_01)
-    console.log(sha)
+    const {data: {sha}} = await octokit.request('GET /repos/{owner}/{repo}/contents/{file_path}', {
+      owner: context.repo.owner,
+      repo: context.repo.repo,
+      file_path: `${postData.publication.post.slug}.md`
+    })
+
     const post = postData.publication.post
     const fileName = `${post.slug}.md`
     const frontMatter = mapGqlToMarkdownInput(postData)
@@ -28,6 +28,7 @@ export const createFile = async (postData: any) => {
       branch: "main",
       message: "feat: Added Blog programatically",
       content: contentEncoded,
+      sha,
       committer: {
         name: `Ammar Mirza`,
         email: "itsammarmirza@gmail.com",

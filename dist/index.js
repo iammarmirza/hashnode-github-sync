@@ -43310,13 +43310,13 @@ var github = __nccwpck_require__(9210);
 const octokit = new dist_src_Octokit({
     auth: `${process.env.GITHUB_TOKEN}`,
 });
-const put_ob_01 = {
-    owner: github.context.repo.owner, repo: github.context.repo.repo, file_path: "hashnode-teslg.md"
-};
 const createFile = async (postData) => {
     try {
-        const sha = await octokit.request('GET /repos/{owner}/{repo}/contents/{file_path}', put_ob_01);
-        console.log(sha);
+        const { data: { sha } } = await octokit.request('GET /repos/{owner}/{repo}/contents/{file_path}', {
+            owner: github.context.repo.owner,
+            repo: github.context.repo.repo,
+            file_path: `${postData.publication.post.slug}.md`
+        });
         const post = postData.publication.post;
         const fileName = `${post.slug}.md`;
         const frontMatter = mapGqlToMarkdownInput(postData);
@@ -43329,6 +43329,7 @@ const createFile = async (postData) => {
             branch: "main",
             message: "feat: Added Blog programatically",
             content: contentEncoded,
+            sha,
             committer: {
                 name: `Ammar Mirza`,
                 email: "itsammarmirza@gmail.com",
