@@ -3,7 +3,6 @@ export const getInputToModifyPost = async ({parsedArticle, slug, postId}: {
   slug: string,
   postId: string | number
 }) => {
-  console.log(parsedArticle.data)
   const input = {
     id: postId,
     title: parsedArticle.data.title,
@@ -18,7 +17,8 @@ export const getInputToModifyPost = async ({parsedArticle, slug, postId}: {
     coAuthors: parsedArticle.data.coAuthors || undefined,
     seriesId: parsedArticle.data.seriesId || undefined,
     settings: {
-      isTableOfContentEnabled: parsedArticle.data.settings.enableTableOfContent
+      isTableOfContentEnabled: parsedArticle.data.settings.enableTableOfContent || true,
+      delisted: parsedArticle.data.settings.delisted || false,
     },
     publicationId: parsedArticle.data.publicationId || undefined
   }
