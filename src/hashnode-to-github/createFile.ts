@@ -3,12 +3,16 @@ import { mapGqlToMarkdownInput } from "./mapGqlToMarkdownInput";
 import { default as matter } from 'gray-matter'
 import { Base64 } from "js-base64";
 import { context } from "@actions/github";
+import { PublicationData } from "src/shared/types/Publication";
 
 const octokit = new Octokit({
   auth: `${process.env.GITHUB_TOKEN}`,
 });
 
-export const createFile = async (postData: any) => {
+export const createFile = async ({postData, sha}: {
+  postData: PublicationData,
+  sha?: string
+}) => {
   try {
     const post = postData.publication.post
     const fileName = `${post.slug}.md`
@@ -26,6 +30,7 @@ export const createFile = async (postData: any) => {
         name: `Ammar Mirza`,
         email: "itsammarmirza@gmail.com",
       },
+      sha,
       author: {
         name: "Ammar Mirza",
         email: "itsammarmirza@gmail.com",

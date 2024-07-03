@@ -43310,7 +43310,7 @@ var github = __nccwpck_require__(9210);
 const octokit = new dist_src_Octokit({
     auth: `${process.env.GITHUB_TOKEN}`,
 });
-const createFile = async (postData) => {
+const createFile = async ({ postData, sha }) => {
     try {
         const post = postData.publication.post;
         const fileName = `${post.slug}.md`;
@@ -43328,6 +43328,7 @@ const createFile = async (postData) => {
                 name: `Ammar Mirza`,
                 email: "itsammarmirza@gmail.com",
             },
+            sha,
             author: {
                 name: "Ammar Mirza",
                 email: "itsammarmirza@gmail.com",
@@ -43361,17 +43362,27 @@ const getPostData = async ({ publicationId, postSlug }) => {
 ;// CONCATENATED MODULE: ./src/hashnode-to-github/modifySync.ts
 
 
+
+
 const modifySync = async ({ publicationId, postSlug }) => {
-    const data = await getPostData({ publicationId, postSlug });
-    createFile(data);
+    const octokit = new dist_src_Octokit({
+        auth: `${process.env.GITHUB_TOKEN}`,
+    });
+    const postData = await getPostData({ publicationId, postSlug });
+    const { data: { sha } } = await octokit.request('GET /repos/{owner}/{repo}/contents/{file_path}', {
+        owner: github.context.repo.owner,
+        repo: github.context.repo.repo,
+        file_path: `${postData.publication.post.slug}.md`
+    });
+    createFile({ postData, sha });
 };
 
 ;// CONCATENATED MODULE: ./src/hashnode-to-github/publishSync.ts
 
 
 const publishSync = async ({ publicationId, postSlug }) => {
-    const data = await getPostData({ publicationId, postSlug });
-    createFile(data);
+    const postData = await getPostData({ publicationId, postSlug });
+    createFile(postData);
 };
 
 ;// CONCATENATED MODULE: ./src/hashnode-to-github/hashnodeToGithubSync.ts

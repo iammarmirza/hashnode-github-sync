@@ -8,6 +8,6 @@ export const publishSync = async ({
     publicationId: string,
     postSlug: string
 }) => {
-    const data = await getPostData({publicationId, postSlug})
-    createFile(data)
+    const postData = await getPostData({publicationId, postSlug})
+    createFile(postData)
 }
