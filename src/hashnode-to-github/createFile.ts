@@ -12,8 +12,8 @@ export const createFile = async (postData: any) => {
   try {
     const post = postData.publication.post
     const fileName = `${post.slug}.md`
-    const metaTags = mapGqlToMarkdownInput(postData)
-    const fileContent = matter.stringify(post.content.markdown, metaTags)
+    const frontMatter = mapGqlToMarkdownInput(postData)
+    const fileContent = matter.stringify(post.content.markdown, frontMatter)
     const contentEncoded = Base64.encode(fileContent)
     const { data } = await octokit.repos.createOrUpdateFileContents({
       owner: context.repo.owner,

@@ -1,5 +1,5 @@
 import { getPostId } from "../shared/getPostID";
-import { getInputToModifyPost } from "./getInputToModifyPost";
+import { mapMdToGqlModifyInput } from "./mapMdToGqlModifyInput";
 import { makeSlug } from "../shared/makeSlug";
 import { parseFile } from "../shared/parseFile";
 import { callGraphqlAPI } from "../shared/callGraphqlAPI";
@@ -12,13 +12,13 @@ export const modifyArticle = async ({
 }: {
   file: string;
   hashnode_token: string;
-  publicationId: string | number;
+  publicationId: string;
 }) => {
   const slug = makeSlug(file);
   const parsedArticle = await parseFile(file);
   const postId = await getPostId({ publicationId, slug });
-  const input = getInputToModifyPost({parsedArticle, slug, postId});
-  console.log(input)
+  const input = mapMdToGqlModifyInput({parsedArticle, slug, postId, publicationId});
+
   const response = await callGraphqlAPI({
     query: QUERY.modify,
     variables: {

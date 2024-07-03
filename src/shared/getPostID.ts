@@ -6,7 +6,7 @@ export const getPostId = async ({
   publicationId,
   slug,
 }: {
-  publicationId: string | number;
+  publicationId: string;
   slug: string;
 }) => {
   

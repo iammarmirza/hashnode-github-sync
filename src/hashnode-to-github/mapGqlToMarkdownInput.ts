@@ -1,36 +1,32 @@
-export const mapGqlToMarkdownInput = (data: any) => {
-    const input = {
-        title: data.publication.post.title,
-        subtitle: data.publication.post.subtitle || undefined,
-        publicationId: data.publication.id,
-        publishedAt: data.publication.post.publishedAt || undefined,
-        coverImageOptions: data.publication.post.coverImage ? {
-            coverImageURL: data.publication.post.coverImage.url,
-            isCoverAttributionHidden: data.publication.post.coverImage.isAttributionHidden,
-            stickCoverToBottom: data.publication.post.preferences.stickCoverToBottom
-        } : undefined,
-        slug: data.publication.post.slug || undefined,
-        tags: data.publication.post.tags || undefined,
-        disableComments: data.publication.post.preferences.disableComments,
-        metaTags: {},
-        seriesId: data.publication.post.series ? data.publication.post.series.id : undefined,
-        settings: {
-            delisted: data.publication.post.preferences.isDelisted,
-            enableTableOfContent: data.publication.post.features.tableOfContents.isEnabled
-        },
-        coAuthors: data.publication.post.coAuthors || undefined
-      };
+import { FrontMatter } from "src/shared/types";
+import { PublicationData } from "src/shared/types/Publication";
 
-      const filteredInput = Object.fromEntries(
-        Object.entries(input)
-          .filter(([key, value]) => value !== undefined)
-      );
+export const mapGqlToMarkdownInput = (data: PublicationData): FrontMatter => {
+  const frontMatter: FrontMatter = {
+    title: data.publication.post.title,
+    subtitle: data.publication.post.subtitle,
+    publishedAt: data.publication.post.publishedAt,
+    coverImageUrl: data.publication.post.coverImage?.url,
+    isCoverAttributionHidden:
+      data.publication.post.coverImage?.isAttributionHidden,
+    coverImageAttribution: data.publication.post.coverImage?.attribution,
+    coverImagePhotographer: data.publication.post.coverImage?.photographer,
+    stickCoverToBottom: data.publication.post.preferences.stickCoverToBottom,
+    tags: data.publication.post.tags,
+    disableComments: data.publication.post.preferences.disableComments,
+    ogTitle: data.publication.post.seo.title,
+    ogDescription: data.publication.post.seo.description,
+    ogImage: data.publication.post.ogMetaData.image,
+    seriesId: data.publication.post.series?.id,
+    delisted: data.publication.post.preferences.isDelisted,
+    enableTableOfContent:
+      data.publication.post.features.tableOfContents.isEnabled,
+    coAuthors: data.publication.post.coAuthors,
+  };
 
-      if(data.publication.post.seo.title) filteredInput.metaTags.title = data.publication.post.seo.title
-      if(data.publication.post.seo.description) filteredInput.metaTags.description =  data.publication.post.seo.description
-      if(data.publication.post.ogMetaData.image) filteredInput.metaTags.image = data.publication.post.ogMetaData.image
+  const filteredFrontMatter = Object.fromEntries(
+    Object.entries(frontMatter).filter(([key, value]) => value)
+  );
 
-      if(data.publication.post.coverImage?.attribution) filteredInput.coverImageOptions.coverImageAttribution = data.publication.post.coverImage.attribution
-      if(data.publication.post.coverImage?.photographer) filteredInput.coverImageOptions.coverImagePhotographer = data.publication.post.coverImage.photographer
-    return filteredInput
-}
+  return filteredFrontMatter as FrontMatter;
+};

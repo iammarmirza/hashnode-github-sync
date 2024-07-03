@@ -4,7 +4,7 @@ import { assertPostIsNotNull, assertPublicationIsNotNull } from "../shared/asser
 
 export const getPostData = async ({ publicationId, postSlug }: {
     publicationId: any,
-    postSlug: string | undefined
+    postSlug: string
 }) => {
   const result = await callGraphqlAPI({
     query: POST_DATA_QUERY,

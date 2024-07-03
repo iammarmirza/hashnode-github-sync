@@ -5,8 +5,8 @@ export const publishSync = async ({
     publicationId, 
     postSlug
 }: {
-    publicationId: string | number,
-    postSlug: string | undefined
+    publicationId: string,
+    postSlug: string
 }) => {
     const data = await getPostData({publicationId, postSlug})
     createFile(data)

@@ -11,7 +11,7 @@ export const deleteArticle = async ({
 }: {
   file: string;
   hashnode_token: string;
-  publicationId: string | number;
+  publicationId: string;
 }) => {
   const slug = makeSlug(file);
   const postId = await getPostId({publicationId, slug});

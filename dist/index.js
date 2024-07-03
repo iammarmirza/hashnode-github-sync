@@ -39126,29 +39126,6 @@ const POST_DATA_QUERY = `query PostData($id: ObjectId, $slug: String!) {
   }
 }`;
 
-;// CONCATENATED MODULE: ./src/shared/getPublicationId.ts
-
-
-const getPublicationId = async (host) => {
-    const response = await fetch(HASHNODE_ENDPOINT, {
-        method: 'POST',
-        headers: {
-            'Content-type': 'application/json',
-            Authorization: `${process.env.HASHNODE_KEY}`
-        },
-        body: JSON.stringify({
-            query: PUBLICATION_ID_QUERY,
-            variables: {
-                host
-            }
-        })
-    });
-    const result = await response.json();
-    assertErrorIsNotNull(result);
-    assertPublicationIsNotNull(result);
-    return result.data.publication.id;
-};
-
 ;// CONCATENATED MODULE: ./src/shared/callGraphqlAPI.ts
 
 
@@ -39169,32 +39146,61 @@ const callGraphqlAPI = async ({ query, variables, token }) => {
     return result;
 };
 
-;// CONCATENATED MODULE: ./src/github-to-hashnode/mapMarkdownToGqlInput.ts
-const mapMarkdownToGqlInput = async ({ parsedArticle, publicationId, slug, }) => {
-    validateInput(parsedArticle);
+;// CONCATENATED MODULE: ./src/shared/getPublicationId.ts
+
+
+
+
+const getPublicationId = async () => {
+    const { host } = getInput();
+    const result = await callGraphqlAPI({
+        query: PUBLICATION_ID_QUERY,
+        variables: {
+            host,
+        },
+        token: `${process.env.HASHNODE_TOKEN}`,
+    });
+    assertErrorIsNotNull(result);
+    assertPublicationIsNotNull(result);
+    return result.data.publication.id;
+};
+
+;// CONCATENATED MODULE: ./src/github-to-hashnode/mapMdToGqlPublishInput.ts
+const mapMarkdownToGqlPublishInput = ({ parsedArticle, publicationId, slug, }) => {
     const input = {
         title: parsedArticle.data.title,
-        subtitle: parsedArticle.data.subtitle || undefined,
+        subtitle: parsedArticle.data.subtitle,
         publicationId: publicationId,
         contentMarkdown: parsedArticle.content,
-        publishedAt: parsedArticle.publishedAt || undefined,
-        coverImageOptions: parsedArticle.coverImageOptions || undefined,
+        publishedAt: parsedArticle.data.publishedAt,
+        coverImageOptions: {
+            coverImageURL: parsedArticle.data.coverImageUrl,
+            isCoverAttributionHidden: parsedArticle.data.isCoverAttributionHidden,
+            coverImageAttribution: parsedArticle.data.coverImageAttribution,
+            coverImagePhotographer: parsedArticle.data.coverImagePhotographer,
+            stickCoverToBottom: parsedArticle.data.stickCoverToBottom
+        },
         slug: slug,
-        originalArticleURL: parsedArticle.data.originalArticleURL || undefined,
-        tags: parsedArticle.data.tags || undefined,
-        disableComments: parsedArticle.data.disableComments || undefined,
-        metaTags: parsedArticle.data.metaTags || undefined,
-        publishAs: parsedArticle.data.publishAs || undefined,
-        seriesId: parsedArticle.seriesId || undefined,
-        settings: parsedArticle.data.settings || undefined,
-        coAuthors: parsedArticle.data.coAuthors || undefined,
+        originalArticleURL: parsedArticle.data.originalArticleURL,
+        tags: parsedArticle.data.tags,
+        disableComments: parsedArticle.data.disableComments,
+        metaTags: {
+            title: parsedArticle.data.ogTitle,
+            description: parsedArticle.data.ogDescription,
+            image: parsedArticle.data.ogImage
+        },
+        publishAs: parsedArticle.data.publishAs,
+        seriesId: parsedArticle.data.seriesId,
+        settings: {
+            scheduled: parsedArticle.data.scheduled,
+            enableTableOfContent: parsedArticle.data.enableTableOfContent,
+            slugOverridden: parsedArticle.data.slugOverridden,
+            isNewsletterActivated: parsedArticle.data.isNewsletterActivated,
+            delisted: parsedArticle.data.delisted
+        },
+        coAuthors: parsedArticle.data.coAuthors,
     };
     return input;
-};
-const validateInput = (parsedArticle) => {
-    if (!parsedArticle.data.title || !parsedArticle.content) {
-        throw new Error("Required Fields are not provided to Publish Post");
-    }
 };
 
 // EXTERNAL MODULE: ./node_modules/fs-extra/lib/index.js
@@ -39227,7 +39233,7 @@ const makeSlug = (file) => {
 const publishArticle = async ({ file, hashnode_token, publicationId, }) => {
     const slug = makeSlug(file);
     const parsedArticle = await parseFile(file);
-    const input = await mapMarkdownToGqlInput({
+    const input = mapMarkdownToGqlPublishInput({
         parsedArticle,
         publicationId,
         slug,
@@ -39260,26 +39266,38 @@ const getPostId = async ({ publicationId, slug, }) => {
     return result.data.publication.post.id;
 };
 
-;// CONCATENATED MODULE: ./src/github-to-hashnode/getInputToModifyPost.ts
-const getInputToModifyPost = ({ parsedArticle, slug, postId }) => {
+;// CONCATENATED MODULE: ./src/github-to-hashnode/mapMdToGqlModifyInput.ts
+const mapMdToGqlModifyInput = ({ parsedArticle, slug, postId, publicationId }) => {
     const input = {
         id: postId,
         title: parsedArticle.data.title,
+        subtitle: parsedArticle.data.subtitle,
+        publicationId: publicationId,
         slug: slug,
         contentMarkdown: parsedArticle.content,
         // publishedAt: parsedArticle.data.publishedAt || undefined,
-        coverImageOptions: parsedArticle.data.coverImageOptions || undefined,
+        coverImageOptions: {
+            coverImageURL: parsedArticle.data.coverImageUrl,
+            isCoverAttributionHidden: parsedArticle.data.isCoverAttributionHidden,
+            coverImageAttribution: parsedArticle.data.coverImageAttribution,
+            coverImagePhotographer: parsedArticle.data.coverImagePhotographer,
+            stickCoverToBottom: parsedArticle.data.stickCoverToBottom
+        },
         originalArticleUrl: parsedArticle.data.originalArticleURL || undefined,
         tags: parsedArticle.data.tags || undefined,
-        metaTags: parsedArticle.data.metaTags || undefined,
+        metaTags: {
+            title: parsedArticle.data.ogTitle,
+            description: parsedArticle.data.ogDescription,
+            image: parsedArticle.data.ogImage
+        },
         publishAs: parsedArticle.data.publishAs || undefined,
         coAuthors: parsedArticle.data.coAuthors || undefined,
         seriesId: parsedArticle.data.seriesId || undefined,
         settings: {
-            isTableOfContentEnabled: parsedArticle.data.settings.enableTableOfContent || true,
-            delisted: parsedArticle.data.settings.delisted || false,
+            isTableOfContentEnabled: parsedArticle.data.enableTableOfContent || true,
+            delisted: parsedArticle.data.delisted,
+            disableComments: parsedArticle.data.disableComments
         },
-        publicationId: parsedArticle.data.publicationId || undefined
     };
     return input;
 };
@@ -39295,8 +39313,7 @@ const modifyArticle = async ({ file, hashnode_token, publicationId, }) => {
     const slug = makeSlug(file);
     const parsedArticle = await parseFile(file);
     const postId = await getPostId({ publicationId, slug });
-    const input = getInputToModifyPost({ parsedArticle, slug, postId });
-    console.log(input);
+    const input = mapMdToGqlModifyInput({ parsedArticle, slug, postId, publicationId });
     const response = await callGraphqlAPI({
         query: QUERY.modify,
         variables: {
@@ -39342,8 +39359,8 @@ const deleteArticle = async ({ file, hashnode_token, publicationId, }) => {
 
 
 const githubToHashnodeSync = async () => {
-    const { host, hashnode_token, added_files, modified_files, deleted_files } = getInput();
-    const publicationId = await getPublicationId(host);
+    const { hashnode_token, added_files, modified_files, deleted_files } = getInput();
+    const publicationId = await getPublicationId();
     const added_files_arr = added_files
         .split(" ")
         .filter((file) => file.endsWith(".md"));
@@ -39377,10 +39394,6 @@ const getPostSlug = async (postId) => {
 
 ;// CONCATENATED MODULE: ./src/hashnode-to-github/deleteSync.ts
 const deleteSync = () => {
-};
-
-;// CONCATENATED MODULE: ./src/hashnode-to-github/modifySync.ts
-const modifySync = () => {
 };
 
 ;// CONCATENATED MODULE: ./node_modules/universal-user-agent/index.js
@@ -42967,40 +42980,27 @@ const dist_src_Octokit = Octokit.plugin(requestLog, legacyRestEndpointMethods, p
 
 ;// CONCATENATED MODULE: ./src/hashnode-to-github/mapGqlToMarkdownInput.ts
 const mapGqlToMarkdownInput = (data) => {
-    const input = {
+    const frontMatter = {
         title: data.publication.post.title,
-        subtitle: data.publication.post.subtitle || undefined,
-        publicationId: data.publication.id,
-        publishedAt: data.publication.post.publishedAt || undefined,
-        coverImageOptions: data.publication.post.coverImage ? {
-            coverImageURL: data.publication.post.coverImage.url,
-            isCoverAttributionHidden: data.publication.post.coverImage.isAttributionHidden,
-            stickCoverToBottom: data.publication.post.preferences.stickCoverToBottom
-        } : undefined,
-        slug: data.publication.post.slug || undefined,
-        tags: data.publication.post.tags || undefined,
+        subtitle: data.publication.post.subtitle,
+        publishedAt: data.publication.post.publishedAt,
+        coverImageUrl: data.publication.post.coverImage?.url,
+        isCoverAttributionHidden: data.publication.post.coverImage?.isAttributionHidden,
+        coverImageAttribution: data.publication.post.coverImage?.attribution,
+        coverImagePhotographer: data.publication.post.coverImage?.photographer,
+        stickCoverToBottom: data.publication.post.preferences.stickCoverToBottom,
+        tags: data.publication.post.tags,
         disableComments: data.publication.post.preferences.disableComments,
-        metaTags: {},
-        seriesId: data.publication.post.series ? data.publication.post.series.id : undefined,
-        settings: {
-            delisted: data.publication.post.preferences.isDelisted,
-            enableTableOfContent: data.publication.post.features.tableOfContents.isEnabled
-        },
-        coAuthors: data.publication.post.coAuthors || undefined
+        ogTitle: data.publication.post.seo.title,
+        ogDescription: data.publication.post.seo.description,
+        ogImage: data.publication.post.ogMetaData.image,
+        seriesId: data.publication.post.series?.id,
+        delisted: data.publication.post.preferences.isDelisted,
+        enableTableOfContent: data.publication.post.features.tableOfContents.isEnabled,
+        coAuthors: data.publication.post.coAuthors,
     };
-    const filteredInput = Object.fromEntries(Object.entries(input)
-        .filter(([key, value]) => value !== undefined));
-    if (data.publication.post.seo.title)
-        filteredInput.metaTags.title = data.publication.post.seo.title;
-    if (data.publication.post.seo.description)
-        filteredInput.metaTags.description = data.publication.post.seo.description;
-    if (data.publication.post.ogMetaData.image)
-        filteredInput.metaTags.image = data.publication.post.ogMetaData.image;
-    if (data.publication.post.coverImage?.attribution)
-        filteredInput.coverImageOptions.coverImageAttribution = data.publication.post.coverImage.attribution;
-    if (data.publication.post.coverImage?.photographer)
-        filteredInput.coverImageOptions.coverImagePhotographer = data.publication.post.coverImage.photographer;
-    return filteredInput;
+    const filteredFrontMatter = Object.fromEntries(Object.entries(frontMatter).filter(([key, value]) => value));
+    return filteredFrontMatter;
 };
 
 ;// CONCATENATED MODULE: ./node_modules/js-base64/base64.mjs
@@ -43314,8 +43314,8 @@ const createFile = async (postData) => {
     try {
         const post = postData.publication.post;
         const fileName = `${post.slug}.md`;
-        const metaTags = mapGqlToMarkdownInput(postData);
-        const fileContent = gray_matter_default().stringify(post.content.markdown, metaTags);
+        const frontMatter = mapGqlToMarkdownInput(postData);
+        const fileContent = gray_matter_default().stringify(post.content.markdown, frontMatter);
         const contentEncoded = gBase64.encode(fileContent);
         const { data } = await octokit.repos.createOrUpdateFileContents({
             owner: github.context.repo.owner,
@@ -43358,6 +43358,14 @@ const getPostData = async ({ publicationId, postSlug }) => {
     return result.data;
 };
 
+;// CONCATENATED MODULE: ./src/hashnode-to-github/modifySync.ts
+
+
+const modifySync = async ({ publicationId, postSlug }) => {
+    const data = await getPostData({ publicationId, postSlug });
+    createFile(data);
+};
+
 ;// CONCATENATED MODULE: ./src/hashnode-to-github/publishSync.ts
 
 
@@ -43381,7 +43389,7 @@ const hashnodeToGithubSync = async (parsedEvent) => {
             publishSync({ publicationId, postSlug });
             break;
         case 'post_updated':
-            modifySync();
+            modifySync({ publicationId, postSlug });
             break;
         case 'post_deleted':
             deleteSync();

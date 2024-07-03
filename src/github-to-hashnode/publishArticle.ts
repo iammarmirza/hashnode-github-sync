@@ -1,6 +1,6 @@
 import { callGraphqlAPI } from "../shared/callGraphqlAPI";
 import { QUERY } from "../shared/constants";
-import { mapMarkdownToGqlInput } from "./mapMarkdownToGqlInput";
+import { mapMarkdownToGqlPublishInput } from "./mapMdToGqlPublishInput";
 import { parseFile } from "../shared/parseFile";
 import { makeSlug } from "../shared/makeSlug";
 
@@ -11,12 +11,12 @@ export const publishArticle = async ({
 }: {
   file: string;
   hashnode_token: string;
-  publicationId: string | number;
+  publicationId: string;
 }) => {
 
   const slug = makeSlug(file);
   const parsedArticle = await parseFile(file);
-  const input = await mapMarkdownToGqlInput({
+  const input = mapMarkdownToGqlPublishInput({
     parsedArticle,
     publicationId,
     slug,

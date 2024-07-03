@@ -5,8 +5,8 @@ import { modifyArticle } from "./modifyArticle";
 import { deleteArticle } from "./deleteArticle";
 
 export const githubToHashnodeSync = async () => {
-    const { host, hashnode_token, added_files, modified_files, deleted_files } = getInput()
-    const publicationId = await getPublicationId(host);
+    const { hashnode_token, added_files, modified_files, deleted_files } = getInput()
+    const publicationId = await getPublicationId();
 
     const added_files_arr = added_files
         .split(" ")
