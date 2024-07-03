@@ -16,7 +16,9 @@ export const getInputToModifyPost = async ({parsedArticle, slug, postId}: {
     publishAs: parsedArticle.data.publishAs || undefined,
     coAuthors: parsedArticle.data.coAuthors || undefined,
     seriesId: parsedArticle.data.seriesId || undefined,
-    settings: parsedArticle.data.settings || undefined,
+    settings: {
+      isTableOfContentEnabled: parsedArticle.data.settings.enableTableOfContent
+    },
     publicationId: parsedArticle.data.publicationId || undefined
   }
     return input;
