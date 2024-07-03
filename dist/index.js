@@ -43364,15 +43364,15 @@ const getPostData = async ({ publicationId, postSlug }) => {
 
 
 
-const modifySync = async ({ publicationId, postSlug }) => {
-    const octokit = new dist_src_Octokit({
-        auth: `${process.env.GITHUB_TOKEN}`,
-    });
+const modifySync_octokit = new dist_src_Octokit({
+    auth: `${process.env.GITHUB_TOKEN}`,
+});
+const modifySync = async ({ publicationId, postSlug, }) => {
     const postData = await getPostData({ publicationId, postSlug });
-    const { data: { sha } } = await octokit.request('GET /repos/{owner}/{repo}/contents/{file_path}', {
+    const { data: { sha }, } = await modifySync_octokit.request("GET /repos/{owner}/{repo}/contents/{file_path}", {
         owner: github.context.repo.owner,
         repo: github.context.repo.repo,
-        file_path: `${postData.publication.post.slug}.md`
+        file_path: `${postData.publication.post.slug}.md`,
     });
     createFile({ postData, sha });
 };
