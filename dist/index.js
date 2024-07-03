@@ -43307,21 +43307,16 @@ const octokit = new dist_src_Octokit({
     auth: `${process.env.GITHUB_TOKEN}`,
 });
 const createFile = async (postData) => {
-    const owner = github.context.repo.owner;
-    const repo = github.context.repo.repo;
-    console.log({
-        owner,
-        repo
-    });
     try {
+        console.log(octokit.repos);
         const post = postData.publication.post;
         const fileName = `${post.slug}.md`;
         const metaTags = mapGqlToMarkdownInput(postData);
         const fileContent = gray_matter_default().stringify(post.content.markdown, metaTags);
         const contentEncoded = gBase64.encode(fileContent);
         const { data } = await octokit.repos.createOrUpdateFileContents({
-            owner: "iammarmirza",
-            repo: "github-actions-test",
+            owner: github.context.repo.owner,
+            repo: github.context.repo.repo,
             path: fileName,
             branch: "main",
             message: "feat: Added Blog programatically",

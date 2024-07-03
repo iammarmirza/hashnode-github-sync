@@ -9,21 +9,16 @@ const octokit = new Octokit({
 });
 
 export const createFile = async (postData: any) => {
-  const owner = context.repo.owner
-  const repo = context.repo.repo
-  console.log({
-    owner, 
-    repo
-  })
   try {
+    console.log(octokit.repos)
     const post = postData.publication.post
     const fileName = `${post.slug}.md`
     const metaTags = mapGqlToMarkdownInput(postData)
     const fileContent = matter.stringify(post.content.markdown, metaTags)
     const contentEncoded = Base64.encode(fileContent)
     const { data } = await octokit.repos.createOrUpdateFileContents({
-      owner: "iammarmirza",
-      repo: "github-actions-test",
+      owner: context.repo.owner,
+      repo: context.repo.repo,
       path: fileName,
       branch: "main",
       message: "feat: Added Blog programatically",
