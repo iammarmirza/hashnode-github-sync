@@ -21,18 +21,18 @@ export const mapMdToGqlModifyInput = ({parsedArticle, slug, postId, publicationI
       coverImagePhotographer: parsedArticle.data.coverImagePhotographer,
       stickCoverToBottom: parsedArticle.data.stickCoverToBottom
     },
-    originalArticleUrl: parsedArticle.data.originalArticleURL || undefined,
-    tags: parsedArticle.data.tags || undefined,
+    originalArticleUrl: parsedArticle.data.originalArticleURL,
+    tags: parsedArticle.data.tags,
     metaTags: {
       title: parsedArticle.data.ogTitle,
       description: parsedArticle.data.ogDescription,
       image: parsedArticle.data.ogImage
     },
-    publishAs: parsedArticle.data.publishAs || undefined,
-    coAuthors: parsedArticle.data.coAuthors || undefined,
-    seriesId: parsedArticle.data.seriesId || undefined,
+    publishAs: parsedArticle.data.publishAs,
+    coAuthors: parsedArticle.data.coAuthors,
+    seriesId: parsedArticle.data.seriesId,
     settings: {
-      isTableOfContentEnabled: parsedArticle.data.enableTableOfContent || true,
+      isTableOfContentEnabled: parsedArticle.data.enableTableOfContent,
       delisted: parsedArticle.data.delisted,
       disableComments: parsedArticle.data.disableComments
     },
