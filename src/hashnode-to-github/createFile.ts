@@ -28,7 +28,6 @@ export const createFile = async (postData: any) => {
       branch: "main",
       message: "feat: Added Blog programatically",
       content: contentEncoded,
-      sha,
       committer: {
         name: `Ammar Mirza`,
         email: "itsammarmirza@gmail.com",
