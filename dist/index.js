@@ -43311,7 +43311,7 @@ const octokit = new dist_src_Octokit({
     auth: `${process.env.GITHUB_TOKEN}`,
 });
 const put_ob_01 = {
-    owner: "iammarmirza", repo: "github-actions-test", file_path: "hashnode-test-blog.md"
+    owner: github.context.repo.owner, repo: github.context.repo.repo, file_path: "hashnode-test-blg.md"
 };
 const createFile = async (postData) => {
     try {
