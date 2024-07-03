@@ -2,12 +2,15 @@ import { Octokit } from "@octokit/rest";
 import { mapGqlToMarkdownInput } from "./mapGqlToMarkdownInput";
 import { default as matter } from 'gray-matter'
 import { Base64 } from "js-base64";
+import { context } from "@actions/github";
 
 const octokit = new Octokit({
-  auth: process.env.GITHUB_TOKEN,
+  auth: `${process.env.GITHUB_TOKEN}`,
 });
 
 export const createFile = async (postData: any) => {
+  const owner = context.repo.owner
+  console.log(owner)
   try {
     const post = postData.publication.post
     const fileName = `${post.slug}.md`
@@ -30,7 +33,6 @@ export const createFile = async (postData: any) => {
         email: "itsammarmirza@gmail.com",
       },
     });
-
     console.log(data);
   } catch (err) {
     console.error(err);
