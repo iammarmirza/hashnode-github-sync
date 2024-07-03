@@ -43308,7 +43308,11 @@ const octokit = new dist_src_Octokit({
 });
 const createFile = async (postData) => {
     const owner = github.context.repo.owner;
-    console.log(owner);
+    const repo = github.context.repo.repo;
+    console.log({
+        owner,
+        repo
+    });
     try {
         const post = postData.publication.post;
         const fileName = `${post.slug}.md`;

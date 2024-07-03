@@ -10,7 +10,11 @@ const octokit = new Octokit({
 
 export const createFile = async (postData: any) => {
   const owner = context.repo.owner
-  console.log(owner)
+  const repo = context.repo.repo
+  console.log({
+    owner, 
+    repo
+  })
   try {
     const post = postData.publication.post
     const fileName = `${post.slug}.md`
