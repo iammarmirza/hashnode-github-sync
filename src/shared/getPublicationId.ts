@@ -1,7 +1,7 @@
+import { assertErrorIsNotNull, assertPublicationIsNotNull } from "./assertions"
 import { HASHNODE_ENDPOINT, PUBLICATION_ID_QUERY } from "./constants"
 
-export const getPublicationId = async (host) => {
-    try {
+export const getPublicationId = async (host: string | undefined) => {
         const response = await fetch(HASHNODE_ENDPOINT, {
             method: 'POST',
             headers: {
@@ -16,9 +16,8 @@ export const getPublicationId = async (host) => {
             })
         })
         
-        const data = await response.json()
-        return data.data.publication.id
-    } catch {
-        
-    }
+        const result = await response.json()
+        assertErrorIsNotNull(result)
+        assertPublicationIsNotNull(result)
+        return result.data.publication.id
 }

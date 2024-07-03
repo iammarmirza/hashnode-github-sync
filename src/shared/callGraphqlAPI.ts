@@ -1,6 +1,11 @@
+import { assertErrorIsNotNull } from "./assertions"
 import { HASHNODE_ENDPOINT } from "./constants"
 
-export const callGraphqlAPI = async ({query, variables, token}) => {
+export const callGraphqlAPI = async ({query, variables, token}: {
+    query: string,
+    variables: any,
+    token: string
+}) => {
     const response = await fetch(HASHNODE_ENDPOINT, {
         method: 'POST',
         headers: {
@@ -13,6 +18,7 @@ export const callGraphqlAPI = async ({query, variables, token}) => {
         })
     })
 
-    const data = await response.json()
-    return data.data
+    const result = await response.json()
+    assertErrorIsNotNull(result)
+    return result
 }

@@ -1,14 +1,13 @@
 import { Octokit } from "@octokit/rest";
 import { mapGqlToMarkdownInput } from "./mapGqlToMarkdownInput";
-const matter = require('gray-matter');
-const { Base64 } = require("js-base64")
-const github = require("@actions/github");
+import { default as matter } from 'gray-matter'
+import { Base64 } from "js-base64";
 
 const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
 });
 
-export const createFile = async (postData) => {
+export const createFile = async (postData: any) => {
   try {
     const post = postData.publication.post
     const fileName = `${post.slug}.md`

@@ -1,8 +1,13 @@
-export const mapMarkdownToGqlInput = async (
+export const mapMarkdownToGqlInput = async ({
   parsedArticle,
   publicationId,
-  slug
-) => {
+  slug,
+}: {
+  parsedArticle: any;
+  publicationId: string | number;
+  slug: string;
+}) => {
+
   validateInput(parsedArticle);
   const input = {
     title: parsedArticle.data.title,
@@ -19,18 +24,14 @@ export const mapMarkdownToGqlInput = async (
     publishAs: parsedArticle.data.publishAs || undefined,
     seriesId: parsedArticle.seriesId || undefined,
     settings: parsedArticle.data.settings || undefined,
-    coAuthors: parsedArticle.data.coAuthors || undefined
+    coAuthors: parsedArticle.data.coAuthors || undefined,
   };
-  
-  
+
   return input;
 };
 
-const validateInput = (parsedArticle) => {
-  if (
-    !parsedArticle.data.title ||
-    !parsedArticle.content
-  ) {
+const validateInput = (parsedArticle: any) => {
+  if (!parsedArticle.data.title || !parsedArticle.content) {
     throw new Error("Required Fields are not provided to Publish Post");
   }
 };

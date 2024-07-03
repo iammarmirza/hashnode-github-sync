@@ -19,6 +19,7 @@
     "octokit": "^4.0.2"
   },
   "devDependencies": {
-    "@types/fs-extra": "^11.0.4"
+    "@types/fs-extra": "^11.0.4",
+    "typescript": "^5.5.3"
   }
 }

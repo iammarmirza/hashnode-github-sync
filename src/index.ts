@@ -1,3 +1,4 @@
+import * as core from '@actions/core';
 import { getInput } from "./shared/getInput";
 import { githubToHashnodeSync } from "./github-to-hashnode/githubToHashnodeSync";
 import { hashnodeToGithubSync } from "./hashnode-to-github/hashnodeToGithubSync";
@@ -10,7 +11,7 @@ export async function run() {
     if (parsedEvent) hashnodeToGithubSync(parsedEvent)
     else githubToHashnodeSync() 
 
-  } catch (error) {
+  } catch (error: any) {
     core.setFailed(error.message);
   }
 }

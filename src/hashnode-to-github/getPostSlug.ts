@@ -1,14 +1,14 @@
 import { POST_SLUG_QUERY } from "../shared/constants"
 import { callGraphqlAPI } from "../shared/callGraphqlAPI"
 
-export const getPostSlug = async (id) => {
-    const data = await callGraphqlAPI({
+export const getPostSlug = async (postId: string) => {
+    const result = await callGraphqlAPI({
         query: POST_SLUG_QUERY,
         variables: {
-            id
+            id : postId
         },
         token: `${process.env.HASHNODE_TOKEN}`
     })
-
-    return data.post.slug
+    
+    return result.data.post.slug
 }

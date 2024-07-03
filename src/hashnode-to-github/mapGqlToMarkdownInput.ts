@@ -1,4 +1,4 @@
-export const mapGqlToMarkdownInput = (data) => {
+export const mapGqlToMarkdownInput = (data: any) => {
     const input = {
         title: data.publication.post.title,
         subtitle: data.publication.post.subtitle || undefined,

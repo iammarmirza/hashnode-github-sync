@@ -1,4 +1,4 @@
-const core = require("@actions/core");
+import * as core from '@actions/core';
 
 export const getInput = () => {
     const hashnode_event = core.getInput("hashnode_event");
