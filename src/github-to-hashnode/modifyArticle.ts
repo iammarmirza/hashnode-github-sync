@@ -17,8 +17,8 @@ export const modifyArticle = async ({
   const slug = makeSlug(file);
   const parsedArticle = await parseFile(file);
   const postId = await getPostId({ publicationId, slug });
-  const input = await getInputToModifyPost({parsedArticle, slug, postId});
-
+  const input = getInputToModifyPost({parsedArticle, slug, postId});
+  console.log(input)
   const response = await callGraphqlAPI({
     query: QUERY.modify,
     variables: {

@@ -1,4 +1,4 @@
-export const getInputToModifyPost = async ({parsedArticle, slug, postId}: {
+export const getInputToModifyPost = ({parsedArticle, slug, postId}: {
   parsedArticle: any,
   slug: string,
   postId: string | number
