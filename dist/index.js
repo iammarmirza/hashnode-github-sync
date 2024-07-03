@@ -39262,6 +39262,7 @@ const getPostId = async ({ publicationId, slug, }) => {
 
 ;// CONCATENATED MODULE: ./src/github-to-hashnode/getInputToModifyPost.ts
 const getInputToModifyPost = async ({ parsedArticle, slug, postId }) => {
+    console.log(parsedArticle.data);
     const input = {
         id: postId,
         title: parsedArticle.data.title,

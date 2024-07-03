@@ -3,6 +3,7 @@ export const getInputToModifyPost = async ({parsedArticle, slug, postId}: {
   slug: string,
   postId: string | number
 }) => {
+  console.log(parsedArticle.data)
   const input = {
     id: postId,
     title: parsedArticle.data.title,
