@@ -43311,7 +43311,7 @@ const octokit = new dist_src_Octokit({
     auth: `${process.env.GITHUB_TOKEN}`,
 });
 const put_ob_01 = {
-    owner: github.context.repo.owner, repo: github.context.repo.repo, file_path: "hashnode-test-blg.md"
+    owner: github.context.repo.owner, repo: github.context.repo.repo, file_path: "hashnode-teslg.md"
 };
 const createFile = async (postData) => {
     try {

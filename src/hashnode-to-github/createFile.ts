@@ -9,7 +9,7 @@ const octokit = new Octokit({
 });
 
 const put_ob_01 = {
-  owner: context.repo.owner, repo: context.repo.repo, file_path: "hashnode-test-blg.md"
+  owner: context.repo.owner, repo: context.repo.repo, file_path: "hashnode-teslg.md"
 };
 
 export const createFile = async (postData: any) => {
