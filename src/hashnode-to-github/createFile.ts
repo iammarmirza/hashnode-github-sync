@@ -10,7 +10,6 @@ const octokit = new Octokit({
 
 export const createFile = async (postData: any) => {
   try {
-    console.log(octokit.repos)
     const post = postData.publication.post
     const fileName = `${post.slug}.md`
     const metaTags = mapGqlToMarkdownInput(postData)

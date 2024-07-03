@@ -8,7 +8,7 @@ export const getInputToModifyPost = ({parsedArticle, slug, postId}: {
     title: parsedArticle.data.title,
     slug: slug,
     contentMarkdown: parsedArticle.content,
-    publishedAt: parsedArticle.data.publishedAt || undefined,
+    // publishedAt: parsedArticle.data.publishedAt || undefined,
     coverImageOptions: parsedArticle.data.coverImageOptions || undefined,
     originalArticleUrl: parsedArticle.data.originalArticleURL || undefined,
     tags: parsedArticle.data.tags || undefined,
