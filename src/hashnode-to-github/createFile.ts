@@ -10,12 +10,6 @@ const octokit = new Octokit({
 
 export const createFile = async (postData: any) => {
   try {
-    const SHA = await octokit.request('GET /repos/{owner}/{repo}/contents/{file_path}', {
-      owner: context.repo.owner,
-      repo: context.repo.repo,
-      file_path: `${postData.publication.post.slug}.md`
-    })
-
     const post = postData.publication.post
     const fileName = `${post.slug}.md`
     const frontMatter = mapGqlToMarkdownInput(postData)

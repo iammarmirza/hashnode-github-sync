@@ -43312,11 +43312,6 @@ const octokit = new dist_src_Octokit({
 });
 const createFile = async (postData) => {
     try {
-        const SHA = await octokit.request('GET /repos/{owner}/{repo}/contents/{file_path}', {
-            owner: github.context.repo.owner,
-            repo: github.context.repo.repo,
-            file_path: `${postData.publication.post.slug}.md`
-        });
         const post = postData.publication.post;
         const fileName = `${post.slug}.md`;
         const frontMatter = mapGqlToMarkdownInput(postData);
