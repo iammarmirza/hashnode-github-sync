@@ -14,6 +14,7 @@ export const createFile = async ({postData, sha}: {
   sha?: string
 }) => {
   try {
+    console.log(context.actor)
     const post = postData.publication.post
     const fileName = `${post.slug}.md`
     const frontMatter = mapGqlToMarkdownInput(postData)
@@ -24,7 +25,7 @@ export const createFile = async ({postData, sha}: {
       repo: context.repo.repo,
       path: fileName,
       branch: "main",
-      message: "feat: Added Blog programatically",
+      message: `Added Blog ${fileName} programatically`,
       content: contentEncoded,
       committer: {
         name: `Ammar Mirza`,

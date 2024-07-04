@@ -43329,6 +43329,7 @@ const octokit = new dist_src_Octokit({
 });
 const createFile = async ({ postData, sha }) => {
     try {
+        console.log(github.context.actor);
         const post = postData.publication.post;
         const fileName = `${post.slug}.md`;
         const frontMatter = mapGqlToMarkdownInput(postData);
@@ -43339,7 +43340,7 @@ const createFile = async ({ postData, sha }) => {
             repo: github.context.repo.repo,
             path: fileName,
             branch: "main",
-            message: "feat: Added Blog programatically",
+            message: `Added Blog ${fileName} programatically`,
             content: contentEncoded,
             committer: {
                 name: `Ammar Mirza`,
