@@ -8,7 +8,7 @@ export const getPostId = async ({
 }: {
   publicationId: string;
   slug: string;
-}) => {
+}): Promise<string> => {
   
   const result = await callGraphqlAPI({
     query: POST_ID_QUERY,

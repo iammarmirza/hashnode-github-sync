@@ -6,6 +6,7 @@ export const QUERY = {
       post {
         cuid
         id
+        title
       }
     }
   }`,
@@ -23,6 +24,7 @@ export const QUERY = {
     post {
       id
       slug
+      title
     }
   }
 }`,

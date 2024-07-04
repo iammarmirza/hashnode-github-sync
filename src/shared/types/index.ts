@@ -40,6 +40,21 @@ export interface PostSettings {
   delisted?: boolean;
 }
 
+export type GetInput = {
+  hashnode_event: string;
+  hashnode_token: string;
+  host: string;
+  added_files: string;
+  modified_files: string;
+  deleted_files: string;
+};
+
+export interface GithubToHashnodeSync {
+  file: string;
+  hashnode_token: string;
+  publicationId: string;
+}
+
 export type ParsedContent = {
   data: FrontMatter;
   content: string;
@@ -94,9 +109,8 @@ export interface PostUpdateInput {
   publicationId?: string;
 }
 
-
 export interface UpdateSettings {
-    isTableOfContentEnabled?: boolean;
-    delisted?: boolean;
-    disableComments?: boolean;
-  }
+  isTableOfContentEnabled?: boolean;
+  delisted?: boolean;
+  disableComments?: boolean;
+}

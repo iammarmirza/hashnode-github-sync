@@ -4,20 +4,23 @@ import { makeSlug } from "../shared/makeSlug";
 import { parseFile } from "../shared/parseFile";
 import { callGraphqlAPI } from "../shared/callGraphqlAPI";
 import { QUERY } from "../shared/constants";
+import { GithubToHashnodeSync } from "src/shared/types";
+import { ModifyArticle } from "src/shared/types/ModifyArticleTypes";
 
 export const modifyArticle = async ({
   file,
   hashnode_token,
   publicationId,
-}: {
-  file: string;
-  hashnode_token: string;
-  publicationId: string;
-}) => {
+}: GithubToHashnodeSync): Promise<ModifyArticle> => {
   const slug = makeSlug(file);
   const parsedArticle = await parseFile(file);
   const postId = await getPostId({ publicationId, slug });
-  const input = mapMdToGqlModifyInput({parsedArticle, slug, postId, publicationId});
+  const input = mapMdToGqlModifyInput({
+    parsedArticle,
+    slug,
+    postId,
+    publicationId,
+  });
 
   const response = await callGraphqlAPI({
     query: QUERY.modify,
@@ -27,5 +30,6 @@ export const modifyArticle = async ({
     token: hashnode_token,
   });
 
-  return response;
+  console.log(`Post successfully modified on Hashnode with slug ${response.data.updatePost.post.slug}`)
+  return response as ModifyArticle
 };

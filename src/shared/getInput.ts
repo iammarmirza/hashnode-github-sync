@@ -1,6 +1,7 @@
 import * as core from '@actions/core';
+import { GetInput } from './types';
 
-export const getInput = () => {
+export const getInput = () : GetInput => {
     const hashnode_event = core.getInput("hashnode_event");
     const hashnode_token = core.getInput("hashnode_token");
     const host = core.getInput("hashnode_host");

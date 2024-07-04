@@ -1,7 +1,8 @@
 import { POST_SLUG_QUERY } from "../shared/constants"
 import { callGraphqlAPI } from "../shared/callGraphqlAPI"
+import { assertSinglePostIsNotNull } from "src/shared/assertions"
 
-export const getPostSlug = async (postId: string) => {
+export const getPostSlug = async (postId: string): Promise<string> => {
     const result = await callGraphqlAPI({
         query: POST_SLUG_QUERY,
         variables: {
@@ -9,6 +10,7 @@ export const getPostSlug = async (postId: string) => {
         },
         token: `${process.env.HASHNODE_TOKEN}`
     })
-    
+    assertSinglePostIsNotNull(result)
     return result.data.post.slug
 }
+
