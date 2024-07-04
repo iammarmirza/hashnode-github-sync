@@ -4,6 +4,7 @@ import { default as matter } from 'gray-matter'
 import { Base64 } from "js-base64";
 import { context } from "@actions/github";
 import { PublicationData } from "src/shared/types/Publication";
+import { getUser } from "./getUser";
 
 const octokit = new Octokit({
   auth: `${process.env.GITHUB_TOKEN}`,
@@ -14,7 +15,7 @@ export const createFile = async ({postData, sha}: {
   sha?: string
 }) => {
   try {
-    console.log(context.actor)
+    getUser()
     const post = postData.publication.post
     const fileName = `${post.slug}.md`
     const frontMatter = mapGqlToMarkdownInput(postData)

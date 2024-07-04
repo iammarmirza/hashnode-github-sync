@@ -43318,24 +43318,38 @@ const gBase64 = {
 
 // EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
 var github = __nccwpck_require__(9210);
+;// CONCATENATED MODULE: ./src/hashnode-to-github/getUser.ts
+
+
+const octokit = new dist_src_Octokit({
+    auth: `${process.env.GITHUB_TOKEN}`,
+});
+const getUser = async () => {
+    const { data } = await octokit.request("GET /users/{owner}", {
+        owner: github.context.repo.owner,
+    });
+    console.log(data);
+};
+
 ;// CONCATENATED MODULE: ./src/hashnode-to-github/createFile.ts
 
 
 
 
 
-const octokit = new dist_src_Octokit({
+
+const createFile_octokit = new dist_src_Octokit({
     auth: `${process.env.GITHUB_TOKEN}`,
 });
 const createFile = async ({ postData, sha }) => {
     try {
-        console.log(github.context.actor);
+        getUser();
         const post = postData.publication.post;
         const fileName = `${post.slug}.md`;
         const frontMatter = mapGqlToMarkdownInput(postData);
         const fileContent = gray_matter_default().stringify(post.content.markdown, frontMatter);
         const contentEncoded = gBase64.encode(fileContent);
-        const { data } = await octokit.repos.createOrUpdateFileContents({
+        const { data } = await createFile_octokit.repos.createOrUpdateFileContents({
             owner: github.context.repo.owner,
             repo: github.context.repo.repo,
             path: fileName,
