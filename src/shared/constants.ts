@@ -7,6 +7,7 @@ export const QUERY = {
         cuid
         id
         title
+        slug
       }
     }
   }`,
