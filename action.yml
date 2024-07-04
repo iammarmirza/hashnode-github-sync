@@ -1,6 +1,9 @@
-name: 'Publish on Hashnode'
-description: 'Publish the blogs to Hashnode'
-author: 'Ammar Mirza'
+name: Hashnode two way sync
+description: Publish the blogs to Hashnode
+author: Ammar Mirza
+branding:
+  icon: 'link'
+  color: 'blue'
 
 runs:
   using: 'node20'
@@ -8,25 +11,21 @@ runs:
 
 inputs:
   hashnode_event:
-    description: 'The event responsible for triggering action'
+    description: The event responsible for triggering action
 
   hashnode_host:
-    description: 'Publication host where blogs will be published'
+    description: Publication host where blogs will be published
     required: true
                
   hashnode_token: 
-    description: 'Hashnode Secret Token'
+    description: Hashnode Secret Token
     required: true
 
   added_files:
-    description: 'The files which have been added'
+    description: The files which have been added
 
   modified_files:
-    description: 'The files which have been modified'
+    description: The files which have been modified
 
   deleted_files:
-    description: 'The files which have been deleted'
-
-outputs:
-  hashnode_event: 
-    description: 'Event responsible for trigger'
+    description: The files which have been deleted
