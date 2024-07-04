@@ -4,7 +4,7 @@ import { default as matter } from 'gray-matter'
 import { Base64 } from "js-base64";
 import { context } from "@actions/github";
 import { PublicationData } from "src/shared/types/Publication";
-import { getUser } from "./getUser";
+import { getCommitterDetails } from "./getCommitterDetails";
 
 const octokit = new Octokit({
   auth: `${process.env.GITHUB_TOKEN}`,
@@ -15,8 +15,7 @@ export const createFile = async ({postData, sha}: {
   sha?: string
 }) => {
   try {
-    const userDetails = await getUser()
-    console.log(userDetails)
+    const userDetails = await getCommitterDetails()
     const post = postData.publication.post
     const fileName = `${post.slug}.md`
     const frontMatter = mapGqlToMarkdownInput(postData)
@@ -30,13 +29,13 @@ export const createFile = async ({postData, sha}: {
       message: `Added Blog ${fileName} programatically`,
       content: contentEncoded,
       committer: {
-        name: `Ammar Mirza`,
-        email: "itsammarmirza@gmail.com",
+        name: `${userDetails.name}`,
+        email: `${userDetails.email}`,
       },
       sha,
       author: {
-        name: "Ammar Mirza",
-        email: "itsammarmirza@gmail.com",
+        name: `${userDetails.name}`,
+        email: `${userDetails.email}`,
       },
     });
     console.log(data);

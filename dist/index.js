@@ -43318,13 +43318,13 @@ const gBase64 = {
 
 // EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
 var github = __nccwpck_require__(9210);
-;// CONCATENATED MODULE: ./src/hashnode-to-github/getUser.ts
+;// CONCATENATED MODULE: ./src/hashnode-to-github/getCommitterDetails.ts
 
 
 const octokit = new dist_src_Octokit({
     auth: `${process.env.GITHUB_TOKEN}`,
 });
-const getUser = async () => {
+const getCommitterDetails = async () => {
     const { data } = await octokit.request("GET /users/{owner}", {
         owner: github.context.repo.owner,
     });
@@ -43343,8 +43343,7 @@ const createFile_octokit = new dist_src_Octokit({
 });
 const createFile = async ({ postData, sha }) => {
     try {
-        const userDetails = await getUser();
-        console.log(userDetails);
+        const userDetails = await getCommitterDetails();
         const post = postData.publication.post;
         const fileName = `${post.slug}.md`;
         const frontMatter = mapGqlToMarkdownInput(postData);
@@ -43358,13 +43357,13 @@ const createFile = async ({ postData, sha }) => {
             message: `Added Blog ${fileName} programatically`,
             content: contentEncoded,
             committer: {
-                name: `Ammar Mirza`,
-                email: "itsammarmirza@gmail.com",
+                name: `${userDetails.name}`,
+                email: `${userDetails.email}`,
             },
             sha,
             author: {
-                name: "Ammar Mirza",
-                email: "itsammarmirza@gmail.com",
+                name: `${userDetails.name}`,
+                email: `${userDetails.email}`,
             },
         });
         console.log(data);
