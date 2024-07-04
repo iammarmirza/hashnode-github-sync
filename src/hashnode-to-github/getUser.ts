@@ -5,9 +5,9 @@ const octokit = new Octokit({
   auth: `${process.env.GITHUB_TOKEN}`,
 });
 
-export const getUser = async () => {
+export const getUser = async (): Promise<any> => {
   const { data } = await octokit.request("GET /users/{owner}", {
-    owner: 'ndlsdlasdasdsd',
+    owner: context.repo.owner,
   });
-  console.log(data)
+  return data
 };

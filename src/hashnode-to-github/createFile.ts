@@ -15,7 +15,8 @@ export const createFile = async ({postData, sha}: {
   sha?: string
 }) => {
   try {
-    getUser()
+    const userDetails = await getUser()
+    console.log(userDetails)
     const post = postData.publication.post
     const fileName = `${post.slug}.md`
     const frontMatter = mapGqlToMarkdownInput(postData)
