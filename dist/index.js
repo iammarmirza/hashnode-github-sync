@@ -39250,7 +39250,7 @@ const publishArticle = async ({ file, hashnode_token, publicationId, }) => {
         },
         token: hashnode_token,
     });
-    console.log(`Post published successfully on Hashnode with slug ${response.data.publishPost.post.slug}`);
+    console.log(`Post published successfully on Hashnode with slug ${await response.data.publishPost.post.slug}`);
     return response;
 };
 
