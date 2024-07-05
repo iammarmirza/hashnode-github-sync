@@ -43457,16 +43457,12 @@ const modifySync = async ({ publicationId, postId, }) => {
 
 
 const checkIfFileExists = async (postData) => {
-    const result = await octokit.request("GET /repos/{owner}/{repo}/contents/{file_path}", {
+    const response = await octokit.request("GET /repos/{owner}/{repo}/contents/{file_path}", {
         owner: github.context.repo.owner,
         repo: github.context.repo.repo,
         file_path: `${postData.publication.post.slug}.md`,
     });
-    console.log(result);
-    if (result)
-        return true;
-    else
-        return false;
+    return response.data.name ? true : false;
 };
 
 ;// CONCATENATED MODULE: ./src/hashnode-to-github/publishSync.ts
