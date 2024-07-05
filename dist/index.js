@@ -39434,22 +39434,6 @@ const githubToHashnodeSync = async () => {
     await Promise.all(deletePromises);
 };
 
-;// CONCATENATED MODULE: ./src/hashnode-to-github/getPostSlug.ts
-
-
-
-const getPostSlug = async (postId) => {
-    const result = await callGraphqlAPI({
-        query: POST_SLUG_QUERY,
-        variables: {
-            id: postId
-        },
-        token: `${process.env.HASHNODE_TOKEN}`
-    });
-    assertSinglePostIsNotNull(result);
-    return result.data.post.slug;
-};
-
 ;// CONCATENATED MODULE: ./src/hashnode-to-github/deleteSync.ts
 // Todo: Have to establish two way sync if the blog gets deleted on Hashnode
 const deleteSync = () => {
@@ -43433,7 +43417,24 @@ const getPostData = async ({ publicationId, postSlug }) => {
     return result.data;
 };
 
+;// CONCATENATED MODULE: ./src/hashnode-to-github/getPostSlug.ts
+
+
+
+const getPostSlug = async (postId) => {
+    const result = await callGraphqlAPI({
+        query: POST_SLUG_QUERY,
+        variables: {
+            id: postId
+        },
+        token: `${process.env.HASHNODE_TOKEN}`
+    });
+    assertSinglePostIsNotNull(result);
+    return result.data.post.slug;
+};
+
 ;// CONCATENATED MODULE: ./src/hashnode-to-github/modifySync.ts
+
 
 
 
@@ -43441,7 +43442,8 @@ const getPostData = async ({ publicationId, postSlug }) => {
 const modifySync_octokit = new dist_src_Octokit({
     auth: `${process.env.GITHUB_TOKEN}`,
 });
-const modifySync = async ({ publicationId, postSlug, }) => {
+const modifySync = async ({ publicationId, postId, }) => {
+    const postSlug = await getPostSlug(postId);
     const postData = await getPostData({ publicationId, postSlug });
     const { data: { sha }, } = await modifySync_octokit.request("GET /repos/{owner}/{repo}/contents/{file_path}", {
         owner: github.context.repo.owner,
@@ -43470,7 +43472,9 @@ const checkIfFileExists = async (postData) => {
 
 
 
-const publishSync = async ({ publicationId, postSlug }) => {
+
+const publishSync = async ({ publicationId, postId }) => {
+    const postSlug = await getPostSlug(postId);
     const postData = await getPostData({ publicationId, postSlug });
     const isExistingFile = await checkIfFileExists(postData);
     if (isExistingFile)
@@ -43482,18 +43486,16 @@ const publishSync = async ({ publicationId, postSlug }) => {
 
 
 
-
 const hashnodeToGithubSync = async (parsedEvent) => {
     const eventType = parsedEvent.eventType;
     const postId = parsedEvent.post.id;
     const publicationId = parsedEvent.publication.id;
-    const postSlug = await getPostSlug(postId);
     switch (eventType) {
         case 'post_published':
-            publishSync({ publicationId, postSlug });
+            publishSync({ publicationId, postId });
             break;
         case 'post_updated':
-            modifySync({ publicationId, postSlug });
+            modifySync({ publicationId, postId });
             break;
         case 'post_deleted':
             deleteSync();

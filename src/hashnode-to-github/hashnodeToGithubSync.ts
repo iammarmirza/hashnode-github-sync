@@ -7,16 +7,14 @@ export const hashnodeToGithubSync = async (parsedEvent: any) => {
     const eventType = parsedEvent.eventType
     const postId = parsedEvent.post.id
     const publicationId = parsedEvent.publication.id
-    const postSlug = await getPostSlug(postId)
-
 
     switch (eventType) {
         case 'post_published':
-            publishSync({publicationId, postSlug})
+            publishSync({publicationId, postId})
             break;
 
         case 'post_updated':
-            modifySync({publicationId, postSlug})
+            modifySync({publicationId, postId})
             break;
         
         case 'post_deleted':
