@@ -43457,12 +43457,13 @@ const modifySync = async ({ publicationId, postId, }) => {
 
 
 const checkIfFileExists = async (postData) => {
-    const { data: { sha }, } = await octokit.request("GET /repos/{owner}/{repo}/contents/{file_path}", {
+    const result = await octokit.request("GET /repos/{owner}/{repo}/contents/{file_path}", {
         owner: github.context.repo.owner,
         repo: github.context.repo.repo,
         file_path: `${postData.publication.post.slug}.md`,
     });
-    if (sha)
+    console.log(result);
+    if (result)
         return true;
     else
         return false;
