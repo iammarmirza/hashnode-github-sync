@@ -1,6 +1,6 @@
 import { getPostId } from "../shared/getPostID";
 import { mapMdToGqlModifyInput } from "./mapMdToGqlModifyInput";
-import { makeSlug } from "../shared/makeSlug";
+import { createSlug } from "../shared/createSlug";
 import { parseFile } from "../shared/parseFile";
 import { callGraphqlAPI } from "../shared/callGraphqlAPI";
 import { QUERY } from "../shared/constants";
@@ -12,7 +12,7 @@ export const modifyArticle = async ({
   hashnode_token,
   publicationId,
 }: GithubToHashnodeSync): Promise<ModifyArticle> => {
-  const slug = makeSlug(file);
+  const slug = createSlug(file);
   const parsedArticle = await parseFile(file);
   const postId = await getPostId({ publicationId, slug });
   const input = mapMdToGqlModifyInput({

@@ -1,14 +1,10 @@
-import { Octokit } from "@octokit/rest";
 import { mapGqlToMarkdownInput } from "./mapGqlToMarkdownInput";
 import { default as matter } from 'gray-matter'
 import { Base64 } from "js-base64";
 import { context } from "@actions/github";
 import { PublicationData } from "src/shared/types/Publication";
 import { getCommitterDetails } from "./getCommitterDetails";
-
-const octokit = new Octokit({
-  auth: `${process.env.GITHUB_TOKEN}`,
-});
+import { octokit } from "./octokit";
 
 export const createFile = async ({postData, sha}: {
   postData: PublicationData,

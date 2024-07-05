@@ -2,16 +2,18 @@ import { callGraphqlAPI } from "../shared/callGraphqlAPI";
 import { QUERY } from "../shared/constants";
 import { mapMarkdownToGqlPublishInput } from "./mapMdToGqlPublishInput";
 import { parseFile } from "../shared/parseFile";
-import { makeSlug } from "../shared/makeSlug";
+import { createSlug } from "../shared/createSlug";
 import { PublishArticle } from "src/shared/types/PublishArticleTypes";
 import { GithubToHashnodeSync } from "src/shared/types";
+import { assertIfPostExists } from "src/shared/assertions";
 
 export const publishArticle = async ({
   file,
   hashnode_token,
   publicationId,
 }: GithubToHashnodeSync): Promise<PublishArticle> => {
-  const slug = makeSlug(file);
+  const slug = createSlug(file);
+  assertIfPostExists({slug, publicationId})
   const parsedArticle = await parseFile(file);
   const input = mapMarkdownToGqlPublishInput({
     parsedArticle,

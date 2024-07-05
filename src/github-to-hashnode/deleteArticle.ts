@@ -1,4 +1,4 @@
-import { makeSlug } from "../shared/makeSlug";
+import { createSlug } from "../shared/createSlug";
 import { getPostId } from "../shared/getPostID";
 import { mapMdToGqlDeleteInput } from "./mapMdToGqlDeleteInput";
 import { QUERY } from "../shared/constants";
@@ -11,7 +11,7 @@ export const deleteArticle = async ({
   hashnode_token,
   publicationId,
 }: GithubToHashnodeSync): Promise<DeleteArticle> => {
-  const slug = makeSlug(file);
+  const slug = createSlug(file);
   const postId = await getPostId({ publicationId, slug });
   const input = mapMdToGqlDeleteInput(postId);
 
