@@ -101,7 +101,7 @@ on:
 jobs:
   print_file_job:
     runs-on: ubuntu-latest
-    name: Hashnode two way sync
+    name: Hashnode Github Sync
     permissions:
       contents: write # Make sure to provide this write permission if you are using two way sync, not required if you're using only one way sync i.e : Github to Hashnode
 
@@ -116,8 +116,8 @@ jobs:
         id: changed-files
         uses: tj-actions/changed-files@v44
 
-      - name: Hashnode two way sync
-        uses: iammarmirza/hashnode-two-way-sync@v1.0
+      - name: Hashnode Github Sync
+        uses: iammarmirza/hashnode-github-sync@v1.2
         env: 
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}} 
           # This is your default github token
