@@ -2,7 +2,7 @@
 
 Elevate your Hashnode blogging experience with Hashnode Github Sync! \
 This GitHub Action establishes seamless two-way synchronization between your Github repo and Hashnode blog. \
-2 way means your repo will be updated when you publish from Hashnode and your Blog will be updated when you pubish create a markdown file on Github. Your Github repo and blog will always be in sync no matter how you publish/update/delete any article.
+2 way means your repo will be updated when you publish from Hashnode and your Blog will be updated when you publish create a markdown file on Github. Your Github repo and blog will always be in sync no matter how you publish/update/delete any article.
 
 ## Usage
 
