@@ -9,7 +9,6 @@ import { ModifyArticle } from "src/shared/types/ModifyArticleTypes";
 
 export const modifyArticle = async ({
   file,
-  hashnode_token,
   publicationId,
 }: GithubToHashnodeSync): Promise<ModifyArticle> => {
   const slug = createSlug(file);
@@ -26,10 +25,9 @@ export const modifyArticle = async ({
     query: QUERY.modify,
     variables: {
       input,
-    },
-    token: hashnode_token,
+    }
   });
 
   console.log(`Post successfully modified on Hashnode with slug ${response.data.updatePost.post.slug}`)
-  return response as ModifyArticle
+  return response
 };

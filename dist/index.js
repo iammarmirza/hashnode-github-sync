@@ -39163,12 +39163,14 @@ const assertIfPostExists = async ({ slug, publicationId }) => {
 ;// CONCATENATED MODULE: ./src/shared/callGraphqlAPI.ts
 
 
-const callGraphqlAPI = async ({ query, variables, token }) => {
+
+const callGraphqlAPI = async ({ query, variables }) => {
+    const { hashnode_token } = getInput();
     const response = await fetch(HASHNODE_ENDPOINT, {
         method: 'POST',
         headers: {
             'Content-type': 'application/json',
-            Authorization: token
+            Authorization: hashnode_token
         },
         body: JSON.stringify({
             query,
@@ -39191,8 +39193,7 @@ const getPublicationId = async () => {
         query: PUBLICATION_ID_QUERY,
         variables: {
             host,
-        },
-        token: `${process.env.HASHNODE_TOKEN}`,
+        }
     });
     assertPublicationIsNotNull(result);
     return result.data.publication.id;
@@ -39264,9 +39265,9 @@ const createSlug = (file) => {
 
 
 
-const publishArticle = async ({ file, hashnode_token, publicationId, }) => {
+const publishArticle = async ({ file, publicationId, }) => {
     const slug = createSlug(file);
-    assertIfPostExists({ slug, publicationId });
+    await assertIfPostExists({ slug, publicationId });
     const parsedArticle = await parseFile(file);
     const input = mapMarkdownToGqlPublishInput({
         parsedArticle,
@@ -39277,8 +39278,7 @@ const publishArticle = async ({ file, hashnode_token, publicationId, }) => {
         query: QUERY.publish,
         variables: {
             input,
-        },
-        token: hashnode_token,
+        }
     });
     console.log(`Post published successfully on Hashnode with slug ${response.data.publishPost.post.slug}`);
     return response;
@@ -39294,8 +39294,7 @@ const getPostId = async ({ publicationId, slug, }) => {
         variables: {
             id: publicationId,
             slug,
-        },
-        token: `${process.env.HASHNODE_TOKEN}`
+        }
     });
     assertPublicationIsNotNull(result);
     assertPostIsNotNull(result);
@@ -39358,7 +39357,7 @@ const mapMdToGqlModifyInput = ({ parsedArticle, slug, postId, publicationId, }) 
 
 
 
-const modifyArticle = async ({ file, hashnode_token, publicationId, }) => {
+const modifyArticle = async ({ file, publicationId, }) => {
     const slug = createSlug(file);
     const parsedArticle = await parseFile(file);
     const postId = await getPostId({ publicationId, slug });
@@ -39372,8 +39371,7 @@ const modifyArticle = async ({ file, hashnode_token, publicationId, }) => {
         query: QUERY.modify,
         variables: {
             input,
-        },
-        token: hashnode_token,
+        }
     });
     console.log(`Post successfully modified on Hashnode with slug ${response.data.updatePost.post.slug}`);
     return response;
@@ -39393,7 +39391,7 @@ const mapMdToGqlDeleteInput = (postId) => {
 
 
 
-const deleteArticle = async ({ file, hashnode_token, publicationId, }) => {
+const deleteArticle = async ({ file, publicationId, }) => {
     const slug = createSlug(file);
     const postId = await getPostId({ publicationId, slug });
     const input = mapMdToGqlDeleteInput(postId);
@@ -39401,42 +39399,43 @@ const deleteArticle = async ({ file, hashnode_token, publicationId, }) => {
         query: QUERY["delete"],
         variables: {
             input,
-        },
-        token: hashnode_token,
+        }
     });
     console.log(`Post successfully deleted on Hashnode with slug ${response.data.removePost.post.slug}`);
     return response;
 };
 
-;// CONCATENATED MODULE: ./src/github-to-hashnode/githubToHashnodeSync.ts
+;// CONCATENATED MODULE: ./src/github-to-hashnode/index.ts
 
 
 
 
 
 const githubToHashnodeSync = async () => {
-    const { hashnode_token, added_files, modified_files, deleted_files } = getInput();
+    const { added_files, modified_files, deleted_files } = getInput();
     const publicationId = await getPublicationId();
     const added_files_arr = added_files
         .split(" ")
         .filter((file) => file.endsWith(".md"));
-    const publishPromises = added_files_arr.map((file) => publishArticle({ file, hashnode_token, publicationId }));
+    const publishPromises = added_files_arr.map((file) => publishArticle({ file, publicationId }));
     await Promise.all(publishPromises);
     const modified_files_arr = modified_files
         .split(" ")
         .filter((file) => file.endsWith(".md"));
-    const modifyPromises = modified_files_arr.map((file) => modifyArticle({ file, hashnode_token, publicationId }));
+    const modifyPromises = modified_files_arr.map((file) => modifyArticle({ file, publicationId }));
     await Promise.all(modifyPromises);
     const deleted_files_arr = deleted_files
         .split(" ")
         .filter((file) => file.endsWith(".md"));
-    const deletePromises = deleted_files_arr.map((file) => deleteArticle({ file, hashnode_token, publicationId }));
+    const deletePromises = deleted_files_arr.map((file) => deleteArticle({ file, publicationId }));
     await Promise.all(deletePromises);
 };
+/* harmony default export */ const github_to_hashnode = (githubToHashnodeSync);
 
-;// CONCATENATED MODULE: ./src/hashnode-to-github/deleteSync.ts
+;// CONCATENATED MODULE: ./src/hashnode-to-github/deleteArticle.ts
 // Todo: Have to establish two way sync if the blog gets deleted on Hashnode
-const deleteSync = () => {
+const deleteArticle_deleteArticle = () => {
+    console.log('Delete article is not functional as of now.');
 };
 
 ;// CONCATENATED MODULE: ./src/hashnode-to-github/mapGqlToMarkdownInput.ts
@@ -43346,9 +43345,16 @@ const dist_src_Octokit = Octokit.plugin(requestLog, legacyRestEndpointMethods, p
 
 ;// CONCATENATED MODULE: ./src/hashnode-to-github/octokit.ts
 
-const octokit = new dist_src_Octokit({
-    auth: `${process.env.GITHUB_TOKEN}`,
-});
+let cachedOctokitClient = null;
+function getOctokit() {
+    if (!cachedOctokitClient) {
+        cachedOctokitClient = new dist_src_Octokit({
+            auth: `${process.env.GITHUB_TOKEN}`,
+        });
+    }
+    return cachedOctokitClient;
+}
+const octokit = getOctokit();
 
 ;// CONCATENATED MODULE: ./src/hashnode-to-github/getCommitterDetails.ts
 
@@ -43403,14 +43409,13 @@ const createFile = async ({ postData, sha }) => {
 
 
 
-const getPostData = async ({ publicationId, postSlug }) => {
+const getPostData = async ({ publicationId, slug }) => {
     const result = await callGraphqlAPI({
         query: POST_DATA_QUERY,
         variables: {
             id: publicationId,
-            slug: postSlug,
-        },
-        token: `${process.env.HASHNODE_TOKEN}`,
+            slug,
+        }
     });
     assertPublicationIsNotNull(result);
     assertPostIsNotNull(result);
@@ -43426,26 +43431,22 @@ const getPostSlug = async (postId) => {
         query: POST_SLUG_QUERY,
         variables: {
             id: postId
-        },
-        token: `${process.env.HASHNODE_TOKEN}`
+        }
     });
     assertSinglePostIsNotNull(result);
     return result.data.post.slug;
 };
 
-;// CONCATENATED MODULE: ./src/hashnode-to-github/modifySync.ts
+;// CONCATENATED MODULE: ./src/hashnode-to-github/modifyArticle.ts
 
 
 
 
 
-const modifySync_octokit = new dist_src_Octokit({
-    auth: `${process.env.GITHUB_TOKEN}`,
-});
-const modifySync = async ({ publicationId, postId, }) => {
-    const postSlug = await getPostSlug(postId);
-    const postData = await getPostData({ publicationId, postSlug });
-    const { data: { sha }, } = await modifySync_octokit.request("GET /repos/{owner}/{repo}/contents/{file_path}", {
+const modifyArticle_modifyArticle = async ({ publicationId, postId, }) => {
+    const slug = await getPostSlug(postId);
+    const postData = await getPostData({ publicationId, slug });
+    const { data: { sha }, } = await octokit.request("GET /repos/{owner}/{repo}/contents/{file_path}", {
         owner: github.context.repo.owner,
         repo: github.context.repo.repo,
         file_path: `${postData.publication.post.slug}.md`,
@@ -43458,7 +43459,7 @@ const modifySync = async ({ publicationId, postId, }) => {
 
 const checkIfFileExists = async (postData) => {
     try {
-        const response = await octokit.request("GET /repos/{owner}/{repo}/contents/{file_path}", {
+        await octokit.request("GET /repos/{owner}/{repo}/contents/{file_path}", {
             owner: github.context.repo.owner,
             repo: github.context.repo.repo,
             file_path: `${postData.publication.post.slug}.md`,
@@ -43470,21 +43471,21 @@ const checkIfFileExists = async (postData) => {
     }
 };
 
-;// CONCATENATED MODULE: ./src/hashnode-to-github/publishSync.ts
+;// CONCATENATED MODULE: ./src/hashnode-to-github/publishArticle.ts
 
 
 
 
-const publishSync = async ({ publicationId, postId }) => {
-    const postSlug = await getPostSlug(postId);
-    const postData = await getPostData({ publicationId, postSlug });
+const publishArticle_publishArticle = async ({ publicationId, postId }) => {
+    const slug = await getPostSlug(postId);
+    const postData = await getPostData({ publicationId, slug });
     const isExistingFile = await checkIfFileExists(postData);
     if (isExistingFile)
         return;
     createFile({ postData });
 };
 
-;// CONCATENATED MODULE: ./src/hashnode-to-github/hashnodeToGithubSync.ts
+;// CONCATENATED MODULE: ./src/hashnode-to-github/index.ts
 
 
 
@@ -43494,16 +43495,17 @@ const hashnodeToGithubSync = async (parsedEvent) => {
     const publicationId = parsedEvent.publication.id;
     switch (eventType) {
         case 'post_published':
-            publishSync({ publicationId, postId });
+            publishArticle_publishArticle({ publicationId, postId });
             break;
         case 'post_updated':
-            modifySync({ publicationId, postId });
+            modifyArticle_modifyArticle({ publicationId, postId });
             break;
         case 'post_deleted':
-            deleteSync();
+            deleteArticle_deleteArticle();
             break;
     }
 };
+/* harmony default export */ const hashnode_to_github = (hashnodeToGithubSync);
 
 ;// CONCATENATED MODULE: ./src/index.ts
 
@@ -43515,9 +43517,9 @@ async function run() {
         const { hashnode_event } = getInput();
         const parsedEvent = JSON.parse(hashnode_event);
         if (parsedEvent)
-            hashnodeToGithubSync(parsedEvent);
+            hashnode_to_github(parsedEvent);
         else
-            githubToHashnodeSync();
+            github_to_hashnode();
     }
     catch (error) {
         core.setFailed(error.message);

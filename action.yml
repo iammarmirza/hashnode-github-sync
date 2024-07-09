@@ -1,5 +1,5 @@
-name: Hashnode two way sync
-description: Publish the blogs to Hashnode
+name: Hashnode Github Sync
+description: Establish a two way snync between your Github repo and Hashnode Blog
 author: Ammar Mirza
 branding:
   icon: 'link'

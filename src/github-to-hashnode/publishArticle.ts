@@ -9,11 +9,10 @@ import { assertIfPostExists } from "src/shared/assertions";
 
 export const publishArticle = async ({
   file,
-  hashnode_token,
   publicationId,
 }: GithubToHashnodeSync): Promise<PublishArticle> => {
   const slug = createSlug(file);
-  assertIfPostExists({slug, publicationId})
+  await assertIfPostExists({slug, publicationId})
   const parsedArticle = await parseFile(file);
   const input = mapMarkdownToGqlPublishInput({
     parsedArticle,
@@ -24,9 +23,8 @@ export const publishArticle = async ({
     query: QUERY.publish,
     variables: {
       input,
-    },
-    token: hashnode_token,
+    }
   });
   console.log(`Post published successfully on Hashnode with slug ${response.data.publishPost.post.slug}`);
-  return response as PublishArticle
+  return response
 };

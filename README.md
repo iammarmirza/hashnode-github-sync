@@ -1,10 +1,15 @@
-# Hashnode two way sync
+# Hashnode Github Sync
 
-Elevate your Hashnode blogging experience with hashnode-two-way-sync! This GitHub Action establishes seamless two-way synchronization between your Markdown files and Hashnode blog. Effortlessly publish on push, manage edits and deletions in real-time, and enjoy peace of mind with reliable backups – all while maintaining a user-friendly workflow.
+Elevate your Hashnode blogging experience with Hashnode Github Sync! \
+This GitHub Action establishes seamless two-way synchronization between your Github repo and Hashnode blog. \
+2 way means your repo will be updated when you publish from Hashnode and your Blog will be updated when you pubish create a markdown file on Github. Your Github repo and blog will always be in sync no matter how you publish/update/delete any article.
 
 ## Usage
 
-Place all your blogs in the root folder of the repo, any file you create with .md extension will be counted as a blog to publish on Hashnode. The file name will be the source of truth and will be counted as slug of your blog so remember to name your file carefully.
+Place all your blogs in the root folder of the repo and don't nest it inside folders as it might throw an error.\
+Any file you create with .md extension will be counted as a blog to publish on Hashnode. \
+The file name will be the source of truth and will be counted as slug of your blog so remember to name your file carefully. 
+
 
 ``` yaml
 ---
@@ -20,7 +25,7 @@ delisted: boolean
 # Optional? - Cover Image URL
 coverImageUrl: string
 
-# Optional? -  Publish date
+# Optional? - Publish date
 publishedAt: string
 
 # Optional? - Is Cover Image Attribution hidden

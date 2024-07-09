@@ -7,8 +7,7 @@ export const getPostSlug = async (postId: string): Promise<string> => {
         query: POST_SLUG_QUERY,
         variables: {
             id : postId
-        },
-        token: `${process.env.HASHNODE_TOKEN}`
+        }
     })
     assertSinglePostIsNotNull(result)
     return result.data.post.slug

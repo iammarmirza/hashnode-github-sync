@@ -1,22 +1,19 @@
 import { createFile } from "./createFile";
 import { getPostData } from "./getPostData";
 import { context } from "@actions/github";
-import { Octokit } from "@octokit/rest";
+import { octokit } from "./octokit";
 import { getPostSlug } from "./getPostSlug";
 
-const octokit = new Octokit({
-  auth: `${process.env.GITHUB_TOKEN}`,
-});
 
-export const modifySync = async ({
+export const modifyArticle = async ({
   publicationId,
   postId,
 }: {
   publicationId: string;
   postId: string;
 }) => {
-  const postSlug = await getPostSlug(postId)
-  const postData = await getPostData({ publicationId, postSlug });
+  const slug = await getPostSlug(postId)
+  const postData = await getPostData({ publicationId, slug });
   const {
     data: { sha },
   } = await octokit.request("GET /repos/{owner}/{repo}/contents/{file_path}", {

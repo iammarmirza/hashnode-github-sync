@@ -15,8 +15,7 @@ export const getPostId = async ({
     variables: {
       id: publicationId,
       slug,
-    },
-    token: `${process.env.HASHNODE_TOKEN}`
+    }
   })
 
   assertPublicationIsNotNull(result)

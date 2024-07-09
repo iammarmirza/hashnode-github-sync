@@ -51,7 +51,6 @@ export type GetInput = {
 
 export interface GithubToHashnodeSync {
   file: string;
-  hashnode_token: string;
   publicationId: string;
 }
 

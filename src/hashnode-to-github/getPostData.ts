@@ -3,17 +3,16 @@ import { callGraphqlAPI } from "../shared/callGraphqlAPI";
 import { assertPostIsNotNull, assertPublicationIsNotNull } from "../shared/assertions";
 import { PublicationData } from "src/shared/types/Publication";
 
-export const getPostData = async ({ publicationId, postSlug }: {
+export const getPostData = async ({ publicationId, slug }: {
     publicationId: any,
-    postSlug: string
+    slug: string
 }) : Promise<PublicationData> => {
   const result = await callGraphqlAPI({
     query: POST_DATA_QUERY,
     variables: {
       id: publicationId,
-      slug: postSlug,
-    },
-    token: `${process.env.HASHNODE_TOKEN}`,
+      slug,
+    }
   });
 
   assertPublicationIsNotNull(result)

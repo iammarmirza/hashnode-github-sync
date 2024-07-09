@@ -1,16 +1,17 @@
 import { assertErrorIsNotNull } from "./assertions"
 import { HASHNODE_ENDPOINT } from "./constants"
+import { getInput } from "./getInput"
 
-export const callGraphqlAPI = async ({query, variables, token}: {
+export const callGraphqlAPI = async ({query, variables}: {
     query: string,
-    variables: any,
-    token: string
+    variables: any
 }): Promise<any> => {
+    const {hashnode_token} = getInput()
     const response = await fetch(HASHNODE_ENDPOINT, {
         method: 'POST',
         headers: {
             'Content-type': 'application/json',
-            Authorization: token
+            Authorization: hashnode_token
         },
         body: JSON.stringify({
             query,

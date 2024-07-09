@@ -8,7 +8,6 @@ import { DeleteArticle } from "src/shared/types/DeleteArticleTypes";
 
 export const deleteArticle = async ({
   file,
-  hashnode_token,
   publicationId,
 }: GithubToHashnodeSync): Promise<DeleteArticle> => {
   const slug = createSlug(file);
@@ -19,10 +18,9 @@ export const deleteArticle = async ({
     query: QUERY.delete,
     variables: {
       input,
-    },
-    token: hashnode_token,
+    }
   });
 
   console.log(`Post successfully deleted on Hashnode with slug ${response.data.removePost.post.slug}`)
-  return response as DeleteArticle
+  return response
 };

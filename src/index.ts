@@ -1,7 +1,7 @@
 import * as core from "@actions/core";
 import { getInput } from "./shared/getInput";
-import { githubToHashnodeSync } from "./github-to-hashnode/githubToHashnodeSync";
-import { hashnodeToGithubSync } from "./hashnode-to-github/hashnodeToGithubSync";
+import githubToHashnodeSync from "./github-to-hashnode";
+import hashnodeToGithubSync from "./hashnode-to-github";
 
 export async function run() {
   try {

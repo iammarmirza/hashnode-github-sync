@@ -9,8 +9,7 @@ export const getPublicationId = async () : Promise<string> => {
     query: PUBLICATION_ID_QUERY,
     variables: {
       host,
-    },
-    token: `${process.env.HASHNODE_TOKEN}`,
+    }
   });
 
   assertPublicationIsNotNull(result);
