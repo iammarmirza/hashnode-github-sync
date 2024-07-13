@@ -43492,17 +43492,18 @@ const deleteFile = async ({ postData, sha }) => {
 
 
 
-const publishArticle_publishArticle = async ({ publicationId, postId }) => {
+const publishArticle_publishArticle = async ({ publicationId, postId, }) => {
     const slug = await getPostSlug(postId);
     const postData = await getPostData({ publicationId, slug });
     const isExistingFile = await checkIfFileExists(postData);
-    const { data: { sha }, } = await octokit.request("GET /repos/{owner}/{repo}/contents/{file_path}", {
-        owner: github.context.repo.owner,
-        repo: github.context.repo.repo,
-        file_path: `${postData.publication.post.slug}.md`,
-    });
-    if (isExistingFile)
+    if (isExistingFile) {
+        const { data: { sha }, } = await octokit.request("GET /repos/{owner}/{repo}/contents/{file_path}", {
+            owner: github.context.repo.owner,
+            repo: github.context.repo.repo,
+            file_path: `${postData.publication.post.slug}.md`,
+        });
         await deleteFile({ postData, sha });
+    }
     createFile({ postData });
 };
 
