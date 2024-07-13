@@ -13,7 +13,7 @@ export const createFile = async ({postData, sha}: {
   try {
     const userDetails = await getCommitterDetails()
     const post = postData.publication.post
-    const fileName = `${post.slug}.md`
+    const fileName = `${post.id}-${post.slug}.md`
     const frontMatter = mapGqlToMarkdownInput(postData)
     const fileContent = matter.stringify(post.content.markdown, frontMatter)
     const contentEncoded = Base64.encode(fileContent)
@@ -22,7 +22,7 @@ export const createFile = async ({postData, sha}: {
       repo: context.repo.repo,
       path: fileName,
       branch: "main",
-      message: `Added Blog ${fileName} programatically`,
+      message: `Added/Modified Blog ${fileName} programatically`,
       content: contentEncoded,
       committer: {
         name: `${userDetails.name}`,

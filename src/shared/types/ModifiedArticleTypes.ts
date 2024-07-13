@@ -1,17 +1,17 @@
-export interface DeleteArticle {
+export interface ModifiedArticle {
   data: Data;
 }
 
 export interface Data {
-  removePost: RemovePost;
+  updatePost: UpdatePost;
 }
 
-export interface RemovePost {
+export interface UpdatePost {
   post: Post;
 }
 
 export interface Post {
   id: string;
-  slug: string;
   title: string;
+  slug: string;
 }

@@ -19,7 +19,7 @@ export const modifyArticle = async ({
   } = await octokit.request("GET /repos/{owner}/{repo}/contents/{file_path}", {
     owner: context.repo.owner,
     repo: context.repo.repo,
-    file_path: `${postData.publication.post.slug}.md`,
+    file_path: `${postData.publication.post.id}-${postData.publication.post.slug}.md`,
   });
   createFile({ postData, sha });
 };

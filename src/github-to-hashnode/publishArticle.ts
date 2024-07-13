@@ -3,16 +3,14 @@ import { QUERY } from "../shared/constants";
 import { mapMarkdownToGqlPublishInput } from "./mapMdToGqlPublishInput";
 import { parseFile } from "../shared/parseFile";
 import { createSlug } from "../shared/createSlug";
-import { PublishArticle } from "src/shared/types/PublishArticleTypes";
+import { PublishedArticle } from "src/shared/types/PublishedArticleTypes";
 import { GithubToHashnodeSync } from "src/shared/types";
-import { assertIfPostExists } from "src/shared/assertions";
 
 export const publishArticle = async ({
   file,
   publicationId,
-}: GithubToHashnodeSync): Promise<PublishArticle> => {
+}: GithubToHashnodeSync): Promise<PublishedArticle> => {
   const slug = createSlug(file);
-  await assertIfPostExists({slug, publicationId})
   const parsedArticle = await parseFile(file);
   const input = mapMarkdownToGqlPublishInput({
     parsedArticle,

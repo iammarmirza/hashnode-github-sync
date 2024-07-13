@@ -8,7 +8,7 @@ export const mapMdToGqlModifyInput = ({
   publicationId,
 }: {
   parsedArticle: ParsedContent;
-  slug: string;
+  slug: string | undefined;
   postId: string;
   publicationId: string;
 }): PostUpdateInput => {

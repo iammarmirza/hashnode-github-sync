@@ -1,4 +1,4 @@
-export interface PublishArticle {
+export interface PublishedArticle {
   data: Data;
 }
 
