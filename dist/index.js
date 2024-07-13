@@ -43020,10 +43020,9 @@ const deleteArticle_deleteArticle = async ({ publicationId, postId, }) => {
     try {
         const { data } = await octokit.repos.getContent({
             owner: github.context.repo.owner,
-            repo: github.context.repo.repo,
+            repo: 'dasjdpsj',
             path: "",
         });
-        console.log(data);
     }
     catch (error) {
         console.log(error.message);
