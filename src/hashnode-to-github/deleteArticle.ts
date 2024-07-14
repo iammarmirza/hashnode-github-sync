@@ -11,7 +11,7 @@ export const deleteArticle = async ({
   try {
     const { data } = await octokit.repos.getContent({
       owner: context.repo.owner,
-      repo: 'dasjdpsj',
+      repo: 'example',
       path: "",
     });
   } catch (error: any){
