@@ -11,9 +11,19 @@ export const deleteArticle = async ({
   try {
     const { data } = await octokit.repos.getContent({
       owner: context.repo.owner,
-      repo: 'example',
+      repo: context.repo.repo,
       path: "",
     });
+
+    if(!Array.isArray(data)) return
+
+    const fileToDelete = data.forEach(file => {
+      const isFileStartsWith = file.name.startsWith(postId)
+      if(isFileStartsWith) return file.name
+    });
+
+    console.log(fileToDelete)
+    
   } catch (error: any){
     console.log(error.message)
   }
