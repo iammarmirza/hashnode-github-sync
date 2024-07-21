@@ -18,7 +18,7 @@ const hashnodeToGithubSync = async (parsedEvent: any) => {
             break;
         
         case 'post_deleted':
-            deleteArticle({publicationId, postId})
+            deleteArticle({postId})
             break;
     }
 }

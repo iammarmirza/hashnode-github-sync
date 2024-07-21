@@ -43016,7 +43016,7 @@ const octokit = getOctokit();
 ;// CONCATENATED MODULE: ./src/hashnode-to-github/deleteArticle.ts
 
 
-const deleteArticle_deleteArticle = async ({ publicationId, postId, }) => {
+const deleteArticle_deleteArticle = async ({ postId, }) => {
     try {
         const { data } = await octokit.repos.getContent({
             owner: github.context.repo.owner,
@@ -43026,7 +43026,15 @@ const deleteArticle_deleteArticle = async ({ publicationId, postId, }) => {
         if (!Array.isArray(data))
             return;
         const fileToDelete = data.find(file => file.name.startsWith(postId));
-        console.log(fileToDelete);
+        if (fileToDelete) {
+            await octokit.repos.deleteFile({
+                owner: github.context.repo.owner,
+                repo: github.context.repo.repo,
+                path: fileToDelete.name,
+                sha: fileToDelete.sha,
+                message: "Blog deleted from Hashnode side"
+            });
+        }
     }
     catch (error) {
         console.log(error.message);
@@ -43526,7 +43534,7 @@ const hashnodeToGithubSync = async (parsedEvent) => {
             modifyArticle_modifyArticle({ publicationId, postId });
             break;
         case 'post_deleted':
-            deleteArticle_deleteArticle({ publicationId, postId });
+            deleteArticle_deleteArticle({ postId });
             break;
     }
 };

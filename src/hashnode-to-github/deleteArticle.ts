@@ -2,10 +2,8 @@ import { context } from "@actions/github";
 import { octokit } from "./octokit";
 
 export const deleteArticle = async ({
-  publicationId,
   postId,
 }: {
-  publicationId: string;
   postId: string;
 }) => {
   try {
@@ -18,9 +16,15 @@ export const deleteArticle = async ({
     if(!Array.isArray(data)) return
 
     const fileToDelete = data.find(file => file.name.startsWith(postId))
-
-    console.log(fileToDelete)
-    
+    if(fileToDelete) {
+      await octokit.repos.deleteFile({
+        owner: context.repo.owner,
+        repo: context.repo.repo,
+        path: fileToDelete.name,
+        sha: fileToDelete.sha,
+        message: "Blog deleted from Hashnode side"
+      })
+    }
   } catch (error: any){
     console.log(error.message)
   }
