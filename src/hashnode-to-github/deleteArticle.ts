@@ -17,10 +17,7 @@ export const deleteArticle = async ({
 
     if(!Array.isArray(data)) return
 
-    const fileToDelete = data.forEach(file => {
-      const isFileStartsWith = file.name.startsWith(postId)
-      if(isFileStartsWith) return file.name
-    });
+    const fileToDelete = data.find(file => file.name.startsWith(postId))
 
     console.log(fileToDelete)
     
