@@ -1,4 +1,4 @@
-import { FrontMatter, ParsedContent, PostPublishInput } from "src/shared/types";
+import { ParsedContent, PostPublishInput } from "src/shared/types";
 
 
 export const mapMarkdownToGqlPublishInput = ({

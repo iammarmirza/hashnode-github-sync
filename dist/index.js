@@ -43550,9 +43550,9 @@ async function run() {
         const { hashnode_event } = getInput();
         const parsedEvent = JSON.parse(hashnode_event);
         if (parsedEvent)
-            hashnode_to_github(parsedEvent);
+            await hashnode_to_github(parsedEvent);
         else
-            github_to_hashnode();
+            await github_to_hashnode();
     }
     catch (error) {
         core.setFailed(error.message);

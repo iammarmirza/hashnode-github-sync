@@ -8,8 +8,8 @@ export async function run() {
     const { hashnode_event } = getInput();
     const parsedEvent = JSON.parse(hashnode_event);
 
-    if (parsedEvent) hashnodeToGithubSync(parsedEvent);
-    else githubToHashnodeSync();
+    if (parsedEvent) await hashnodeToGithubSync(parsedEvent);
+    else await githubToHashnodeSync();
   } catch (error: any) {
     core.setFailed(error.message);
   }
