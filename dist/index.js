@@ -39381,17 +39381,17 @@ const githubToHashnodeSync = async () => {
     const publicationId = await getPublicationId();
     const added_files_arr = added_files
         .split(" ")
-        .filter((file) => file.endsWith(".md"));
+        .filter((fileName) => fileName.endsWith(".md"));
     const publishPromises = added_files_arr.map((file) => publishArticle({ file, publicationId }));
     await Promise.all(publishPromises);
     const modified_files_arr = modified_files
         .split(" ")
-        .filter((file) => file.endsWith(".md"));
+        .filter((fileName) => fileName.endsWith(".md"));
     const modifyPromises = modified_files_arr.map((file) => modifyArticle({ file, publicationId }));
     await Promise.all(modifyPromises);
     const deleted_files_arr = deleted_files
         .split(" ")
-        .filter((file) => file.endsWith(".md"));
+        .filter((fileName) => fileName.endsWith(".md"));
     const deletePromises = deleted_files_arr.map((file) => deleteArticle({ file, publicationId }));
     await Promise.all(deletePromises);
 };

@@ -10,7 +10,7 @@ export const githubToHashnodeSync = async () => {
 
     const added_files_arr = added_files
         .split(" ")
-        .filter((file: string) => file.endsWith(".md"));
+        .filter((fileName: string) => fileName.endsWith(".md"));
 
       const publishPromises = added_files_arr.map((file: string) => 
         publishArticle({file, publicationId})
@@ -19,7 +19,7 @@ export const githubToHashnodeSync = async () => {
 
       const modified_files_arr = modified_files
         .split(" ")
-        .filter((file: string) => file.endsWith(".md"));
+        .filter((fileName: string) => fileName.endsWith(".md"));
 
       const modifyPromises = modified_files_arr.map((file: string) =>
         modifyArticle({file, publicationId})
@@ -28,7 +28,7 @@ export const githubToHashnodeSync = async () => {
 
       const deleted_files_arr = deleted_files
         .split(" ")
-        .filter((file: string) => file.endsWith(".md"));
+        .filter((fileName: string) => fileName.endsWith(".md"));
 
       const deletePromises = deleted_files_arr.map((file: string) =>
         deleteArticle({file, publicationId})
