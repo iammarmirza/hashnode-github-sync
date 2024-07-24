@@ -5,7 +5,7 @@ type ExtractedInfo = {
 
 export const extractInfoFromFilename = (fileName: string): ExtractedInfo => {
     const postId = fileName.split('-')[0]
-    const slug = fileName.split('-').slice(1).join('-')
+    const slug = fileName.split('-').slice(1).join('-').replace('.md', '')
 
     return {postId, slug}
 }

@@ -39315,7 +39315,7 @@ const mapMdToGqlModifyInput = ({ parsedArticle, slug, postId, publicationId, }) 
 ;// CONCATENATED MODULE: ./src/github-to-hashnode/extractInfoFromFilename.ts
 const extractInfoFromFilename = (fileName) => {
     const postId = fileName.split('-')[0];
-    const slug = fileName.split('-').slice(1).join('-');
+    const slug = fileName.split('-').slice(1).join('-').replace('.md', '');
     return { postId, slug };
 };
 
