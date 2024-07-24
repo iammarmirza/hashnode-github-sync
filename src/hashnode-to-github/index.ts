@@ -10,15 +10,15 @@ const hashnodeToGithubSync = async (parsedEvent: any) => {
 
     switch (eventType) {
         case 'post_published':
-            publishArticle({publicationId, postId})
+            await publishArticle({publicationId, postId})
             break;
 
         case 'post_updated':
-            modifyArticle({publicationId, postId})
+            await modifyArticle({publicationId, postId})
             break;
         
         case 'post_deleted':
-            deleteArticle({postId})
+            await deleteArticle({postId})
             break;
     }
 }

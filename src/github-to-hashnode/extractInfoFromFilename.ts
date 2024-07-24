@@ -3,9 +3,9 @@ type ExtractedInfo = {
     slug: string | undefined
 }
 
-export const extractInfoFromFilename = (file: string): ExtractedInfo => {
-    const postId = file.split('-')[0]
-    const slug = file.split('-').slice(1).join('-')
+export const extractInfoFromFilename = (fileName: string): ExtractedInfo => {
+    const postId = fileName.split('-')[0]
+    const slug = fileName.split('-').slice(1).join('-')
 
     return {postId, slug}
 }

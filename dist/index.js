@@ -39017,12 +39017,31 @@ const getInput = () => {
     const added_files = core.getInput("added_files");
     const modified_files = core.getInput("modified_files");
     const deleted_files = core.getInput("deleted_files");
+    // This is to use hashnode_token as an environment env later
     core.setSecret(hashnode_token);
     return { hashnode_event, hashnode_token, host, added_files, modified_files, deleted_files };
 };
 
+;// CONCATENATED MODULE: ./src/shared/assertions.ts
+const assertPublicationIsNotNull = (result) => {
+    if (!result.data.publication)
+        throw new Error("Publication not found, please check your publication id.");
+};
+const assertPostIsNotNull = (result) => {
+    if (!result.data.publication.post)
+        throw new Error("Post not found");
+};
+const assertErrorIsNotNull = (result) => {
+    if (result.errors)
+        throw new Error(`${result.errors[0].message}`);
+};
+const assertSinglePostIsNotNull = (result) => {
+    if (!result.data.post)
+        throw new Error(`Post not found`);
+};
+
 ;// CONCATENATED MODULE: ./src/shared/constants.ts
-const constants_HASHNODE_ENDPOINT = "https://gql.hashnode.com";
+const HASHNODE_ENDPOINT = "https://gql.hashnode.com";
 const QUERY = {
     publish: `mutation PublishPost($input: PublishPostInput!) {
     publishPost(input: $input) {
@@ -39071,7 +39090,7 @@ const POST_SLUG_QUERY = `query PostSlug ($id: ID!) {
     slug
   }
 }`;
-const constants_POST_DATA_QUERY = `query PostData($id: ObjectId, $slug: String!) {
+const POST_DATA_QUERY = `query PostData($id: ObjectId, $slug: String!) {
   publication(id: $id) {
     id
     post(slug: $slug) {
@@ -39122,51 +39141,13 @@ const constants_POST_DATA_QUERY = `query PostData($id: ObjectId, $slug: String!)
   }
 }`;
 
-;// CONCATENATED MODULE: ./src/shared/assertions.ts
-
-const assertPublicationIsNotNull = (result) => {
-    if (!result.data.publication)
-        throw new Error("Publication not found, please check your publication id.");
-};
-const assertPostIsNotNull = (result) => {
-    if (!result.data.publication.post)
-        throw new Error("Post not found");
-};
-const assertErrorIsNotNull = (result) => {
-    if (result.errors)
-        throw new Error(`${result.errors[0].message}`);
-};
-const assertSinglePostIsNotNull = (result) => {
-    if (!result.data.post)
-        throw new Error(`Post not found`);
-};
-const assertIfPostExists = async ({ slug, publicationId }) => {
-    const response = await fetch(HASHNODE_ENDPOINT, {
-        method: 'POST',
-        headers: {
-            "Content-type": "application/json",
-            Authorization: `${process.env.HASHNODE_TOKEN}`
-        },
-        body: JSON.stringify({
-            query: POST_DATA_QUERY,
-            variables: {
-                id: publicationId,
-                slug
-            }
-        })
-    });
-    const result = await response.json();
-    if (result.data.publication.post)
-        throw new Error(`Post with the given slug already exists on Hashnode, please create a new file with a different slug.`);
-};
-
 ;// CONCATENATED MODULE: ./src/shared/callGraphqlAPI.ts
 
 
 
 const callGraphqlAPI = async ({ query, variables }) => {
     const { hashnode_token } = getInput();
-    const response = await fetch(constants_HASHNODE_ENDPOINT, {
+    const response = await fetch(HASHNODE_ENDPOINT, {
         method: 'POST',
         headers: {
             'Content-type': 'application/json',
@@ -39253,8 +39234,8 @@ const parseFile = async (fileName) => {
 };
 
 ;// CONCATENATED MODULE: ./src/shared/createSlug.ts
-const createSlug = (file) => {
-    const slug = file.toLowerCase().replace('.md', '');
+const createSlug = (fileName) => {
+    const slug = fileName.toLowerCase().replace('.md', '');
     return slug;
 };
 
@@ -39332,9 +39313,9 @@ const mapMdToGqlModifyInput = ({ parsedArticle, slug, postId, publicationId, }) 
 };
 
 ;// CONCATENATED MODULE: ./src/github-to-hashnode/extractInfoFromFilename.ts
-const extractInfoFromFilename = (file) => {
-    const postId = file.split('-')[0];
-    const slug = file.split('-').slice(1).join('-');
+const extractInfoFromFilename = (fileName) => {
+    const postId = fileName.split('-')[0];
+    const slug = fileName.split('-').slice(1).join('-');
     return { postId, slug };
 };
 
@@ -43417,7 +43398,7 @@ const createFile = async ({ postData, sha }) => {
 
 const getPostData = async ({ publicationId, slug }) => {
     const result = await callGraphqlAPI({
-        query: constants_POST_DATA_QUERY,
+        query: POST_DATA_QUERY,
         variables: {
             id: publicationId,
             slug,
@@ -43457,7 +43438,7 @@ const modifyArticle_modifyArticle = async ({ publicationId, postId, }) => {
         repo: github.context.repo.repo,
         file_path: `${postData.publication.post.id}-${postData.publication.post.slug}.md`,
     });
-    createFile({ postData, sha });
+    await createFile({ postData, sha });
 };
 
 ;// CONCATENATED MODULE: ./src/hashnode-to-github/checkIfFileExists.ts
@@ -43515,7 +43496,7 @@ const publishArticle_publishArticle = async ({ publicationId, postId, }) => {
         });
         await deleteFile({ postData, sha });
     }
-    createFile({ postData });
+    await createFile({ postData });
 };
 
 ;// CONCATENATED MODULE: ./src/hashnode-to-github/index.ts
@@ -43528,13 +43509,13 @@ const hashnodeToGithubSync = async (parsedEvent) => {
     const publicationId = parsedEvent.publication.id;
     switch (eventType) {
         case 'post_published':
-            publishArticle_publishArticle({ publicationId, postId });
+            await publishArticle_publishArticle({ publicationId, postId });
             break;
         case 'post_updated':
-            modifyArticle_modifyArticle({ publicationId, postId });
+            await modifyArticle_modifyArticle({ publicationId, postId });
             break;
         case 'post_deleted':
-            deleteArticle_deleteArticle({ postId });
+            await deleteArticle_deleteArticle({ postId });
             break;
     }
 };

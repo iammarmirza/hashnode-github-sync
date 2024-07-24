@@ -117,7 +117,7 @@ jobs:
         uses: tj-actions/changed-files@v44
 
       - name: Hashnode Github Sync
-        uses: iammarmirza/hashnode-github-sync@v1.1
+        uses: iammarmirza/hashnode-github-sync@v1.2
         env: 
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}} 
           # This is your default github token

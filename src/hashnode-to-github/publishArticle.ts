@@ -30,5 +30,5 @@ export const publishArticle = async ({
     await deleteFile({ postData, sha });
   }
   
-  createFile({ postData });
+  await createFile({ postData });
 };

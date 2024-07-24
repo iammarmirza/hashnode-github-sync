@@ -21,5 +21,5 @@ export const modifyArticle = async ({
     repo: context.repo.repo,
     file_path: `${postData.publication.post.id}-${postData.publication.post.slug}.md`,
   });
-  createFile({ postData, sha });
+  await createFile({ postData, sha });
 };
