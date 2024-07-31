@@ -39017,8 +39017,6 @@ const getInput = () => {
     const added_files = core.getInput("added_files");
     const modified_files = core.getInput("modified_files");
     const deleted_files = core.getInput("deleted_files");
-    // This is to use hashnode_token as an environment env later
-    core.setSecret(hashnode_token);
     return { hashnode_event, hashnode_token, host, added_files, modified_files, deleted_files };
 };
 
