@@ -11,6 +11,7 @@ export const createFile = async ({postData, sha}: {
   sha?: string
 }) => {
   try {
+    const commitType = sha ? "Modified" : "Added"
     const userDetails = await getCommitterDetails()
     const post = postData.post
     const fileName = `${post.id}-${post.slug}.md`
@@ -22,7 +23,7 @@ export const createFile = async ({postData, sha}: {
       repo: context.repo.repo,
       path: fileName,
       branch: "main",
-      message: `Added/Modified Blog ${fileName} programatically`,
+      message: `${commitType} Blog ${fileName} programatically`,
       content: contentEncoded,
       committer: {
         name: `${userDetails.name}`,

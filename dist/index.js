@@ -39039,16 +39039,12 @@ const assertPublicationIsNotNull = (result) => {
         throw new Error("Publication not found, please check your publication id.");
 };
 const assertPostIsNotNull = (result) => {
-    if (!result.data.publication.post)
+    if (!result.data.post)
         throw new Error("Post not found");
 };
 const assertErrorIsNotNull = (result) => {
     if (result.errors)
         throw new Error(`${result.errors[0].message}`);
-};
-const assertSinglePostIsNotNull = (result) => {
-    if (!result.data.post)
-        throw new Error(`Post not found`);
 };
 
 ;// CONCATENATED MODULE: ./src/shared/constants.ts
@@ -43346,6 +43342,7 @@ const getCommitterDetails = async () => {
 
 const createFile = async ({ postData, sha }) => {
     try {
+        const commitType = sha ? "Modified" : "Added";
         const userDetails = await getCommitterDetails();
         const post = postData.post;
         const fileName = `${post.id}-${post.slug}.md`;
@@ -43357,7 +43354,7 @@ const createFile = async ({ postData, sha }) => {
             repo: github.context.repo.repo,
             path: fileName,
             branch: "main",
-            message: `Added/Modified Blog ${fileName} programatically`,
+            message: `${commitType} Blog ${fileName} programatically`,
             content: contentEncoded,
             committer: {
                 name: `${userDetails.name}`,
