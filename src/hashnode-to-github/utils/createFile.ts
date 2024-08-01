@@ -1,18 +1,18 @@
-import { mapGqlToMarkdownInput } from "./mapGqlToMarkdownInput";
+import { mapGqlToMarkdownInput } from './mapGqlToMarkdownInput';
+import { octokit } from './octokit';
 import { default as matter } from 'gray-matter'
 import { Base64 } from "js-base64";
 import { context } from "@actions/github";
-import { PublicationData } from "src/shared/types/Publication";
-import { getCommitterDetails } from "./getCommitterDetails";
-import { octokit } from "./octokit";
+import { PostData } from 'src/shared/types';
+import { getCommitterDetails } from './getCommitterDetails';
 
 export const createFile = async ({postData, sha}: {
-  postData: PublicationData,
+  postData: PostData,
   sha?: string
 }) => {
   try {
     const userDetails = await getCommitterDetails()
-    const post = postData.publication.post
+    const post = postData.post
     const fileName = `${post.id}-${post.slug}.md`
     const frontMatter = mapGqlToMarkdownInput(postData)
     const fileContent = matter.stringify(post.content.markdown, frontMatter)

@@ -1,5 +1,3 @@
-import { HASHNODE_ENDPOINT, POST_DATA_QUERY } from "./constants"
-
 export const assertPublicationIsNotNull = (result: any) => {
   if (!result.data.publication)
     throw new Error("Publication not found, please check your publication id.");

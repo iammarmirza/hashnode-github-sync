@@ -1,11 +1,6 @@
-import { Tag } from ".";
+import { Tag } from "./Frontmatter";
 
-export interface PublicationData {
-  publication: Publication;
-}
-
-export interface Publication {
-  id: string;
+export interface PostData {
   post: Post;
 }
 

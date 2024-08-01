@@ -1,48 +1,48 @@
-import { ParsedContent, PostPublishInput } from "src/shared/types";
+import { isPublishedAtValid } from "src/shared";
+import { ParsedContent, PostUpdateInput } from "src/shared/types";
 
-
-export const mapMarkdownToGqlPublishInput = ({
+export const mapMdToGqlModifyInput = ({
   parsedArticle,
-  publicationId,
   slug,
+  postId,
+  publicationId,
 }: {
   parsedArticle: ParsedContent;
+  slug: string | undefined;
+  postId: string;
   publicationId: string;
-  slug: string;
-}): PostPublishInput => {
+}): PostUpdateInput => {
+  
   const input = {
+    id: postId,
     title: parsedArticle.data.title,
     subtitle: parsedArticle.data.subtitle,
     publicationId: publicationId,
+    slug: slug,
     contentMarkdown: parsedArticle.content,
-    publishedAt: parsedArticle.data.publishedAt,
+    publishedAt: isPublishedAtValid(parsedArticle.data.publishedAt),
     coverImageOptions: {
       coverImageURL: parsedArticle.data.coverImageUrl,
       isCoverAttributionHidden: parsedArticle.data.isCoverAttributionHidden,
       coverImageAttribution: parsedArticle.data.coverImageAttribution,
       coverImagePhotographer: parsedArticle.data.coverImagePhotographer,
-      stickCoverToBottom: parsedArticle.data.stickCoverToBottom
+      stickCoverToBottom: parsedArticle.data.stickCoverToBottom,
     },
-    slug: slug,
-    originalArticleURL: parsedArticle.data.originalArticleURL,
+    originalArticleUrl: parsedArticle.data.originalArticleURL,
     tags: parsedArticle.data.tags,
-    disableComments: parsedArticle.data.disableComments,
     metaTags: {
       title: parsedArticle.data.ogTitle,
       description: parsedArticle.data.ogDescription,
-      image: parsedArticle.data.ogImage
+      image: parsedArticle.data.ogImage,
     },
     publishAs: parsedArticle.data.publishAs,
+    coAuthors: parsedArticle.data.coAuthors,
     seriesId: parsedArticle.data.seriesId,
     settings: {
-      scheduled: parsedArticle.data.scheduled,
-      enableTableOfContent: parsedArticle.data.enableTableOfContent,
-      slugOverridden: parsedArticle.data.slugOverridden,
-      isNewsletterActivated: parsedArticle.data.isNewsletterActivated,
-      delisted: parsedArticle.data.delisted
+      isTableOfContentEnabled: parsedArticle.data.enableTableOfContent,
+      delisted: parsedArticle.data.delisted,
+      disableComments: parsedArticle.data.disableComments,
     },
-    coAuthors: parsedArticle.data.coAuthors,
   };
-
   return input;
 };

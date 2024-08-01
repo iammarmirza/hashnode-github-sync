@@ -1,13 +1,13 @@
 import { octokit } from "./octokit";
 import { context } from "@actions/github";
-import { PublicationData } from "src/shared/types/Publication";
+import { PostData } from "src/shared/types";
 
-export const checkIfFileExists = async (postData: PublicationData) : Promise<boolean> => {
+export const checkIfFileExists = async (postData: PostData) : Promise<boolean> => {
     try {
         await octokit.request("GET /repos/{owner}/{repo}/contents/{file_path}", {
             owner: context.repo.owner,
             repo: context.repo.repo,
-            file_path: `${postData.publication.post.slug}.md`,
+            file_path: `${postData.post.slug}.md`,
           });
 
         return true

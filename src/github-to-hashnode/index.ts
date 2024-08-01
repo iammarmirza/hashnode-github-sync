@@ -1,5 +1,5 @@
-import { getPublicationId } from "../shared/getPublicationId";
-import { getInput } from "../shared/getInput";
+import { getPublicationId } from "./utils";
+import { getInput } from "src/shared";
 import { publishArticle } from "./publishArticle";
 import { modifyArticle } from "./modifyArticle";
 import { deleteArticle } from "./deleteArticle";

@@ -1,10 +1,6 @@
-import { callGraphqlAPI } from "../shared/callGraphqlAPI";
-import { QUERY } from "../shared/constants";
-import { mapMarkdownToGqlPublishInput } from "./mapMdToGqlPublishInput";
-import { parseFile } from "../shared/parseFile";
-import { createSlug } from "../shared/createSlug";
-import { PublishedArticle } from "src/shared/types/PublishedArticleTypes";
-import { GithubToHashnodeSync } from "src/shared/types";
+import { callGraphqlAPI, QUERY, parseFile } from "src/shared";
+import { GithubToHashnodeSync, PublishedArticle } from "src/shared/types";
+import { createSlug, mapMarkdownToGqlPublishInput } from "./utils";
 
 export const publishArticle = async ({
   file,
@@ -21,8 +17,10 @@ export const publishArticle = async ({
     query: QUERY.publish,
     variables: {
       input,
-    }
+    },
   });
-  console.log(`Post published successfully on Hashnode with slug ${response.data.publishPost.post.slug}`);
-  return response
+  console.log(
+    `Post published successfully on Hashnode with slug ${response.data.publishPost.post.slug}`
+  );
+  return response;
 };

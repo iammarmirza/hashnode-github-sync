@@ -1,11 +1,7 @@
 import { context } from "@actions/github";
-import { octokit } from "./octokit";
+import { octokit } from "./utils";
 
-export const deleteArticle = async ({
-  postId,
-}: {
-  postId: string;
-}) => {
+export const deleteArticle = async (postId: string) => {
   try {
     const { data } = await octokit.repos.getContent({
       owner: context.repo.owner,

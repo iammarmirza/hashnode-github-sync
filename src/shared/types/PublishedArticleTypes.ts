@@ -2,15 +2,15 @@ export interface PublishedArticle {
   data: Data;
 }
 
-export interface Data {
+interface Data {
   publishPost: PublishPost;
 }
 
-export interface PublishPost {
+interface PublishPost {
   post: Post;
 }
 
-export interface Post {
+interface Post {
   cuid: string;
   id: string;
   title: string;

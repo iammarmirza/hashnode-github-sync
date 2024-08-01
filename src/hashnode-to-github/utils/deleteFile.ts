@@ -1,9 +1,9 @@
-import { PublicationData } from "src/shared/types/Publication";
+import { PostData } from "src/shared/types"
 import { octokit } from "./octokit";
 import { context } from "@actions/github";
 
 type DeleteFileType = {
-    postData: PublicationData,
+    postData: PostData,
     sha: string
 }
 
@@ -12,7 +12,7 @@ export const deleteFile = async ({postData, sha}: DeleteFileType) => {
         await octokit.rest.repos.deleteFile({
             owner: context.repo.owner,
             repo: context.repo.repo,
-            path: `${postData.publication.post.slug}.md`,
+            path: `${postData.post.slug}.md`,
             message: `File deleted for recreation.`,
             sha
         })

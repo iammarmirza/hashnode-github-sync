@@ -39020,6 +39020,19 @@ const getInput = () => {
     return { hashnode_event, hashnode_token, host, added_files, modified_files, deleted_files };
 };
 
+;// CONCATENATED MODULE: ./src/github-to-hashnode/utils/createSlug.ts
+const createSlug = (fileName) => {
+    const slug = fileName.toLowerCase().replace('.md', '');
+    return slug;
+};
+
+;// CONCATENATED MODULE: ./src/github-to-hashnode/utils/extractInfoFromFilename.ts
+const extractInfoFromFilename = (fileName) => {
+    const postId = fileName.split('-')[0];
+    const slug = fileName.split('-').slice(1).join('-').replace('.md', '');
+    return { postId, slug };
+};
+
 ;// CONCATENATED MODULE: ./src/shared/assertions.ts
 const assertPublicationIsNotNull = (result) => {
     if (!result.data.publication)
@@ -39069,30 +39082,9 @@ const QUERY = {
     }
   }
 }`,
-};
-const PUBLICATION_ID_QUERY = `query findPublication ($host: String!) {
-  publication(host: $host) {
-    id
-  }
-}`;
-const POST_ID_QUERY = (/* unused pure expression or super */ null && (`query Publication($id: ObjectId, $slug: String!) {
-  publication(id: $id) {
-    id
-    post(slug: $slug) {
-      id
-    }
-  }
-}`));
-const POST_SLUG_QUERY = `query PostSlug ($id: ID!) {
+    getPostById: `query PostData ($id: ID!) {
   post(id: $id) {
-    slug
-  }
-}`;
-const POST_DATA_QUERY = `query PostData($id: ObjectId, $slug: String!) {
-  publication(id: $id) {
     id
-    post(slug: $slug) {
-      id
       slug
       title
       subtitle
@@ -39135,9 +39127,22 @@ const POST_DATA_QUERY = `query PostData($id: ObjectId, $slug: String!) {
     coAuthors {
       id
     }
+  }
+}`,
+    getPostId: `query Publication($id: ObjectId, $slug: String!) {
+  publication(id: $id) {
+    id
+    post(slug: $slug) {
+      id
     }
   }
-}`;
+}`,
+    getPublicationId: `query findPublication ($host: String!) {
+  publication(host: $host) {
+    id
+  }
+}`,
+};
 
 ;// CONCATENATED MODULE: ./src/shared/callGraphqlAPI.ts
 
@@ -39161,24 +39166,101 @@ const callGraphqlAPI = async ({ query, variables }) => {
     return result;
 };
 
-;// CONCATENATED MODULE: ./src/shared/getPublicationId.ts
+// EXTERNAL MODULE: ./node_modules/dayjs/dayjs.min.js
+var dayjs_min = __nccwpck_require__(7745);
+var dayjs_min_default = /*#__PURE__*/__nccwpck_require__.n(dayjs_min);
+;// CONCATENATED MODULE: ./src/shared/isPublishedAtValid.ts
+
+const isPublishedAtValid = (date) => {
+    if (!date)
+        return undefined;
+    const isValid = dayjs_min_default()(date).isBefore(new Date(), 'day');
+    return isValid ? date : undefined;
+};
+
+// EXTERNAL MODULE: ./node_modules/fs-extra/lib/index.js
+var lib = __nccwpck_require__(2539);
+var lib_default = /*#__PURE__*/__nccwpck_require__.n(lib);
+// EXTERNAL MODULE: ./node_modules/gray-matter/index.js
+var gray_matter = __nccwpck_require__(1774);
+var gray_matter_default = /*#__PURE__*/__nccwpck_require__.n(gray_matter);
+;// CONCATENATED MODULE: ./src/shared/parseFile.ts
+
+
+const parseFile = async (fileName) => {
+    const content = await lib_default().readFile(fileName, "utf-8");
+    const parsedArticle = gray_matter_default()(content, { language: "yaml" });
+    return parsedArticle;
+};
+
+;// CONCATENATED MODULE: ./src/shared/index.ts
 
 
 
+
+
+
+
+;// CONCATENATED MODULE: ./src/github-to-hashnode/utils/getPublicationId.ts
 
 const getPublicationId = async () => {
     const { host } = getInput();
     const result = await callGraphqlAPI({
-        query: PUBLICATION_ID_QUERY,
+        query: QUERY.getPublicationId,
         variables: {
             host,
-        }
+        },
     });
     assertPublicationIsNotNull(result);
     return result.data.publication.id;
 };
 
-;// CONCATENATED MODULE: ./src/github-to-hashnode/mapMdToGqlPublishInput.ts
+;// CONCATENATED MODULE: ./src/github-to-hashnode/utils/mapMdToGqlDeleteInput.ts
+const mapMdToGqlDeleteInput = (postId) => {
+    const input = {
+        id: postId
+    };
+    return input;
+};
+
+;// CONCATENATED MODULE: ./src/github-to-hashnode/utils/mapMdToGqlModifyInput.ts
+
+const mapMdToGqlModifyInput = ({ parsedArticle, slug, postId, publicationId, }) => {
+    const input = {
+        id: postId,
+        title: parsedArticle.data.title,
+        subtitle: parsedArticle.data.subtitle,
+        publicationId: publicationId,
+        slug: slug,
+        contentMarkdown: parsedArticle.content,
+        publishedAt: isPublishedAtValid(parsedArticle.data.publishedAt),
+        coverImageOptions: {
+            coverImageURL: parsedArticle.data.coverImageUrl,
+            isCoverAttributionHidden: parsedArticle.data.isCoverAttributionHidden,
+            coverImageAttribution: parsedArticle.data.coverImageAttribution,
+            coverImagePhotographer: parsedArticle.data.coverImagePhotographer,
+            stickCoverToBottom: parsedArticle.data.stickCoverToBottom,
+        },
+        originalArticleUrl: parsedArticle.data.originalArticleURL,
+        tags: parsedArticle.data.tags,
+        metaTags: {
+            title: parsedArticle.data.ogTitle,
+            description: parsedArticle.data.ogDescription,
+            image: parsedArticle.data.ogImage,
+        },
+        publishAs: parsedArticle.data.publishAs,
+        coAuthors: parsedArticle.data.coAuthors,
+        seriesId: parsedArticle.data.seriesId,
+        settings: {
+            isTableOfContentEnabled: parsedArticle.data.enableTableOfContent,
+            delisted: parsedArticle.data.delisted,
+            disableComments: parsedArticle.data.disableComments,
+        },
+    };
+    return input;
+};
+
+;// CONCATENATED MODULE: ./src/github-to-hashnode/utils/mapMdToGqlPublishInput.ts
 const mapMarkdownToGqlPublishInput = ({ parsedArticle, publicationId, slug, }) => {
     const input = {
         title: parsedArticle.data.title,
@@ -39216,31 +39298,15 @@ const mapMarkdownToGqlPublishInput = ({ parsedArticle, publicationId, slug, }) =
     return input;
 };
 
-// EXTERNAL MODULE: ./node_modules/fs-extra/lib/index.js
-var lib = __nccwpck_require__(2539);
-var lib_default = /*#__PURE__*/__nccwpck_require__.n(lib);
-// EXTERNAL MODULE: ./node_modules/gray-matter/index.js
-var gray_matter = __nccwpck_require__(1774);
-var gray_matter_default = /*#__PURE__*/__nccwpck_require__.n(gray_matter);
-;// CONCATENATED MODULE: ./src/shared/parseFile.ts
+;// CONCATENATED MODULE: ./src/github-to-hashnode/utils/index.ts
 
 
-const parseFile = async (fileName) => {
-    const content = await lib_default().readFile(fileName, "utf-8");
-    const parsedArticle = gray_matter_default()(content, { language: "yaml" });
-    return parsedArticle;
-};
 
-;// CONCATENATED MODULE: ./src/shared/createSlug.ts
-const createSlug = (fileName) => {
-    const slug = fileName.toLowerCase().replace('.md', '');
-    return slug;
-};
 
-;// CONCATENATED MODULE: ./src/github-to-hashnode/publishArticle.ts
 
 
 
+;// CONCATENATED MODULE: ./src/github-to-hashnode/publishArticle.ts
 
 
 const publishArticle = async ({ file, publicationId, }) => {
@@ -39255,72 +39321,13 @@ const publishArticle = async ({ file, publicationId, }) => {
         query: QUERY.publish,
         variables: {
             input,
-        }
+        },
     });
     console.log(`Post published successfully on Hashnode with slug ${response.data.publishPost.post.slug}`);
     return response;
 };
 
-// EXTERNAL MODULE: ./node_modules/dayjs/dayjs.min.js
-var dayjs_min = __nccwpck_require__(7745);
-var dayjs_min_default = /*#__PURE__*/__nccwpck_require__.n(dayjs_min);
-;// CONCATENATED MODULE: ./src/shared/isPublishedAtValid.ts
-
-const isPublishedAtValid = (date) => {
-    if (!date)
-        return undefined;
-    const isValid = dayjs_min_default()(date).isBefore(new Date(), 'day');
-    return isValid ? date : undefined;
-};
-
-;// CONCATENATED MODULE: ./src/github-to-hashnode/mapMdToGqlModifyInput.ts
-
-const mapMdToGqlModifyInput = ({ parsedArticle, slug, postId, publicationId, }) => {
-    const input = {
-        id: postId,
-        title: parsedArticle.data.title,
-        subtitle: parsedArticle.data.subtitle,
-        publicationId: publicationId,
-        slug: slug,
-        contentMarkdown: parsedArticle.content,
-        publishedAt: isPublishedAtValid(parsedArticle.data.publishedAt),
-        coverImageOptions: {
-            coverImageURL: parsedArticle.data.coverImageUrl,
-            isCoverAttributionHidden: parsedArticle.data.isCoverAttributionHidden,
-            coverImageAttribution: parsedArticle.data.coverImageAttribution,
-            coverImagePhotographer: parsedArticle.data.coverImagePhotographer,
-            stickCoverToBottom: parsedArticle.data.stickCoverToBottom,
-        },
-        originalArticleUrl: parsedArticle.data.originalArticleURL,
-        tags: parsedArticle.data.tags,
-        metaTags: {
-            title: parsedArticle.data.ogTitle,
-            description: parsedArticle.data.ogDescription,
-            image: parsedArticle.data.ogImage,
-        },
-        publishAs: parsedArticle.data.publishAs,
-        coAuthors: parsedArticle.data.coAuthors,
-        seriesId: parsedArticle.data.seriesId,
-        settings: {
-            isTableOfContentEnabled: parsedArticle.data.enableTableOfContent,
-            delisted: parsedArticle.data.delisted,
-            disableComments: parsedArticle.data.disableComments,
-        },
-    };
-    return input;
-};
-
-;// CONCATENATED MODULE: ./src/github-to-hashnode/extractInfoFromFilename.ts
-const extractInfoFromFilename = (fileName) => {
-    const postId = fileName.split('-')[0];
-    const slug = fileName.split('-').slice(1).join('-').replace('.md', '');
-    return { postId, slug };
-};
-
 ;// CONCATENATED MODULE: ./src/github-to-hashnode/modifyArticle.ts
-
-
-
 
 
 const modifyArticle = async ({ file, publicationId, }) => {
@@ -39342,17 +39349,7 @@ const modifyArticle = async ({ file, publicationId, }) => {
     return response;
 };
 
-;// CONCATENATED MODULE: ./src/github-to-hashnode/mapMdToGqlDeleteInput.ts
-const mapMdToGqlDeleteInput = (postId) => {
-    const input = {
-        id: postId
-    };
-    return input;
-};
-
 ;// CONCATENATED MODULE: ./src/github-to-hashnode/deleteArticle.ts
-
-
 
 
 const deleteArticle = async ({ file }) => {
@@ -42979,7 +42976,7 @@ const dist_src_Octokit = Octokit.plugin(requestLog, legacyRestEndpointMethods, p
 );
 
 
-;// CONCATENATED MODULE: ./src/hashnode-to-github/octokit.ts
+;// CONCATENATED MODULE: ./src/hashnode-to-github/utils/octokit.ts
 
 let cachedOctokitClient = null;
 function getOctokit() {
@@ -42992,54 +42989,43 @@ function getOctokit() {
 }
 const octokit = getOctokit();
 
-;// CONCATENATED MODULE: ./src/hashnode-to-github/deleteArticle.ts
+;// CONCATENATED MODULE: ./src/hashnode-to-github/utils/checkIfFileExists.ts
 
 
-const deleteArticle_deleteArticle = async ({ postId, }) => {
+const checkIfFileExists = async (postData) => {
     try {
-        const { data } = await octokit.repos.getContent({
+        await octokit.request("GET /repos/{owner}/{repo}/contents/{file_path}", {
             owner: github.context.repo.owner,
             repo: github.context.repo.repo,
-            path: "",
+            file_path: `${postData.post.slug}.md`,
         });
-        if (!Array.isArray(data))
-            return;
-        const fileToDelete = data.find(file => file.name.startsWith(postId));
-        if (fileToDelete) {
-            await octokit.repos.deleteFile({
-                owner: github.context.repo.owner,
-                repo: github.context.repo.repo,
-                path: fileToDelete.name,
-                sha: fileToDelete.sha,
-                message: "Blog deleted from Hashnode side"
-            });
-        }
+        return true;
     }
-    catch (error) {
-        console.log(error.message);
+    catch {
+        return false;
     }
 };
 
-;// CONCATENATED MODULE: ./src/hashnode-to-github/mapGqlToMarkdownInput.ts
+;// CONCATENATED MODULE: ./src/hashnode-to-github/utils/mapGqlToMarkdownInput.ts
 const mapGqlToMarkdownInput = (data) => {
     const frontMatter = {
-        title: data.publication.post.title,
-        subtitle: data.publication.post.subtitle,
-        publishedAt: data.publication.post.publishedAt,
-        coverImageUrl: data.publication.post.coverImage?.url,
-        isCoverAttributionHidden: data.publication.post.coverImage?.isAttributionHidden,
-        coverImageAttribution: data.publication.post.coverImage?.attribution,
-        coverImagePhotographer: data.publication.post.coverImage?.photographer,
-        stickCoverToBottom: data.publication.post.preferences.stickCoverToBottom,
-        tags: data.publication.post.tags,
-        disableComments: data.publication.post.preferences.disableComments,
-        ogTitle: data.publication.post.seo.title,
-        ogDescription: data.publication.post.seo.description,
-        ogImage: data.publication.post.ogMetaData.image,
-        seriesId: data.publication.post.series?.id,
-        delisted: data.publication.post.preferences.isDelisted,
-        enableTableOfContent: data.publication.post.features.tableOfContents.isEnabled,
-        coAuthors: data.publication.post.coAuthors,
+        title: data.post.title,
+        subtitle: data.post.subtitle,
+        publishedAt: data.post.publishedAt,
+        coverImageUrl: data.post.coverImage?.url,
+        isCoverAttributionHidden: data.post.coverImage?.isAttributionHidden,
+        coverImageAttribution: data.post.coverImage?.attribution,
+        coverImagePhotographer: data.post.coverImage?.photographer,
+        stickCoverToBottom: data.post.preferences.stickCoverToBottom,
+        tags: data.post.tags,
+        disableComments: data.post.preferences.disableComments,
+        ogTitle: data.post.seo.title,
+        ogDescription: data.post.seo.description,
+        ogImage: data.post.ogMetaData.image,
+        seriesId: data.post.series?.id,
+        delisted: data.post.preferences.isDelisted,
+        enableTableOfContent: data.post.features.tableOfContents.isEnabled,
+        coAuthors: data.post.coAuthors,
     };
     const filteredFrontMatter = Object.fromEntries(Object.entries(frontMatter).filter(([key, value]) => value));
     return filteredFrontMatter;
@@ -43341,7 +43327,7 @@ const gBase64 = {
 // and finally,
 
 
-;// CONCATENATED MODULE: ./src/hashnode-to-github/getCommitterDetails.ts
+;// CONCATENATED MODULE: ./src/hashnode-to-github/utils/getCommitterDetails.ts
 
 
 const getCommitterDetails = async () => {
@@ -43351,7 +43337,7 @@ const getCommitterDetails = async () => {
     return data;
 };
 
-;// CONCATENATED MODULE: ./src/hashnode-to-github/createFile.ts
+;// CONCATENATED MODULE: ./src/hashnode-to-github/utils/createFile.ts
 
 
 
@@ -43361,7 +43347,7 @@ const getCommitterDetails = async () => {
 const createFile = async ({ postData, sha }) => {
     try {
         const userDetails = await getCommitterDetails();
-        const post = postData.publication.post;
+        const post = postData.post;
         const fileName = `${post.id}-${post.slug}.md`;
         const frontMatter = mapGqlToMarkdownInput(postData);
         const fileContent = gray_matter_default().stringify(post.content.markdown, frontMatter);
@@ -43390,73 +43376,7 @@ const createFile = async ({ postData, sha }) => {
     }
 };
 
-;// CONCATENATED MODULE: ./src/hashnode-to-github/getPostData.ts
-
-
-
-const getPostData = async ({ publicationId, slug }) => {
-    const result = await callGraphqlAPI({
-        query: POST_DATA_QUERY,
-        variables: {
-            id: publicationId,
-            slug,
-        }
-    });
-    assertPublicationIsNotNull(result);
-    assertPostIsNotNull(result);
-    return result.data;
-};
-
-;// CONCATENATED MODULE: ./src/hashnode-to-github/getPostSlug.ts
-
-
-
-const getPostSlug = async (postId) => {
-    const result = await callGraphqlAPI({
-        query: POST_SLUG_QUERY,
-        variables: {
-            id: postId
-        }
-    });
-    assertSinglePostIsNotNull(result);
-    return result.data.post.slug;
-};
-
-;// CONCATENATED MODULE: ./src/hashnode-to-github/modifyArticle.ts
-
-
-
-
-
-const modifyArticle_modifyArticle = async ({ publicationId, postId, }) => {
-    const slug = await getPostSlug(postId);
-    const postData = await getPostData({ publicationId, slug });
-    const { data: { sha }, } = await octokit.request("GET /repos/{owner}/{repo}/contents/{file_path}", {
-        owner: github.context.repo.owner,
-        repo: github.context.repo.repo,
-        file_path: `${postData.publication.post.id}-${postData.publication.post.slug}.md`,
-    });
-    await createFile({ postData, sha });
-};
-
-;// CONCATENATED MODULE: ./src/hashnode-to-github/checkIfFileExists.ts
-
-
-const checkIfFileExists = async (postData) => {
-    try {
-        await octokit.request("GET /repos/{owner}/{repo}/contents/{file_path}", {
-            owner: github.context.repo.owner,
-            repo: github.context.repo.repo,
-            file_path: `${postData.publication.post.slug}.md`,
-        });
-        return true;
-    }
-    catch {
-        return false;
-    }
-};
-
-;// CONCATENATED MODULE: ./src/hashnode-to-github/deleteFile.ts
+;// CONCATENATED MODULE: ./src/hashnode-to-github/utils/deleteFile.ts
 
 
 const deleteFile = async ({ postData, sha }) => {
@@ -43464,7 +43384,7 @@ const deleteFile = async ({ postData, sha }) => {
         await octokit.rest.repos.deleteFile({
             owner: github.context.repo.owner,
             repo: github.context.repo.repo,
-            path: `${postData.publication.post.slug}.md`,
+            path: `${postData.post.slug}.md`,
             message: `File deleted for recreation.`,
             sha
         });
@@ -43474,23 +43394,82 @@ const deleteFile = async ({ postData, sha }) => {
     }
 };
 
+;// CONCATENATED MODULE: ./src/hashnode-to-github/utils/getPostData.ts
+
+
+
+const getPostData = async (id) => {
+    const result = await callGraphqlAPI({
+        query: QUERY.getPostById,
+        variables: {
+            id,
+        }
+    });
+    assertPostIsNotNull(result);
+    return result.data;
+};
+
+;// CONCATENATED MODULE: ./src/hashnode-to-github/utils/index.ts
+
+
+
+
+
+
+
+
+;// CONCATENATED MODULE: ./src/hashnode-to-github/deleteArticle.ts
+
+
+const deleteArticle_deleteArticle = async (postId) => {
+    try {
+        const { data } = await octokit.repos.getContent({
+            owner: github.context.repo.owner,
+            repo: github.context.repo.repo,
+            path: "",
+        });
+        if (!Array.isArray(data))
+            return;
+        const fileToDelete = data.find(file => file.name.startsWith(postId));
+        if (fileToDelete) {
+            await octokit.repos.deleteFile({
+                owner: github.context.repo.owner,
+                repo: github.context.repo.repo,
+                path: fileToDelete.name,
+                sha: fileToDelete.sha,
+                message: "Blog deleted from Hashnode side"
+            });
+        }
+    }
+    catch (error) {
+        console.log(error.message);
+    }
+};
+
+;// CONCATENATED MODULE: ./src/hashnode-to-github/modifyArticle.ts
+
+
+const modifyArticle_modifyArticle = async (postId) => {
+    const postData = await getPostData(postId);
+    const { data: { sha }, } = await octokit.request("GET /repos/{owner}/{repo}/contents/{file_path}", {
+        owner: github.context.repo.owner,
+        repo: github.context.repo.repo,
+        file_path: `${postData.post.id}-${postData.post.slug}.md`,
+    });
+    await createFile({ postData, sha });
+};
+
 ;// CONCATENATED MODULE: ./src/hashnode-to-github/publishArticle.ts
 
 
-
-
-
-
-
-const publishArticle_publishArticle = async ({ publicationId, postId, }) => {
-    const slug = await getPostSlug(postId);
-    const postData = await getPostData({ publicationId, slug });
+const publishArticle_publishArticle = async (postId) => {
+    const postData = await getPostData(postId);
     const isExistingFile = await checkIfFileExists(postData);
     if (isExistingFile) {
         const { data: { sha }, } = await octokit.request("GET /repos/{owner}/{repo}/contents/{file_path}", {
             owner: github.context.repo.owner,
             repo: github.context.repo.repo,
-            file_path: `${postData.publication.post.slug}.md`,
+            file_path: `${postData.post.slug}.md`,
         });
         await deleteFile({ postData, sha });
     }
@@ -43504,16 +43483,15 @@ const publishArticle_publishArticle = async ({ publicationId, postId, }) => {
 const hashnodeToGithubSync = async (parsedEvent) => {
     const eventType = parsedEvent.eventType;
     const postId = parsedEvent.post.id;
-    const publicationId = parsedEvent.publication.id;
     switch (eventType) {
         case 'post_published':
-            await publishArticle_publishArticle({ publicationId, postId });
+            await publishArticle_publishArticle(postId);
             break;
         case 'post_updated':
-            await modifyArticle_modifyArticle({ publicationId, postId });
+            await modifyArticle_modifyArticle(postId);
             break;
         case 'post_deleted':
-            await deleteArticle_deleteArticle({ postId });
+            await deleteArticle_deleteArticle(postId);
             break;
     }
 };

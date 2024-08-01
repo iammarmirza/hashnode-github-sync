@@ -2,15 +2,15 @@ export interface ModifiedArticle {
   data: Data;
 }
 
-export interface Data {
+interface Data {
   updatePost: UpdatePost;
 }
 
-export interface UpdatePost {
+interface UpdatePost {
   post: Post;
 }
 
-export interface Post {
+interface Post {
   id: string;
   title: string;
   slug: string;

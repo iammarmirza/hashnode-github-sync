@@ -29,34 +29,9 @@ export const QUERY = {
     }
   }
 }`,
-};
-
-export const PUBLICATION_ID_QUERY = `query findPublication ($host: String!) {
-  publication(host: $host) {
-    id
-  }
-}`;
-
-export const POST_ID_QUERY = `query Publication($id: ObjectId, $slug: String!) {
-  publication(id: $id) {
-    id
-    post(slug: $slug) {
-      id
-    }
-  }
-}`;
-
-export const POST_SLUG_QUERY = `query PostSlug ($id: ID!) {
+  getPostById: `query PostData ($id: ID!) {
   post(id: $id) {
-    slug
-  }
-}`
-
-export const POST_DATA_QUERY = `query PostData($id: ObjectId, $slug: String!) {
-  publication(id: $id) {
     id
-    post(slug: $slug) {
-      id
       slug
       title
       subtitle
@@ -99,6 +74,19 @@ export const POST_DATA_QUERY = `query PostData($id: ObjectId, $slug: String!) {
     coAuthors {
       id
     }
+  }
+}`,
+  getPostId: `query Publication($id: ObjectId, $slug: String!) {
+  publication(id: $id) {
+    id
+    post(slug: $slug) {
+      id
     }
   }
-}`
+}`,
+  getPublicationId: `query findPublication ($host: String!) {
+  publication(host: $host) {
+    id
+  }
+}`,
+};

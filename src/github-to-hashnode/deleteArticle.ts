@@ -1,9 +1,6 @@
-import { mapMdToGqlDeleteInput } from "./mapMdToGqlDeleteInput";
-import { QUERY } from "../shared/constants";
-import { callGraphqlAPI } from "../shared/callGraphqlAPI";
-import { GithubToHashnodeSync } from "src/shared/types";
-import { DeletedArticle } from "src/shared/types/DeletedArticleTypes";
-import { extractInfoFromFilename } from "./extractInfoFromFilename";
+import { QUERY, callGraphqlAPI } from "src/shared";
+import { extractInfoFromFilename, mapMdToGqlDeleteInput } from "./utils";
+import { GithubToHashnodeSync, DeletedArticle } from "src/shared/types";
 
 export const deleteArticle = async ({
   file

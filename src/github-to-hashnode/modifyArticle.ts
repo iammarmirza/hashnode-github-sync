@@ -1,10 +1,6 @@
-import { mapMdToGqlModifyInput } from "./mapMdToGqlModifyInput";
-import { parseFile } from "../shared/parseFile";
-import { callGraphqlAPI } from "../shared/callGraphqlAPI";
-import { QUERY } from "../shared/constants";
-import { GithubToHashnodeSync } from "src/shared/types";
-import { ModifiedArticle } from "src/shared/types/ModifiedArticleTypes";
-import { extractInfoFromFilename } from "./extractInfoFromFilename";
+import { parseFile, callGraphqlAPI, QUERY } from "src/shared";
+import { GithubToHashnodeSync, ModifiedArticle } from "src/shared/types";
+import { extractInfoFromFilename, mapMdToGqlModifyInput } from "./utils";
 
 export const modifyArticle = async ({
   file,

@@ -2,15 +2,15 @@ export interface DeletedArticle {
   data: Data;
 }
 
-export interface Data {
+interface Data {
   removePost: RemovePost;
 }
 
-export interface RemovePost {
+interface RemovePost {
   post: Post;
 }
 
-export interface Post {
+interface Post {
   id: string;
   slug: string;
   title: string;
