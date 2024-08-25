@@ -1,4 +1,5 @@
-import { createFile, getPostData, octokit } from "./utils";
+import { getPostData, octokit } from "./utils";
+import { createFile } from "../shared";
 import { context } from "@actions/github";
 
 export const modifyArticle = async (postId: string) => {

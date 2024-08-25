@@ -1,6 +1,7 @@
-import { callGraphqlAPI, QUERY, parseFile } from "src/shared";
+import { callGraphqlAPI, QUERY, parseFile, createFile } from "src/shared";
 import { GithubToHashnodeSync, PublishedArticle } from "src/shared/types";
 import { createSlug, mapMarkdownToGqlPublishInput } from "./utils";
+import { deleteFile } from "src/hashnode-to-github/utils";
 
 export const publishArticle = async ({
   file,
@@ -22,5 +23,11 @@ export const publishArticle = async ({
   console.log(
     `Post published successfully on Hashnode with slug ${response.data.publishPost.post.slug}`
   );
+  const post = response.data.publishPost.post;
+  const postData = response.data.publishPost;
+  const postSlug = post.slug;
+  // we need to update file name with the id-slug.md format
+  await deleteFile(postSlug);
+  await createFile({ postData });
   return response;
 };

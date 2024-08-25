@@ -4,11 +4,50 @@ export const QUERY = {
   publish: `mutation PublishPost($input: PublishPostInput!) {
     publishPost(input: $input) {
       post {
-        cuid
+    id
+      slug
+      title
+      subtitle
+      content {
+        markdown
+      }
+      publishedAt
+      url
+      preferences {
+        disableComments
+        isDelisted
+        stickCoverToBottom
+      }
+      series {
         id
-        title
+      }
+      coverImage {
+        url
+        attribution
+        photographer
+        isAttributionHidden
+      }
+      features {
+        tableOfContents {
+          isEnabled
+        }
+      }
+      tags {
+        id
+        name
         slug
       }
+      seo {
+        title
+        description
+      }
+      ogMetaData {
+		image
+      }
+    coAuthors {
+      id
+    }
+  }
     }
   }`,
   modify: `mutation ModifyPost ($input: UpdatePostInput!) {

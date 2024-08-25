@@ -13916,7 +13916,7 @@ module.exports = __nccwpck_require__(4280);
 
 
 var net = __nccwpck_require__(1808);
-var tls = __nccwpck_require__(4404);
+var tls = __nccwpck_require__(6821);
 var http = __nccwpck_require__(3685);
 var https = __nccwpck_require__(5687);
 var events = __nccwpck_require__(2361);
@@ -20410,7 +20410,7 @@ function buildConnector ({ allowH2, maxCachedSessions, socketPath, timeout, ...o
     let socket
     if (protocol === 'https:') {
       if (!tls) {
-        tls = __nccwpck_require__(4404)
+        tls = __nccwpck_require__(6821)
       }
       servername = servername || options.servername || util.getServerName(host) || null
 
@@ -37243,7 +37243,7 @@ module.exports = require("string_decoder");
 
 /***/ }),
 
-/***/ 4404:
+/***/ 6821:
 /***/ ((module) => {
 
 "use strict";
@@ -39053,11 +39053,50 @@ const QUERY = {
     publish: `mutation PublishPost($input: PublishPostInput!) {
     publishPost(input: $input) {
       post {
-        cuid
+    id
+      slug
+      title
+      subtitle
+      content {
+        markdown
+      }
+      publishedAt
+      url
+      preferences {
+        disableComments
+        isDelisted
+        stickCoverToBottom
+      }
+      series {
         id
-        title
+      }
+      coverImage {
+        url
+        attribution
+        photographer
+        isAttributionHidden
+      }
+      features {
+        tableOfContents {
+          isEnabled
+        }
+      }
+      tags {
+        id
+        name
         slug
       }
+      seo {
+        title
+        description
+      }
+      ogMetaData {
+		image
+      }
+    coAuthors {
+      id
+    }
+  }
     }
   }`,
     modify: `mutation ModifyPost ($input: UpdatePostInput!) {
@@ -39189,207 +39228,6 @@ const parseFile = async (fileName) => {
     return parsedArticle;
 };
 
-;// CONCATENATED MODULE: ./src/shared/index.ts
-
-
-
-
-
-
-
-;// CONCATENATED MODULE: ./src/github-to-hashnode/utils/getPublicationId.ts
-
-const getPublicationId = async () => {
-    const { host } = getInput();
-    const result = await callGraphqlAPI({
-        query: QUERY.getPublicationId,
-        variables: {
-            host,
-        },
-    });
-    assertPublicationIsNotNull(result);
-    return result.data.publication.id;
-};
-
-;// CONCATENATED MODULE: ./src/github-to-hashnode/utils/mapMdToGqlDeleteInput.ts
-const mapMdToGqlDeleteInput = (postId) => {
-    const input = {
-        id: postId
-    };
-    return input;
-};
-
-;// CONCATENATED MODULE: ./src/github-to-hashnode/utils/mapMdToGqlModifyInput.ts
-
-const mapMdToGqlModifyInput = ({ parsedArticle, slug, postId, publicationId, }) => {
-    const input = {
-        id: postId,
-        title: parsedArticle.data.title,
-        subtitle: parsedArticle.data.subtitle,
-        publicationId: publicationId,
-        slug: slug,
-        contentMarkdown: parsedArticle.content,
-        publishedAt: isPublishedAtValid(parsedArticle.data.publishedAt),
-        coverImageOptions: {
-            coverImageURL: parsedArticle.data.coverImageUrl,
-            isCoverAttributionHidden: parsedArticle.data.isCoverAttributionHidden,
-            coverImageAttribution: parsedArticle.data.coverImageAttribution,
-            coverImagePhotographer: parsedArticle.data.coverImagePhotographer,
-            stickCoverToBottom: parsedArticle.data.stickCoverToBottom,
-        },
-        originalArticleUrl: parsedArticle.data.originalArticleURL,
-        tags: parsedArticle.data.tags,
-        metaTags: {
-            title: parsedArticle.data.ogTitle,
-            description: parsedArticle.data.ogDescription,
-            image: parsedArticle.data.ogImage,
-        },
-        publishAs: parsedArticle.data.publishAs,
-        coAuthors: parsedArticle.data.coAuthors,
-        seriesId: parsedArticle.data.seriesId,
-        settings: {
-            isTableOfContentEnabled: parsedArticle.data.enableTableOfContent,
-            delisted: parsedArticle.data.delisted,
-            disableComments: parsedArticle.data.disableComments,
-        },
-    };
-    return input;
-};
-
-;// CONCATENATED MODULE: ./src/github-to-hashnode/utils/mapMdToGqlPublishInput.ts
-const mapMarkdownToGqlPublishInput = ({ parsedArticle, publicationId, slug, }) => {
-    const input = {
-        title: parsedArticle.data.title,
-        subtitle: parsedArticle.data.subtitle,
-        publicationId: publicationId,
-        contentMarkdown: parsedArticle.content,
-        publishedAt: parsedArticle.data.publishedAt,
-        coverImageOptions: {
-            coverImageURL: parsedArticle.data.coverImageUrl,
-            isCoverAttributionHidden: parsedArticle.data.isCoverAttributionHidden,
-            coverImageAttribution: parsedArticle.data.coverImageAttribution,
-            coverImagePhotographer: parsedArticle.data.coverImagePhotographer,
-            stickCoverToBottom: parsedArticle.data.stickCoverToBottom
-        },
-        slug: slug,
-        originalArticleURL: parsedArticle.data.originalArticleURL,
-        tags: parsedArticle.data.tags,
-        disableComments: parsedArticle.data.disableComments,
-        metaTags: {
-            title: parsedArticle.data.ogTitle,
-            description: parsedArticle.data.ogDescription,
-            image: parsedArticle.data.ogImage
-        },
-        publishAs: parsedArticle.data.publishAs,
-        seriesId: parsedArticle.data.seriesId,
-        settings: {
-            scheduled: parsedArticle.data.scheduled,
-            enableTableOfContent: parsedArticle.data.enableTableOfContent,
-            slugOverridden: parsedArticle.data.slugOverridden,
-            isNewsletterActivated: parsedArticle.data.isNewsletterActivated,
-            delisted: parsedArticle.data.delisted
-        },
-        coAuthors: parsedArticle.data.coAuthors,
-    };
-    return input;
-};
-
-;// CONCATENATED MODULE: ./src/github-to-hashnode/utils/index.ts
-
-
-
-
-
-
-
-;// CONCATENATED MODULE: ./src/github-to-hashnode/publishArticle.ts
-
-
-const publishArticle = async ({ file, publicationId, }) => {
-    const slug = createSlug(file);
-    const parsedArticle = await parseFile(file);
-    const input = mapMarkdownToGqlPublishInput({
-        parsedArticle,
-        publicationId,
-        slug,
-    });
-    const response = await callGraphqlAPI({
-        query: QUERY.publish,
-        variables: {
-            input,
-        },
-    });
-    console.log(`Post published successfully on Hashnode with slug ${response.data.publishPost.post.slug}`);
-    return response;
-};
-
-;// CONCATENATED MODULE: ./src/github-to-hashnode/modifyArticle.ts
-
-
-const modifyArticle = async ({ file, publicationId, }) => {
-    const { slug, postId } = extractInfoFromFilename(file);
-    const parsedArticle = await parseFile(file);
-    const input = mapMdToGqlModifyInput({
-        parsedArticle,
-        slug,
-        postId,
-        publicationId,
-    });
-    const response = await callGraphqlAPI({
-        query: QUERY.modify,
-        variables: {
-            input,
-        },
-    });
-    console.log(`Post successfully modified on Hashnode with slug ${response.data.updatePost.post.slug}`);
-    return response;
-};
-
-;// CONCATENATED MODULE: ./src/github-to-hashnode/deleteArticle.ts
-
-
-const deleteArticle = async ({ file }) => {
-    const { postId } = extractInfoFromFilename(file);
-    const input = mapMdToGqlDeleteInput(postId);
-    const response = await callGraphqlAPI({
-        query: QUERY["delete"],
-        variables: {
-            input,
-        },
-    });
-    console.log(`Post successfully deleted on Hashnode with slug ${response.data.removePost.post.slug}`);
-    return response;
-};
-
-;// CONCATENATED MODULE: ./src/github-to-hashnode/index.ts
-
-
-
-
-
-const githubToHashnodeSync = async () => {
-    const { added_files, modified_files, deleted_files } = getInput();
-    const publicationId = await getPublicationId();
-    const added_files_arr = added_files
-        .split(" ")
-        .filter((fileName) => fileName.endsWith(".md"));
-    const publishPromises = added_files_arr.map((file) => publishArticle({ file, publicationId }));
-    await Promise.all(publishPromises);
-    const modified_files_arr = modified_files
-        .split(" ")
-        .filter((fileName) => fileName.endsWith(".md"));
-    const modifyPromises = modified_files_arr.map((file) => modifyArticle({ file, publicationId }));
-    await Promise.all(modifyPromises);
-    const deleted_files_arr = deleted_files
-        .split(" ")
-        .filter((fileName) => fileName.endsWith(".md"));
-    const deletePromises = deleted_files_arr.map((file) => deleteArticle({ file, publicationId }));
-    await Promise.all(deletePromises);
-};
-/* harmony default export */ const github_to_hashnode = (githubToHashnodeSync);
-
-// EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
-var github = __nccwpck_require__(129);
 ;// CONCATENATED MODULE: ./node_modules/universal-user-agent/index.js
 function getUserAgent() {
   if (typeof navigator === "object" && "userAgent" in navigator) {
@@ -42985,6 +42823,8 @@ function getOctokit() {
 }
 const octokit = getOctokit();
 
+// EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
+var github = __nccwpck_require__(129);
 ;// CONCATENATED MODULE: ./src/hashnode-to-github/utils/checkIfFileExists.ts
 
 
@@ -42993,13 +42833,61 @@ const checkIfFileExists = async (postData) => {
         await octokit.request("GET /repos/{owner}/{repo}/contents/{file_path}", {
             owner: github.context.repo.owner,
             repo: github.context.repo.repo,
-            file_path: `${postData.post.slug}.md`,
+            file_path: `${postData.post.id}-${postData.post.slug}.md`,
         });
         return true;
     }
     catch {
         return false;
     }
+};
+
+;// CONCATENATED MODULE: ./src/github-to-hashnode/utils/deleteFile.ts
+
+
+const deleteFile = async (slug) => {
+    try {
+        const { data: { sha }, } = await octokit.request("GET /repos/{owner}/{repo}/contents/{file_path}", {
+            owner: github.context.repo.owner,
+            repo: github.context.repo.repo,
+            file_path: `${slug}.md`,
+        });
+        await octokit.rest.repos.deleteFile({
+            owner: github.context.repo.owner,
+            repo: github.context.repo.repo,
+            path: `${slug}.md`,
+            message: `File deleted for recreation.`,
+            sha,
+        });
+    }
+    catch (error) {
+        console.log(error.message);
+    }
+};
+
+;// CONCATENATED MODULE: ./src/hashnode-to-github/utils/getCommitterDetails.ts
+
+
+const getCommitterDetails = async () => {
+    const { data } = await octokit.request("GET /users/{owner}", {
+        owner: github.context.repo.owner,
+    });
+    return data;
+};
+
+;// CONCATENATED MODULE: ./src/hashnode-to-github/utils/getPostData.ts
+
+
+
+const getPostData = async (id) => {
+    const result = await callGraphqlAPI({
+        query: QUERY.getPostById,
+        variables: {
+            id,
+        }
+    });
+    assertPostIsNotNull(result);
+    return result.data;
 };
 
 ;// CONCATENATED MODULE: ./src/hashnode-to-github/utils/mapGqlToMarkdownInput.ts
@@ -43026,6 +42914,14 @@ const mapGqlToMarkdownInput = (data) => {
     const filteredFrontMatter = Object.fromEntries(Object.entries(frontMatter).filter(([key, value]) => value));
     return filteredFrontMatter;
 };
+
+;// CONCATENATED MODULE: ./src/hashnode-to-github/utils/index.ts
+
+
+
+
+
+
 
 ;// CONCATENATED MODULE: ./node_modules/js-base64/base64.mjs
 /**
@@ -43323,24 +43219,14 @@ const gBase64 = {
 // and finally,
 
 
-;// CONCATENATED MODULE: ./src/hashnode-to-github/utils/getCommitterDetails.ts
-
-
-const getCommitterDetails = async () => {
-    const { data } = await octokit.request("GET /users/{owner}", {
-        owner: github.context.repo.owner,
-    });
-    return data;
-};
-
-;// CONCATENATED MODULE: ./src/hashnode-to-github/utils/createFile.ts
+;// CONCATENATED MODULE: ./src/shared/createFile.ts
 
 
 
 
 
 
-const createFile = async ({ postData, sha }) => {
+const createFile = async ({ postData, sha, }) => {
     try {
         const commitType = sha ? "Modified" : "Added";
         const userDetails = await getCommitterDetails();
@@ -43373,40 +43259,113 @@ const createFile = async ({ postData, sha }) => {
     }
 };
 
-;// CONCATENATED MODULE: ./src/hashnode-to-github/utils/deleteFile.ts
-
-
-const deleteFile = async ({ postData, sha }) => {
-    try {
-        await octokit.rest.repos.deleteFile({
-            owner: github.context.repo.owner,
-            repo: github.context.repo.repo,
-            path: `${postData.post.slug}.md`,
-            message: `File deleted for recreation.`,
-            sha
-        });
-    }
-    catch (error) {
-        console.log(error.message);
-    }
-};
-
-;// CONCATENATED MODULE: ./src/hashnode-to-github/utils/getPostData.ts
+;// CONCATENATED MODULE: ./src/shared/index.ts
 
 
 
-const getPostData = async (id) => {
+
+
+
+
+
+;// CONCATENATED MODULE: ./src/github-to-hashnode/utils/getPublicationId.ts
+
+const getPublicationId = async () => {
+    const { host } = getInput();
     const result = await callGraphqlAPI({
-        query: QUERY.getPostById,
+        query: QUERY.getPublicationId,
         variables: {
-            id,
-        }
+            host,
+        },
     });
-    assertPostIsNotNull(result);
-    return result.data;
+    assertPublicationIsNotNull(result);
+    return result.data.publication.id;
 };
 
-;// CONCATENATED MODULE: ./src/hashnode-to-github/utils/index.ts
+;// CONCATENATED MODULE: ./src/github-to-hashnode/utils/mapMdToGqlDeleteInput.ts
+const mapMdToGqlDeleteInput = (postId) => {
+    const input = {
+        id: postId
+    };
+    return input;
+};
+
+;// CONCATENATED MODULE: ./src/github-to-hashnode/utils/mapMdToGqlModifyInput.ts
+
+const mapMdToGqlModifyInput = ({ parsedArticle, slug, postId, publicationId, }) => {
+    const input = {
+        id: postId,
+        title: parsedArticle.data.title,
+        subtitle: parsedArticle.data.subtitle,
+        publicationId: publicationId,
+        slug: slug,
+        contentMarkdown: parsedArticle.content,
+        publishedAt: isPublishedAtValid(parsedArticle.data.publishedAt),
+        coverImageOptions: {
+            coverImageURL: parsedArticle.data.coverImageUrl,
+            isCoverAttributionHidden: parsedArticle.data.isCoverAttributionHidden,
+            coverImageAttribution: parsedArticle.data.coverImageAttribution,
+            coverImagePhotographer: parsedArticle.data.coverImagePhotographer,
+            stickCoverToBottom: parsedArticle.data.stickCoverToBottom,
+        },
+        originalArticleUrl: parsedArticle.data.originalArticleURL,
+        tags: parsedArticle.data.tags,
+        metaTags: {
+            title: parsedArticle.data.ogTitle,
+            description: parsedArticle.data.ogDescription,
+            image: parsedArticle.data.ogImage,
+        },
+        publishAs: parsedArticle.data.publishAs,
+        coAuthors: parsedArticle.data.coAuthors,
+        seriesId: parsedArticle.data.seriesId,
+        settings: {
+            isTableOfContentEnabled: parsedArticle.data.enableTableOfContent,
+            delisted: parsedArticle.data.delisted,
+            disableComments: parsedArticle.data.disableComments,
+        },
+    };
+    return input;
+};
+
+;// CONCATENATED MODULE: ./src/github-to-hashnode/utils/mapMdToGqlPublishInput.ts
+const mapMarkdownToGqlPublishInput = ({ parsedArticle, publicationId, slug, }) => {
+    const input = {
+        title: parsedArticle.data.title,
+        subtitle: parsedArticle.data.subtitle,
+        publicationId: publicationId,
+        contentMarkdown: parsedArticle.content,
+        publishedAt: parsedArticle.data.publishedAt,
+        coverImageOptions: {
+            coverImageURL: parsedArticle.data.coverImageUrl,
+            isCoverAttributionHidden: parsedArticle.data.isCoverAttributionHidden,
+            coverImageAttribution: parsedArticle.data.coverImageAttribution,
+            coverImagePhotographer: parsedArticle.data.coverImagePhotographer,
+            stickCoverToBottom: parsedArticle.data.stickCoverToBottom
+        },
+        slug: slug,
+        originalArticleURL: parsedArticle.data.originalArticleURL,
+        tags: parsedArticle.data.tags,
+        disableComments: parsedArticle.data.disableComments,
+        metaTags: {
+            title: parsedArticle.data.ogTitle,
+            description: parsedArticle.data.ogDescription,
+            image: parsedArticle.data.ogImage
+        },
+        publishAs: parsedArticle.data.publishAs,
+        seriesId: parsedArticle.data.seriesId,
+        settings: {
+            scheduled: parsedArticle.data.scheduled,
+            enableTableOfContent: parsedArticle.data.enableTableOfContent,
+            slugOverridden: parsedArticle.data.slugOverridden,
+            isNewsletterActivated: parsedArticle.data.isNewsletterActivated,
+            delisted: parsedArticle.data.delisted
+        },
+        coAuthors: parsedArticle.data.coAuthors,
+    };
+    return input;
+};
+
+;// CONCATENATED MODULE: ./src/github-to-hashnode/utils/index.ts
 
 
 
@@ -43414,6 +43373,98 @@ const getPostData = async (id) => {
 
 
 
+;// CONCATENATED MODULE: ./src/github-to-hashnode/publishArticle.ts
+
+
+
+const publishArticle = async ({ file, publicationId, }) => {
+    const slug = createSlug(file);
+    const parsedArticle = await parseFile(file);
+    const input = mapMarkdownToGqlPublishInput({
+        parsedArticle,
+        publicationId,
+        slug,
+    });
+    const response = await callGraphqlAPI({
+        query: QUERY.publish,
+        variables: {
+            input,
+        },
+    });
+    console.log(`Post published successfully on Hashnode with slug ${response.data.publishPost.post.slug}`);
+    const post = response.data.publishPost.post;
+    const postData = response.data.publishPost;
+    const postSlug = post.slug;
+    // we need to update file name with the id-slug.md format
+    await deleteFile(postSlug);
+    await createFile({ postData });
+    return response;
+};
+
+;// CONCATENATED MODULE: ./src/github-to-hashnode/modifyArticle.ts
+
+
+const modifyArticle = async ({ file, publicationId, }) => {
+    const { slug, postId } = extractInfoFromFilename(file);
+    const parsedArticle = await parseFile(file);
+    const input = mapMdToGqlModifyInput({
+        parsedArticle,
+        slug,
+        postId,
+        publicationId,
+    });
+    const response = await callGraphqlAPI({
+        query: QUERY.modify,
+        variables: {
+            input,
+        },
+    });
+    console.log(`Post successfully modified on Hashnode with slug ${response.data.updatePost.post.slug}`);
+    return response;
+};
+
+;// CONCATENATED MODULE: ./src/github-to-hashnode/deleteArticle.ts
+
+
+const deleteArticle = async ({ file }) => {
+    const { postId } = extractInfoFromFilename(file);
+    const input = mapMdToGqlDeleteInput(postId);
+    const response = await callGraphqlAPI({
+        query: QUERY["delete"],
+        variables: {
+            input,
+        },
+    });
+    console.log(`Post successfully deleted on Hashnode with slug ${response.data.removePost.post.slug}`);
+    return response;
+};
+
+;// CONCATENATED MODULE: ./src/github-to-hashnode/index.ts
+
+
+
+
+
+const githubToHashnodeSync = async () => {
+    const { added_files, modified_files, deleted_files } = getInput();
+    const publicationId = await getPublicationId();
+    const added_files_arr = added_files
+        .split(" ")
+        .filter((fileName) => fileName.endsWith(".md"));
+    const publishPromises = added_files_arr.map((file) => publishArticle({ file, publicationId }));
+    await Promise.all(publishPromises);
+    const modified_files_arr = modified_files
+        .split(" ")
+        .filter((fileName) => fileName.endsWith(".md"));
+    const modifyPromises = modified_files_arr.map((file) => modifyArticle({ file, publicationId }));
+    await Promise.all(modifyPromises);
+    const deleted_files_arr = deleted_files
+        .split(" ")
+        .filter((fileName) => fileName.endsWith(".md"));
+    const deletePromises = deleted_files_arr.map((file) => deleteArticle({ file, publicationId }));
+    await Promise.all(deletePromises);
+};
+/* harmony default export */ const github_to_hashnode = (githubToHashnodeSync);
 
 ;// CONCATENATED MODULE: ./src/hashnode-to-github/deleteArticle.ts
 
@@ -43446,6 +43497,7 @@ const deleteArticle_deleteArticle = async (postId) => {
 ;// CONCATENATED MODULE: ./src/hashnode-to-github/modifyArticle.ts
 
 
+
 const modifyArticle_modifyArticle = async (postId) => {
     const postData = await getPostData(postId);
     const { data: { sha }, } = await octokit.request("GET /repos/{owner}/{repo}/contents/{file_path}", {
@@ -43462,14 +43514,8 @@ const modifyArticle_modifyArticle = async (postId) => {
 const publishArticle_publishArticle = async (postId) => {
     const postData = await getPostData(postId);
     const isExistingFile = await checkIfFileExists(postData);
-    if (isExistingFile) {
-        const { data: { sha }, } = await octokit.request("GET /repos/{owner}/{repo}/contents/{file_path}", {
-            owner: github.context.repo.owner,
-            repo: github.context.repo.repo,
-            file_path: `${postData.post.slug}.md`,
-        });
-        await deleteFile({ postData, sha });
-    }
+    if (isExistingFile)
+        return;
     await createFile({ postData });
 };
 
