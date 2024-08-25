@@ -6,7 +6,8 @@ import hashnodeToGithubSync from "./hashnode-to-github";
 export async function run() {
   try {
     const { hashnode_event } = getInput();
-    const parsedEvent = JSON.parse(hashnode_event);
+    let parsedEvent;
+    if (hashnode_event) parsedEvent = JSON.parse(hashnode_event);
 
     if (parsedEvent) await hashnodeToGithubSync(parsedEvent);
     else await githubToHashnodeSync();
