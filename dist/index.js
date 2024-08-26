@@ -43391,7 +43391,7 @@ const publishArticle = async ({ file, publicationId, }) => {
             input,
         },
     });
-    console.log(`Post published successfully on Hashnode with slug ${response.data.publishPost.post.slug}`);
+    console.log(`Post published successfully on Hashnode with ID - ${response.data.publishPost.post.id} & Title - ${response.data.publishPost.post.title}`);
     const post = response.data.publishPost.post;
     const postData = response.data.publishPost;
     const postSlug = post.slug;
@@ -43419,14 +43419,14 @@ const modifyArticle = async ({ file, publicationId, }) => {
             input,
         },
     });
-    console.log(`Post successfully modified on Hashnode with slug ${response.data.updatePost.post.slug}`);
+    console.log(`Post successfully modified on Hashnode with ID - ${response.data.updatePost.post.id} & Title - ${response.data.updatePost.post.title}`);
     return response;
 };
 
 ;// CONCATENATED MODULE: ./src/github-to-hashnode/deleteArticle.ts
 
 
-const deleteArticle = async ({ file }) => {
+const deleteArticle = async ({ file, }) => {
     const { postId } = extractInfoFromFilename(file);
     const input = mapMdToGqlDeleteInput(postId);
     const response = await callGraphqlAPI({
@@ -43435,7 +43435,7 @@ const deleteArticle = async ({ file }) => {
             input,
         },
     });
-    console.log(`Post successfully deleted on Hashnode with slug ${response.data.removePost.post.slug}`);
+    console.log(`Post successfully deleted on Hashnode with ID - ${response.data.removePost.post.id} & Title - ${response.data.removePost.post.title}`);
     return response;
 };
 

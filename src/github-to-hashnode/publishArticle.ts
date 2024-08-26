@@ -21,7 +21,7 @@ export const publishArticle = async ({
     },
   });
   console.log(
-    `Post published successfully on Hashnode with slug ${response.data.publishPost.post.slug}`
+    `Post published successfully on Hashnode with ID - ${response.data.publishPost.post.id} & Title - ${response.data.publishPost.post.title}`
   );
   const post = response.data.publishPost.post;
   const postData = response.data.publishPost;

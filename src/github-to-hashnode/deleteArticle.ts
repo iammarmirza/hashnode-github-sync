@@ -3,7 +3,7 @@ import { extractInfoFromFilename, mapMdToGqlDeleteInput } from "./utils";
 import { GithubToHashnodeSync, DeletedArticle } from "src/shared/types";
 
 export const deleteArticle = async ({
-  file
+  file,
 }: GithubToHashnodeSync): Promise<DeletedArticle> => {
   const { postId } = extractInfoFromFilename(file);
   const input = mapMdToGqlDeleteInput(postId);
@@ -16,7 +16,7 @@ export const deleteArticle = async ({
   });
 
   console.log(
-    `Post successfully deleted on Hashnode with slug ${response.data.removePost.post.slug}`
+    `Post successfully deleted on Hashnode with ID - ${response.data.removePost.post.id} & Title - ${response.data.removePost.post.title}`
   );
   return response;
 };

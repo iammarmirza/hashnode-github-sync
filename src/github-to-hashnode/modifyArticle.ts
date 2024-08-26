@@ -23,7 +23,7 @@ export const modifyArticle = async ({
   });
 
   console.log(
-    `Post successfully modified on Hashnode with slug ${response.data.updatePost.post.slug}`
+    `Post successfully modified on Hashnode with ID - ${response.data.updatePost.post.id} & Title - ${response.data.updatePost.post.title}`
   );
   return response;
 };
