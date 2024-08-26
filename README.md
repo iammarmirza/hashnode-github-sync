@@ -103,8 +103,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Hashnode Github Sync
     permissions:
-      contents: write # Make sure to provide this write permission if you are using two way sync, not required if you're using only one way sync i.e : Github to Hashnode
-
+      contents: write
     steps:
       - uses: actions/checkout@v4
         with:
